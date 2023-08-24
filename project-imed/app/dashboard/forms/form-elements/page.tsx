@@ -9,10 +9,13 @@ import SwitcherFour from "@/components/Switchers/SwitcherFour";
 import SwitcherOne from "@/components/Switchers/SwitcherOne";
 import SwitcherThree from "@/components/Switchers/SwitcherThree";
 import SwitcherTwo from "@/components/Switchers/SwitcherTwo";
+import AdminLayout from "../../AdminLayout";
 
 const FormElements = () => {
   return (
     <>
+    
+    <AdminLayout>
       <Breadcrumb pageName="FormElements" />
 
       <div className="grid grid-cols-1 gap-9 sm:grid-cols-2">
@@ -348,6 +351,8 @@ const FormElements = () => {
           </div>
         </div>
       </div>
+      </AdminLayout>
+
     </>
   );
 };

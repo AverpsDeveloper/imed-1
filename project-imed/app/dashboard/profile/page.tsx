@@ -1,9 +1,13 @@
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import Image from "next/image";
+import AdminLayout from "../AdminLayout";
 
 const Profile = () => {
   return (
     <>
+
+<AdminLayout>
+
       <Breadcrumb pageName="Profile" />
 
       <div className="overflow-hidden rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -285,6 +289,8 @@ const Profile = () => {
           </div>
         </div>
       </div>
+      </AdminLayout>
+
     </>
   );
 };

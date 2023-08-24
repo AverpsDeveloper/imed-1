@@ -131,7 +131,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Dashboard --> */}
               <SidebarLinkGroup
                 activeCondition={
-                  pathname === "/" || pathname.includes("dashboard")
+                  pathname === "/dashboard" || pathname.includes("dashboard")
                 }
               >
                 {(handleClick, open) => {
@@ -140,7 +140,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       <Link
                         href="#"
                         className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                          (pathname === "/" ||
+                          (pathname === "/dashboard" ||
                             pathname.includes("dashboard")) &&
                           "bg-graydark dark:bg-meta-4"
                         }`}
@@ -204,9 +204,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
                           <li>
                             <Link
-                              href="/"
+                              href="/dashboard"
                               className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out  hover:text-white ${
-                                pathname === "/" 
+                                pathname === "/dashboard" 
                               } `}
                             >
                               Admin
@@ -224,7 +224,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Calendar --> */}
               <li>
                 <Link
-                  href="/calendar"
+                  href="/dashboard/calendar"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
                     pathname.includes("calendar") &&
                     "bg-graydark dark:bg-meta-4"
@@ -251,7 +251,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Profile --> */}
               <li>
                 <Link
-                  href="/profile"
+                  href="/dashboard/profile"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
                     pathname.includes("profile") && "bg-graydark dark:bg-meta-4"
                   }`}
@@ -281,7 +281,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Forms --> */}
               <SidebarLinkGroup
                 activeCondition={
-                  pathname === "/forms" || pathname.includes("forms")
+                  pathname === "/dashboard/forms" || pathname.includes("forms")
                 }
               >
                 {(handleClick, open) => {
@@ -358,7 +358,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
                           <li>
                             <Link
-                              href="/forms/form-elements"
+                              href="/dashboard/forms/form-elements"
                               className={`first-letter:group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${
                                 pathname === "/forms/form-elements" &&
                                 "text-white"
@@ -369,7 +369,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                           </li>
                           <li>
                             <Link
-                              href="/forms/form-layout"
+                              href="/dashboard/forms/form-layout"
                               className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${
                                 pathname === "/forms/form-layout" &&
                                 "text-white"
@@ -390,7 +390,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Tables --> */}
               <li>
                 <Link
-                  href="/tables"
+                  href="/dashboard/tables"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
                     pathname.includes("tables") && "bg-graydark dark:bg-meta-4"
                   }`}
@@ -428,7 +428,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Settings --> */}
               <li>
                 <Link
-                  href="/settings"
+                  href="/dashboard/settings"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
                     pathname.includes("settings") &&
                     "bg-graydark dark:bg-meta-4"
@@ -590,7 +590,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Chart --> */}
               <li>
                 <Link
-                  href="/chart"
+                  href="/dashboard/chart"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
                     pathname.includes("chart") && "bg-graydark dark:bg-meta-4"
                   }`}
@@ -631,7 +631,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
               {/* <!-- Menu Item Ui Elements --> */}
               <SidebarLinkGroup
-                activeCondition={pathname === "/ui" || pathname.includes("ui")}
+                activeCondition={pathname === "/dashboard/ui" || pathname.includes("ui")}
               >
                 {(handleClick, open) => {
                   return (
@@ -639,7 +639,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       <Link
                         href="#"
                         className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                          (pathname === "/ui" || pathname.includes("ui")) &&
+                          (pathname === "/dashboard/ui" || pathname.includes("ui")) &&
                           "bg-graydark dark:bg-meta-4"
                         }`}
                         onClick={(e) => {
@@ -710,7 +710,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
                           <li>
                             <Link
-                              href="/ui/alerts"
+                              href="/dashboard/ui/alerts"
                               className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${
                                 pathname === "/ui/alerts" && "text-white"
                               }`}
@@ -720,7 +720,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                           </li>
                           <li>
                             <Link
-                              href="/ui/buttons"
+                              href="/dashboard/ui/buttons"
                               className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${
                                 pathname === "/ui/buttons" && "text-white"
                               }`}
