@@ -471,7 +471,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                {/* Doctor Sidebar Menu */}
                <li>
                 <Link
-                  href="/doctors"
+                  href="/dashboard/doctors"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
                     pathname.includes("doctors") &&
                     "bg-graydark dark:bg-meta-4"
@@ -516,7 +516,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                  
                 <li>
                 <Link
-                  href="/messages"
+                  href="/dashboard/messages"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
                     pathname.includes("messages") &&
                     "bg-graydark dark:bg-meta-4"
@@ -532,7 +532,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                  
                 <li>
                 <Link
-                  href="/reviews"
+                  href="/dashboard/reviews"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
                     pathname.includes("reviews") &&
                     "bg-graydark dark:bg-meta-4"
@@ -548,7 +548,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                  
                 <li>
                 <Link
-                  href="/finances"
+                  href="/dashboard/finances"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
                     pathname.includes("finances") &&
                     "bg-graydark dark:bg-meta-4"
@@ -564,7 +564,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                  
                  <li>
                 <Link
-                  href="/patients"
+                  href="/dashboard/patients"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
                     pathname.includes("patients") &&
                     "bg-graydark dark:bg-meta-4"
