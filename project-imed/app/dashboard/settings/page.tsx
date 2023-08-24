@@ -1,9 +1,12 @@
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import Image from "next/image";
+import AdminLayout from "../AdminLayout";
 
 const Settings = () => {
   return (
     <>
+      <AdminLayout>
+
       <div className="mx-auto max-w-270">
         <Breadcrumb pageName="Settings" />
 
@@ -309,6 +312,8 @@ const Settings = () => {
           </div>
         </div>
       </div>
+      </AdminLayout>
+
     </>
   );
 };
