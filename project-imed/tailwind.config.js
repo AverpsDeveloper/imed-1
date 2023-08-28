@@ -16,7 +16,6 @@ module.exports = {
       current: "currentColor",
       transparent: "transparent",
       white: "#FFFFFF",
-      black: "#f1f5f8",
       "black-2": "#010101",
       body: "#64748B",
       bodydark: "#AEB7C0",
@@ -52,6 +51,10 @@ module.exports = {
       success: "#219653",
       danger: "#D34053",
       warning: "#FFA70B",
+      iPrimary : "#2AA7FF",
+      iBTNPrimary : "#2AA7FF",
+      iTextPrimary : "#1B3C74"
+
     },
     screens: {
       "2xsm": "375px",
@@ -69,6 +72,7 @@ module.exports = {
         "title-md2": ["26px", "30px"],
         "title-sm": ["20px", "26px"],
         "title-xsm": ["18px", "24px"],
+        "itext-xsm": ["14px", "18px"],
       },
       spacing: {
         4.5: "1.125rem",
