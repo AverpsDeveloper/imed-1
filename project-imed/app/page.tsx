@@ -1,71 +1,92 @@
 "use client"
 import ECommerce from "@/components/Dashboard/Dashboard";
-import Navbar from "@/iComponents/Navbar/Navbar";
+// import Navbar from "@/iComponents/Navbar/Navbar";
 import Image from "next/image";
 import Link from "next/link";
-
+import Footer from "@/iComponents/footer/Footer"
+import DoctorConsultSection from "@/iComponents/footer/DoctorConsultSection";
+import FAQSection from "@/iComponents/faqSection/FAQSection"
+import TransparentSection from "@/iComponents/faqSection/TransparentSection"
+import SrepSections from "@/iComponents/faqSection/SrepSections";
+import Header from "@/iComponents/Header/Header";
 export default function Home() {
   return (
     <>
-    
-    <nav className="border-gray-200 dark:bg-gray-900">
-        <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
 
-          <a href="/" className="flex items-center">
-            <span className="text-iPrimary text-title-lg font-bold ">i</span>
-            <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">MED</span>
-          </a>
+      <Header/>
+      <section className=" grid grid-cols-1 md:grid-cols-2 mt-10">
 
-          <div className="flex md:hidden md:order-2">
-            <button type="button" className="text-white block md:hidden bg-iPrimary p-2 text-itext-xsm font-bold  duration-300 hover:iPrimary focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-2xl  px-4 py-2 text-center mr-3 md:mr-0 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Get started</button>
-
-            <button data-collapse-toggle="navbar-cta" type="button" className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-iTextPrimary rounded-lg md:hidden focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-cta" aria-expanded="false">
-              <span className="sr-only">Open main menu</span>
-              <svg className="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
-                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1h15M1 7h15M1 13h15" />
-              </svg>
-            </button>
-          </div>
-          <div className="items-center hidden  justify-around w-full md:flex md:w-auto gap-3" id="navbar-cta">
-            <ul className="flex flex-col items-center text-title-xsm font-bold p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-              <li>
-                <a href="#" className="block py-2 pl-3 pr-4 text-iTextPrimary rounded  md:hover:bg-transparent md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">imad</a>
-              </li>
-
-              <li>
-                <a href="#" className="block py-2 pl-3 pr-4 text-iTextPrimary rounded  md:hover:bg-transparent md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">All Medication</a>
-              </li>
-
-              <li>
-                <a href="#" className="block py-2 pl-3 pr-4 text-iTextPrimary rounded  md:hover:bg-transparent md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">See Doctor</a>
-              </li>
-              <li>
-                <a href="#" className="block py-2 pl-3 pr-4 text-iTextPrimary rounded  md:hover:bg-transparent md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">FAQ</a>
-              </li>
-              <li>
-                <a href="#" className="block py-2 pl-3 pr-4 text-iTextPrimary rounded  md:hover:bg-transparent md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Cart</a>
-              </li>
-              <li>
-                <button type="button" className="text-iTextPrimarytext-title-xsm font-bold  border-[1px] p-2 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-2xl  px-4 py-2 text-center mr-3 md:mr-4 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Login/Signup</button>
-              </li>
-              <li>
-
-                <button type="button" className="text-white bg-iPrimary p-2 text-title-xsm font-bold  duration-300 hover:iPrimary focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-2xl  px-4 py-2 text-center mr-3 md:mr-0 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Get started</button>
-              </li>
-            </ul>
-
+        <div className="flex flex-col justify-center ml-22">
+          {/* <hr className="font-bold text-[#FFB300] h-30 w-30 rounded-full top-[50px] "/> */}
+          <h2 className="text-title-xsm  font-bold  text-transparent md:text-3xl  bg-clip-text bg-gradient-to-r from-iPrimary to-[#FFB300]">CONNECT. CONSULT. AND CARE</h2>
+          <h2 className=" text-title-xsm  font-bold md:text-4xl ">Huge Cost <span className="text-[#FFB300]">Savings </span>Access  <span className="text-[#FFB300]">wholesale prices Affordable Medicines </span></h2>
+          <div className="mt-10 mb-10 md:mb-0">
+            <button type="button" className=""><span className="text-white bg-iPrimary p-2 text-title-xsm font-bold  duration-300 rounded-2xl  px-4 py-2 text-center mr-3 ">></span><span className="text-whitep-2 text-title-xsm font-bold">Explore More</span> </button>
           </div>
         </div>
-      </nav>
-        
-      <div className="h-80vh flex">
-        <div>
-          <h2>Huge Cost Savings
-Access wholesale prices
-Affordable Medicines</h2>
+        <div className="hidden md:block justify-center items-center">
+          <Image
+            height={300}
+            width={350}
+            src="/images/doctor_01.png"
+            alt="avatar"
+          />
         </div>
-        <div>
-          {/* <Image src={} /> */}
+      </section>
+
+      {/* <section className="bg-white flex flex-col justify-center items-center">
+        <div className=" mt-10 mb-10  flex flex-col justify-center items-center">
+          <h2 className="text-4xl text-iTextPrimary font-bold">Exactly How We Price</h2>
+          <h3>For example, a 3 month supply of Amlodipine 10 mg (Generic for Norvasc)
+            will cost :Retail price at Pharmacy or Clinic: S$135
+            Your drug cost with us: $ 33.70</h3>
+            <h3>Savings: $101.30</h3>
+        </div>
+      </section> */}
+      <section className="bg-white">
+        <div className="mx-auto max-w-full px-4 py-12 md:px-4 md:py-32 flex justify-center items-center">
+
+          <div className="mx-auto flex">
+            <div className="hidden md:block md:mt-30">
+              <Image
+                src="/images/home_02.png"
+                height={80}
+                width={80}
+                alt="text"
+              ></Image>
+            </div>
+            <div className=" max-w-3xl text-center">
+              <h1 className="text-4xl text-iTextPrimary font-bold " >
+                Exactly How We Price
+              </h1>
+              <p className="mx-auto mt-4 max-w-xl sm:text-xl/relaxed">
+                For example, a 3 month supply of Amlodipine 10 mg (Generic for Norvasc)
+                will cost :Retail price at Pharmacy or Clinic: S$135
+                Your drug cost with us: $ 33.70!
+              </p>
+              <p className="text-4xl font-bold text-[#FFB300]">Savings: $101.30</p>
+            </div>
+
+            <div className="hidden md:block">
+              <Image
+                src="/images/home_02.png"
+                height={150}
+                width={150}
+                alt="text"
+              ></Image>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <SrepSections/>
+      <div className="bg-white pt-10">
+        <TransparentSection />
+        <FAQSection />
+        <DoctorConsultSection />
+
+        <div className="bg-iTextPrimary px-10 py-7">
+          <Footer />
         </div>
       </div>
     </>
