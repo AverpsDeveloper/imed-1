@@ -2,8 +2,8 @@ import React from 'react'
 import type { Metadata } from 'next'
  
 export const metadata: Metadata = {
-  title: 'Abou us',
-  description: 'Abou',
+  title: 'About us',
+  description: 'About',
 }
 const page = () => {
   return (
