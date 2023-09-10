@@ -1,13 +1,15 @@
-"use client"
+
 import React,{useEffect} from 'react'
 import type { Metadata } from 'next'
 import { useRouter,usePathname } from 'next/navigation'
 import Image from 'next/image'
- 
+{/* 
+
 export const metadata: Metadata = {
   title: 'Abou us',
   description: 'Abou',
 }
+*/}
 const PublicPages = () => {
   const pageParams = usePathname();
   console.log("Router",pageParams);
