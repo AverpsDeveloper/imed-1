@@ -11,7 +11,8 @@ const page = () => {
                 </a>
             </div>
             <div className='flex'>
-                <Image src="/images/vector.png" alt="" />
+                <Image 
+                 src="/images/vector.png" alt="" />
                 <Image src="/images/vector_1.png" alt="" />
             </div>
             <div className="w-full  absolute top-40">

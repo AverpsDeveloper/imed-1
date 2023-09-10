@@ -29,7 +29,10 @@ const PublicPages = () => {
           bars, cards, form elements, and more which are conveniently built with the utility classes from
           Tailwind CSS.</p>
         <figure>
-          <Image src="https://flowbite.s3.amazonaws.com/typography-plugin/typography-image-1.png" alt="" />
+          <Image 
+           height={300}
+           width={350}
+          src="/images/doctor_01.png" alt="" />
           <figcaption>Digital art by Anonymous</figcaption>
         </figure>
         <h2>Getting started with Flowbite</h2>
@@ -86,7 +89,10 @@ const PublicPages = () => {
           <li>Diagonal stress in the strokes</li>
           <li>Slanted serifs on lower-case ascenders</li>
         </ul>
-        <Image src="https://flowbite.s3.amazonaws.com/typography-plugin/typography-image-2.png" alt="imed" />
+        <Image 
+         height={300}
+         width={350}
+        src="/images/doctor_01.png" alt="imed" />
         <ol>
           <li>Low contrast between thick and thin strokes</li>
           <li>Diagonal stress in the strokes</li>
