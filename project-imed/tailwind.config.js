@@ -55,7 +55,9 @@ module.exports = {
       iPrimary : "#2AA7FF",
       errors : "red",
       iBTNPrimary : "#2AA7FF",
-      iTextPrimary : "#1B3C74"
+      iTextPrimary : "#1B3C74",
+      iListBg: "#F2F7FF",
+      iSubmitBtn : "#FFB300"
 
     },
     screens: {
