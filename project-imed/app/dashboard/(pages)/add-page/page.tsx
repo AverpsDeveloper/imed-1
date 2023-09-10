@@ -25,7 +25,7 @@ const AddNewPage = () => {
         setValue(quillRef.current.firstChild.innerHTML);
       });
     }
-  }, [quill]);
+  }, [quill, quillRef]);
 
   const onSubmit = (data: any) => {
     data.description = value;

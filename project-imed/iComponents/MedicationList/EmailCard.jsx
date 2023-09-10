@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React from 'react';
 
 function EmailCard() {
@@ -25,7 +26,7 @@ function EmailCard() {
     </button>
   </div>
   <div>
-    <img
+    <Image
       src="/images/imed/pills-email-container.png"
       alt="Medication"
       className="w-full md:w-96 mt-6 rounded-lg scale-150"

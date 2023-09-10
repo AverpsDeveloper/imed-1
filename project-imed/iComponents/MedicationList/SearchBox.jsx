@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { items } from '@/iComponents/MedicationList/data';
-import { AiOutlineSearch } from 'react-icons/Ai';
+import { AiOutlineSearch } from 'react-icons/ai';
 
 function SearchBox() {
   const [searchQuery, setSearchQuery] = useState('');
