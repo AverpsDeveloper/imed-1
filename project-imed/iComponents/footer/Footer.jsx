@@ -1,7 +1,7 @@
 "use client"
 import React,{useEffect,useState} from 'react'
-import { IoMdCall } from "react-icons/Io";
-import { BsFillChatFill } from "react-icons/Bs"
+import { IoMdCall } from "react-icons/io";
+import { BsFillChatFill } from "react-icons/bs"
 import { AiFillLinkedin,AiOutlineMail, AiFillTwitterCircle } from "react-icons/ai"
 import axios from "axios"
 export default function Footer() {
