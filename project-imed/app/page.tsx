@@ -9,6 +9,7 @@ import FAQSection from "@/iComponents/faqSection/FAQSection"
 import TransparentSection from "@/iComponents/faqSection/TransparentSection"
 import SrepSections from "@/iComponents/faqSection/SrepSections";
 import Header from "@/iComponents/Header/Header";
+import {FaGreaterThan} from "react-icons/fa"
 export default function Home() {
   return (
     <>
@@ -21,7 +22,12 @@ export default function Home() {
           <h2 className="text-title-xsm  font-bold  text-transparent md:text-3xl  bg-clip-text bg-gradient-to-r from-iPrimary to-[#FFB300]">CONNECT. CONSULT. AND CARE</h2>
           <h2 className=" text-title-xsm  font-bold md:text-4xl ">Huge Cost <span className="text-[#FFB300]">Savings </span>Access  <span className="text-[#FFB300]">wholesale prices Affordable Medicines </span></h2>
           <div className="mt-10 mb-10 md:mb-0">
-            <button type="button" className=""><span className="text-white bg-iPrimary p-2 text-title-xsm font-bold  duration-300 rounded-2xl  px-4 py-2 text-center mr-3 ">></span><span className="text-whitep-2 text-title-xsm font-bold">Explore More</span> </button>
+            <button type="button" className="flex justify-center items-center">
+              
+              <div className="text-white bg-iPrimary p-2  text-title-xsm  font-bold  duration-300 rounded-2xl  px-4 py-2 text-center mr-3 ">
+              <FaGreaterThan size={20}/>
+              </div>
+              <div className="text-whitep-2 text-title-xsm font-bold">Explore More</div> </button>
           </div>
         </div>
         <div className="hidden md:block justify-center items-center">

@@ -53,6 +53,7 @@ module.exports = {
       danger: "#D34053",
       warning: "#FFA70B",
       iPrimary : "#2AA7FF",
+      errors : "red",
       iBTNPrimary : "#2AA7FF",
       iTextPrimary : "#1B3C74"
 

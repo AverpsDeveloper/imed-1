@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import React from 'react'
 
 const page = () => {
@@ -10,8 +11,8 @@ const page = () => {
                 </a>
             </div>
             <div className='flex'>
-                <img src="/images/vector.png" alt="" />
-                <img src="/images/vector_1.png" alt="" />
+                <Image src="/images/vector.png" alt="" />
+                <Image src="/images/vector_1.png" alt="" />
             </div>
             <div className="w-full absolute top-40">
                 <div className=" grid grid-flow-col-1 md:grid-cols-2 ">

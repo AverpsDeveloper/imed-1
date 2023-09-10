@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import React from 'react'
 
 const page = () => {
@@ -10,8 +11,8 @@ const page = () => {
                 </a>
             </div>
             <div className='flex'>
-                <img src="/images/vector.png" alt="" />
-                <img src="/images/vector_1.png" alt="" />
+                <Image src="/images/vector.png" alt="" />
+                <Image src="/images/vector_1.png" alt="" />
             </div>
             <div className="w-full  absolute top-40">
                 <div className=" grid grid-flow-col-1 md:grid-cols-2 ">
@@ -43,7 +44,7 @@ const page = () => {
                             <hr className="mb-6 border-t" />
                             <div className="text-center">
                                 <a className="inline-block text-sm text-blue-500 align-baseline hover:text-blue-800" href="#">
-                                Don't Have an Account? <span className='cursor-pointer text-iPrimary'>Register</span> With Us Today
+                                Dont Have an Account? <span className='cursor-pointer text-iPrimary'>Register</span> With Us Today
                                 </a>
                             </div>
                             {/* <div className="text-center">

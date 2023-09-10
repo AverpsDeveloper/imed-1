@@ -1,9 +1,10 @@
 "use client";
-  import "./globals.css";
-  import "./data-tables-css.css";
-  import "./satoshi.css";
+import "./globals.css";
+import "./data-tables-css.css";
+import "./satoshi.css";
 import { useState, useEffect } from "react";
 import Loader from "@/components/common/Loader";
+import ToasterProvider from "@/app/providers/ToasterProvider";
 
 export default function RootLayout({
   children,
@@ -22,7 +23,8 @@ export default function RootLayout({
     <html lang="en">
       <body suppressHydrationWarning={true}>
         <div className="dark:bg-boxdark-2 dark:text-bodydark">
-           {children}
+          <ToasterProvider />
+          {children}
         </div>
       </body>
     </html>
