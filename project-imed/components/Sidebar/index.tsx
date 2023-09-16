@@ -924,6 +924,26 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                Category List
                             </Link>
                           </li>
+                          <li>
+                            <Link
+                              href="/dashboard/inventory/add-unit"
+                              className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${
+                                pathname === "/inventory/add-unit" && "text-white"
+                              }`}
+                            >
+                              Add New Unit
+                            </Link>
+                          </li>
+                          <li>
+                            <Link
+                              href="/dashboard/inventory/unit-list"
+                              className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${
+                                pathname === "/inventory/unit-list" && "text-white"
+                              }`}
+                            >
+                               Unit List
+                            </Link>
+                          </li>
                         </ul>
                       </div>
                       {/* <!-- Dropdown Menu End --> */}
