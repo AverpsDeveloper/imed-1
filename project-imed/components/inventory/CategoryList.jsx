@@ -1,7 +1,8 @@
 "use client"
 import React, { useState } from 'react';
+import Link from 'next/link'
 
-function CategoryList({ categories = [], onAddCategory }) {
+function CategoryList({ categories = [] }) {
   const [searchTerm, setSearchTerm] = useState('');
 
   const nextCategoryId = categories.length > 0 ? Math.max(...categories.map(category => category.id)) + 1 : 1;
@@ -14,12 +15,14 @@ function CategoryList({ categories = [], onAddCategory }) {
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Category List</h1>
+        <Link href="/dashboard/inventory/add-category">
+        
         <button
           className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          onClick={() => onAddCategory({ id: nextCategoryId, name: `Category ${nextCategoryId}`, status: 'active' })}
-        >
+           >
           Add Category
         </button>
+        </Link>
       </div>
 
       <div className="flex justify-end mb-4">
