@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { connectToDatabase } from "@/libs/mongooDB";
+import connectToDatabase  from "@/libs/mongooDB";
 import { PagesModel } from "@/models/publicPages";
 export async function GET(req: Request) {
-  await connectToDatabase();
+  
   let pageName = await PagesModel.find({ published: true }).select("page slug");
   return NextResponse.json(
     {
@@ -15,7 +15,7 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   try {
-    await connectToDatabase();
+    
     const body = await req.json();
     const {
       pageName,
