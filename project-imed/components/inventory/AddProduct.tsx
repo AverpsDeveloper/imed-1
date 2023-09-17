@@ -17,16 +17,15 @@ const AddNewInventry = () => {
   } = useForm();
 
   const onSubmit = (data: any) => {
-    console.log("================================");
-    
-    console.log("data:::",data);
-    
     axios.post("/api/add-inventory", data)
-    .then(() => {
-      toast.success("New Product added successfully");
+    .then(({data}) => {
+      if(data.success) {
+        toast.success("New Product added successfully");
+      }else{
+        toast.error(data.message);
+      }
     })
     .catch((error) => {
-      console.error(error);
       toast.error("There was an error. Please try again");
     });
   };

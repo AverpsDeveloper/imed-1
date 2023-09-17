@@ -15,7 +15,6 @@ export async function POST(req: Request) {
       productDescription,
       unitOfMeasure,
     } = body;
-    console.log("body::",body);
     
     let newCategory = await inventryModel.create({
       alternativeName,
@@ -35,8 +34,6 @@ export async function POST(req: Request) {
       data: newCategory,
     });
   } catch (error) {
-    console.log(error);
-    
     return NextResponse.json({
       message: "Error occured in adding new Product",
       status: false,

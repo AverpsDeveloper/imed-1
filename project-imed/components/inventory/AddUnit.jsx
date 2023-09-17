@@ -11,8 +11,12 @@ function AddCategoryForm() {
   const onSubmit = (data) => {
     // Handle the form submission here
     axios.post("/api/new-inventory-units", data)
-    .then(() => {
-      toast.success("New Unit added successfully");
+    .then(({data}) => {
+      if(data.success) {
+        toast.success("New Product added successfully");
+      }else{
+        toast.error(data.message);
+      }
     })
     .catch((error) => {
       console.error(error);

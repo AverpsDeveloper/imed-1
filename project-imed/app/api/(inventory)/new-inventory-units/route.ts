@@ -4,6 +4,7 @@ import { MedicinesUnitsModel } from "@/models/medicinesUnits";
 
 export async function POST(req: Request) {
   try {    
+    await connectToDatabase();
     const body = await req.json();
     const { medicinesUnitsName, medicinesUnitsStatus } = body;
     if(medicinesUnitsName && medicinesUnitsStatus === "Active" || medicinesUnitsStatus === "Inactive"){     
