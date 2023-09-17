@@ -10,9 +10,11 @@ const options: any = {
   useNewUrlParser: true
 }
 
-export const connectToDatabase = async () => {
+const connectToDatabase = async () => {
   if (!connection.readyState) {
     console.log('Connecting to ::', MONGO_URI)
     connect(MONGO_URI, options)
   }
 }
+
+export default connectToDatabase;

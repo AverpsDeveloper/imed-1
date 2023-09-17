@@ -10,19 +10,17 @@ export interface inventryProps extends Document {
     published: Boolean,
 }
 
-const inventryModel = new Schema({
-    name : {
+const inventrySchema = new Schema({
+    itemName : {
         type: String,
-        unique:true,
-        required: [true, "Please Enter Page Name"],
+        required: [true, "Please Enter Name"],
     },
-    category : {
+    alternativeName : {
         type: String,
-        required: [true, "Please Enter Page Name"],
+        required: [true, "Please select Category Name"],
     },
-    unitofMeasure: {
+    itemCategory: {
         type: String,
-        unique:true,
         required: [true, "Please Enter SEO slug"],
         maxLength: [60, "Slug cannot exceed 60 characters"],
     },
@@ -36,19 +34,30 @@ const inventryModel = new Schema({
         required: [true, "Please Enter metaTitle"],
         maxLength: [60, "metaTitle cannot exceed 60 characters"],
     },
-    medicineimages: [
+    productDescription : {
+        type: String, //Strength (same drug different potency, for eg 10mg 20mg 40mg)   
+        required: [true, "Please Enter metaTitle"],
+        maxLength: [60, "metaTitle cannot exceed 60 characters"],
+    },
+    unitOfMeasure : {
+        type: String, //Strength (same drug different potency, for eg 10mg 20mg 40mg)   
+        required: [true, "Please Enter metaTitle"],
+        maxLength: [60, "metaTitle cannot exceed 60 characters"],
+    },
+    price : {
+        type: Number, //Strength (same drug different potency, for eg 10mg 20mg 40mg)   
+        required: [true, "Please Enter metaTitle"],
+        maxLength: [60, "metaTitle cannot exceed 60 characters"],
+    },
+    medicineImages: [
         {
             type: String,
             url :  String
-        }
-    ],
-    published: {
-        type: Boolean,
-        required: [true, "You Want to Publish This Page."],
-    },
+        } 
+    ]
 },{
     timestamps: true,
 })
 
-export const PagesModel = (mongoose.models.Page ||
-    model('Inventry', inventryModel)) as Model<inventryProps>
+export const inventryModel = (mongoose.models.Inventry ||
+    model('Inventry', inventrySchema)) as Model<inventryProps>

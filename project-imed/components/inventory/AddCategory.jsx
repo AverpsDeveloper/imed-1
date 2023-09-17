@@ -2,14 +2,23 @@
 import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import Link from 'next/link';
+import axios from 'axios';
+import toast from 'react-hot-toast';
 
 function AddCategoryForm() {
   const { handleSubmit, control } = useForm();
 
   const onSubmit = (data) => {
     // Handle the form submission here
-    console.log(data);
-  };
+    axios.post("/api/new-inventory-category", data)
+      .then(() => {
+        toast.success("New category added successfully");
+      })
+      .catch((error) => {
+        console.error(error);
+        toast.error("There was an error. Please try again");
+      });
+ };
 
   return (
     <div className="min-h-screen bg-gray-200 flex flex-col ">
@@ -53,7 +62,7 @@ function AddCategoryForm() {
                   <input
                     {...field}
                     type="radio"
-                    value="active"
+                    value="Active"
                     id="active"
                     className="mr-2"
                   />
@@ -61,7 +70,7 @@ function AddCategoryForm() {
                   <input
                     {...field}
                     type="radio"
-                    value="inactive"
+                    value="Inactive"
                     id="inactive"
                     className="ml-4 mr-2"
                   />
