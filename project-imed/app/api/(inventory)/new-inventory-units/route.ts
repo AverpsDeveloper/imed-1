@@ -15,7 +15,7 @@ export async function POST(req: Request) {
     
         return NextResponse.json({
           message: "Add New Unit",
-          status: true,
+          success: true,
           data: newCategory,
         });
     }else{
@@ -24,7 +24,7 @@ export async function POST(req: Request) {
   } catch (error) {
     return NextResponse.json({
         message: "Error occured in adding new Unit",
-        status: false,
+        success: false,
       });
   }
 }

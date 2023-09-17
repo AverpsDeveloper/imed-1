@@ -7,7 +7,9 @@ export async function GET(req: Request) {
   return NextResponse.json(
     {
       message: "Published Pages by Admin",
+      success:true,
       pageName,
+
     },
     { status: 200 }
   );

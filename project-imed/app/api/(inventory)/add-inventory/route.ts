@@ -30,13 +30,13 @@ export async function POST(req: Request) {
     
     return NextResponse.json({
       message: "Add New Product",
-      status: true,
+      success: true,
       data: newCategory,
     });
   } catch (error) {
     return NextResponse.json({
       message: "Error occured in adding new Product",
-      status: false,
+      success: false,
     });
   }
 }
