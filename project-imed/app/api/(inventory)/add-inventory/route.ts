@@ -1,36 +1,45 @@
 import { NextResponse } from "next/server";
 import connectToDatabase from "@/libs/mongooDB";
-import { InventoryCategoryModel} from "@/models/inventoryCategoryModel";
+import { inventryModel } from "@/models/inventoryModel";
 export async function POST(req: Request) {
   try {
-    
+    await connectToDatabase();
     const body = await req.json();
-    const {alternativeName,
-      form,itemCategory,
+    const {
+      alternativeName,
+      form,
+      itemCategory,
       itemName,
       presetQuantity,
       price,
       productDescription,
-      unitOfMeasure} = body;   
-        let newCategory = await InventoryCategoryModel.create({
-          alternativeName,
-          form,itemCategory,
-          itemName,
-          presetQuantity,
-          price,
-          productDescription,
-          unitOfMeasure
-        });
+      unitOfMeasure,
+    } = body;
+    console.log("body::",body);
     
-        return NextResponse.json({
-          message: "Add New Product",
-          status: true,
-          data: newCategory,
-        });
-  } catch (error) {
+    let newCategory = await inventryModel.create({
+      alternativeName,
+      form,
+      itemCategory,
+      itemName,
+      presetQuantity,
+      price,
+      productDescription,
+      unitOfMeasure,
+    });
+    console.log("newCategory::",newCategory);
+    
     return NextResponse.json({
-        message: "Error occured in adding new Product",
-        status: false,
-      });
+      message: "Add New Product",
+      status: true,
+      data: newCategory,
+    });
+  } catch (error) {
+    console.log(error);
+    
+    return NextResponse.json({
+      message: "Error occured in adding new Product",
+      status: false,
+    });
   }
 }

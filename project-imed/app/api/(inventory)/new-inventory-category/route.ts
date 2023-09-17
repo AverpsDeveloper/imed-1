@@ -3,7 +3,7 @@ import connectToDatabase from "@/libs/mongooDB";
 import { InventoryCategoryModel } from "@/models/inventoryCategoryModel";
 export async function POST(req: Request) {
   try {
-    
+    await connectToDatabase();
     const body = await req.json();
     const { categoryName, categoryStatus } = body;
     if(categoryName && categoryStatus === "Active" || categoryStatus === "Inactive"){     

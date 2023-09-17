@@ -1,53 +1,49 @@
 import mongoose, { Document, model, Model, Schema } from 'mongoose'
 
 export interface inventryProps extends Document {
-    page : String,
-    slug: String,
-    title: String,
-    metaTitle: String,
-    metaDescription: String,
-    Description: String,
-    published: Boolean,
+    alternativeName:String,
+    form:String,
+    itemCategory:String,
+    itemName:String,
+    presetQuantity:String,
+    price:Number,
+    productDescription:String,
+    unitOfMeasure:String,
 }
 
 const inventrySchema = new Schema({
     itemName : {
         type: String,
-        required: [true, "Please Enter Name"],
+        required: [true, "Please Enter Item Name"],
     },
     alternativeName : {
         type: String,
-        required: [true, "Please select Category Name"],
+        required: [true, "Please select alternative Name"],
     },
     itemCategory: {
         type: String,
-        required: [true, "Please Enter SEO slug"],
-        maxLength: [60, "Slug cannot exceed 60 characters"],
+        required: [true, "Please item Category"],
+        maxLength: [60, "item category name cannot exceed 60 characters"],
     },
     form: {
-        type: String, //Form (Tab/ caps/ Bottle / pack / Unit etc )
-        required: [true, "Please Enter metaTitle"],
-        maxLength: [60, "metaTitle cannot exceed 60 characters"],
+        type: String,
+        required: [true, "Please item form type"],
+        maxLength: [60, "Form type cannot exceed 60 characters"],
     },
-    Strength : {
-        type: String, //Strength (same drug different potency, for eg 10mg 20mg 40mg)   
-        required: [true, "Please Enter metaTitle"],
-        maxLength: [60, "metaTitle cannot exceed 60 characters"],
-    },
+
     productDescription : {
-        type: String, //Strength (same drug different potency, for eg 10mg 20mg 40mg)   
-        required: [true, "Please Enter metaTitle"],
-        maxLength: [60, "metaTitle cannot exceed 60 characters"],
+        type: String, 
+        required: [true, "Please Enter Item Description"],
+        maxLength: [60, "Item Description cannot exceed 60 characters"],
     },
     unitOfMeasure : {
-        type: String, //Strength (same drug different potency, for eg 10mg 20mg 40mg)   
-        required: [true, "Please Enter metaTitle"],
-        maxLength: [60, "metaTitle cannot exceed 60 characters"],
+        type: String,   
+        required: [true, "Please enter unit Of Measure"],
+        maxLength: [60, "unit Of Measure cannot exceed 60 characters"],
     },
     price : {
-        type: Number, //Strength (same drug different potency, for eg 10mg 20mg 40mg)   
-        required: [true, "Please Enter metaTitle"],
-        maxLength: [60, "metaTitle cannot exceed 60 characters"],
+        type: Number, 
+        required: [true, "Please Enter Price"],
     },
     medicineImages: [
         {

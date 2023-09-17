@@ -17,6 +17,10 @@ const AddNewInventry = () => {
   } = useForm();
 
   const onSubmit = (data: any) => {
+    console.log("================================");
+    
+    console.log("data:::",data);
+    
     axios.post("/api/add-inventory", data)
     .then(() => {
       toast.success("New Product added successfully");
