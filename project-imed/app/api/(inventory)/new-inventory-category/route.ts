@@ -27,3 +27,26 @@ export async function POST(req: Request) {
       });
   }
 }
+
+
+export async function GET(req: Request){
+  try {
+    await connectToDatabase();
+
+    // Fetch all categories
+    const categories = await InventoryCategoryModel.find();
+
+    return NextResponse.json({
+      message: "Get all categories",
+      success: true,
+      data: categories,
+    });
+  } catch (error) {
+    return NextResponse.json({
+      message: "Error occurred in fetching categories",
+      success: false,
+    });
+  }
+
+    
+}

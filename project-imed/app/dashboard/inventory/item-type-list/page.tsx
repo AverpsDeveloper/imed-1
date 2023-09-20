@@ -1,6 +1,6 @@
 import React from 'react'
 import AdminLayout from '@/app/dashboard/AdminLayout'
-import UnitList from '@/components/inventory/UnitList'
+import ItemTypeList from '@/components/inventory/ItemTypeList'
 
 const Inventory = () => {
 
@@ -14,7 +14,7 @@ const Inventory = () => {
     <AdminLayout>
     <div>
     
-         <UnitList categories={dummyData} />
+         <ItemTypeList categories={dummyData} />
       
     </div>
 
