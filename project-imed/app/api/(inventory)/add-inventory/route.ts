@@ -26,7 +26,6 @@ export async function POST(req: Request) {
       productDescription,
       unitOfMeasure,
     });
-    console.log("newCategory::",newCategory);
     
     return NextResponse.json({
       message: "Add New Product",

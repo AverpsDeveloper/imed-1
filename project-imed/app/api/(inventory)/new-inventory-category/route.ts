@@ -3,7 +3,7 @@ import connectToDatabase from "@/libs/mongooDB";
 import { InventoryCategoryModel } from "@/models/inventoryCategoryModel";
 export async function POST(req: Request) {
   try {
-    await connectToDatabase();
+    
     const body = await req.json();
     const { categoryName, categoryStatus } = body;
     if(categoryName && categoryStatus === "Active" || categoryStatus === "Inactive"){     
@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     
         return NextResponse.json({
           message: "Add New category",
-          success: true,
+          status: true,
           data: newCategory,
         });
     }else{
@@ -23,30 +23,7 @@ export async function POST(req: Request) {
   } catch (error) {
     return NextResponse.json({
         message: "Error occured in adding new category",
-        success: false,
+        status: false,
       });
   }
-}
-
-
-export async function GET(req: Request){
-  try {
-    await connectToDatabase();
-
-    // Fetch all categories
-    const categories = await InventoryCategoryModel.find();
-
-    return NextResponse.json({
-      message: "Get all categories",
-      success: true,
-      data: categories,
-    });
-  } catch (error) {
-    return NextResponse.json({
-      message: "Error occurred in fetching categories",
-      success: false,
-    });
-  }
-
-    
 }
