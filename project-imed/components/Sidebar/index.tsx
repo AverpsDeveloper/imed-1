@@ -1024,44 +1024,44 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                               Add New Product
                             </Link>
                           </li>
-                          <li>
+                          {/* <li>
                             <Link
-                              href="/dashboard/inventory/add-category"
+                              href="/dashboard/inventory/categorys/add"
                               className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${
-                                pathname === "/inventory/add-category" && "text-white"
+                                pathname === "/inventory/categorys/add" && "text-white"
                               }`}
                             >
                               Add New Category
                             </Link>
-                          </li>
+                          </li> */}
                           <li>
                             <Link
-                              href="/dashboard/inventory/category-list"
+                              href="/dashboard/inventory/categorys"
                               className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${
-                                pathname === "/inventory/category-list" && "text-white"
+                                pathname === "/inventory/categorys" && "text-white"
                               }`}
                             >
-                               Category List
+                               Category
                             </Link>
                           </li>
-                          <li>
+                          {/* <li>
                             <Link
-                              href="/dashboard/inventory/add-unit"
+                              href="/dashboard/inventory/unit/add"
                               className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${
-                                pathname === "/inventory/add-unit" && "text-white"
+                                pathname === "/inventory/unit/add" && "text-white"
                               }`}
                             >
                               Add New Unit
                             </Link>
-                          </li>
+                          </li> */}
                           <li>
                             <Link
-                              href="/dashboard/inventory/unit-list"
+                              href="/dashboard/inventory/units"
                               className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${
-                                pathname === "/inventory/unit-list" && "text-white"
+                                pathname === "/inventory/units" && "text-white"
                               }`}
                             >
-                               Unit List
+                               Units
                             </Link>
                           </li>
 

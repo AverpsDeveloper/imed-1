@@ -81,26 +81,30 @@ function CategoryList() {
   const [categories, setCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [error, setError] = useState(null); // New state for handling errors
-
+  const dummyData = [
+    { id: 1, name: 'Category A', status: 'Active' },
+    { id: 2, name: 'Category B', status: 'Inactive' },
+    { id: 3, name: 'Category C', status: 'Active' },
+  ];
   useEffect(() => {
     // Fetch categories data from the API route using Axios
-    axios.get('/api/new-inventory-category')
-      .then((response) => {
-        console.log(response.data.data)
-        setCategories(response.data.data);
-        setError(null); // Clear any previous errors on successful fetch
-      })
-      .catch((error) => {
-        setError('Error fetching data. Please try again later.'); // Set an error message
-        console.error('Error fetching data:', error);
-      });
+    // axios.get('/api/new-inventory-category')
+    //   .then((response) => {
+    //     console.log(response.data.data)
+        setCategories(dummyData);
+    //     setError(null); // Clear any previous errors on successful fetch
+    //   })
+    //   .catch((error) => {
+    //     setError('Error fetching data. Please try again later.'); // Set an error message
+    //     console.error('Error fetching data:', error);
+    //   });
   }, []);
 
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Category List</h1>
-        <Link href="/dashboard/inventory/add-category">
+        <Link href="/dashboard/inventory/categorys/add">
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
           >
@@ -137,8 +141,8 @@ function CategoryList() {
             {categories.map((category, index) => (
               <tr key={category.id} className={index % 2 === 0 ? 'bg-gray-100' : ''}>
                 <td className="py-2 px-4 border">{index+1}</td>
-                <td className="py-2 px-4 border">{category.categoryName}</td>
-                <td className="py-2 px-4 border">{category.categoryStatus}</td>
+                <td className="py-2 px-4 border">{category.name}</td>
+                <td className="py-2 px-4 border">{category.status}</td>
                 <td className="py-2 px-4 border">
                   <button className="bg-blue-500 text-white px-2 py-1 rounded mr-2 hover:bg-blue-600">
                     Edit

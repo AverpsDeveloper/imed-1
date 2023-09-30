@@ -97,7 +97,7 @@ function CategoryList({ categories }) {
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Unit List</h1>
-        <Link href="/dashboard/inventory/add-unit">
+        <Link href="/dashboard/inventory/units/add">
           <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
             Add Unit
           </button>
