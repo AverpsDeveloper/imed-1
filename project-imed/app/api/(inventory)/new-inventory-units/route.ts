@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import connectToDatabase from "@/libs/mongooDB";
-import { MedicinesUnitsModel } from "@/models/medicinesUnits";
+import connectToDatabase from "@/libs/config/dbInit";
+import { MedicinesUnitsModel } from "@/libs/models/medicinesUnits";
 
 export async function POST(req: Request) {
   try {    

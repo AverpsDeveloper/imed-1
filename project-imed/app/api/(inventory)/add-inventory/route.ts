@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import connectToDatabase from "@/libs/mongooDB";
-import { inventryModel } from "@/models/inventoryModel";
+import connectToDatabase from "@/libs/config/dbInit";
+import inventryModel  from "@/libs/models/itemModel";
 export async function POST(req: Request) {
   try {
     await connectToDatabase();

@@ -14,6 +14,10 @@ const inventoryCategory = new Schema({
     categoryStatus : {
         type: String,
         required: [true, "Please Enter Name"],
+    },
+    categoryDiscription: {
+        type: String,
+        required: [true, "Please Enter Name"],
     }
 },{
     timestamps: true,

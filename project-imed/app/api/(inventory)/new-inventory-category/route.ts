@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import connectToDatabase from "@/libs/mongooDB";
-import { InventoryCategoryModel } from "@/models/inventoryCategoryModel";
+import connectToDatabase from "@/libs/config/dbInit";
+import { InventoryCategoryModel } from "@/libs/models/inventoryCategoryModel";
 export async function POST(req: Request) {
   try {
-    
+    await connectToDatabase();
     const body = await req.json();
     const { categoryName, categoryStatus } = body;
     if(categoryName && categoryStatus === "Active" || categoryStatus === "Inactive"){     
@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     
         return NextResponse.json({
           message: "Add New category",
-          status: true,
+          success: true,
           data: newCategory,
         });
     }else{
@@ -23,7 +23,7 @@ export async function POST(req: Request) {
   } catch (error) {
     return NextResponse.json({
         message: "Error occured in adding new category",
-        status: false,
+        success: false,
       });
   }
 }
