@@ -533,9 +533,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                           </li>
                           <li>
                             <Link
-                              href="/dashboard/doctor/add-doctor"
+                              href="/dashboard/doctor/add"
                               className={`first-letter:group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${
-                                pathname === "/doctor/add-doctor" &&
+                                pathname === "/doctor/add" &&
                                 "text-white"
                               }`}
                             >
@@ -613,9 +613,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                           </li>
                           <li>
                             <Link
-                              href="/dashboard/manager/add-manager"
+                              href="/dashboard/manager/add"
                               className={`first-letter:group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${
-                                pathname === "/manager/add-manager" &&
+                                pathname === "/manager/add" &&
                                 "text-white"
                               }`}
                             >
