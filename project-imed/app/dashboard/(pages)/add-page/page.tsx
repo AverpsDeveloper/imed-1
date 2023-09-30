@@ -1,6 +1,6 @@
 "use client";
 import React, { useState,useEffect } from "react";
-import AdminLayout from "../../AdminLayout";
+
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import { useQuill } from "react-quilljs";
 import "quill/dist/quill.snow.css";
@@ -41,7 +41,8 @@ const AddNewPage = () => {
   };
 
   return (
-    <AdminLayout>
+    
+   <>
       <Breadcrumb pageName="Add New Page" />
       <div className="grid grid-cols-1 gap-9 sm:grid-cols-3">
         <div className="flex flex-col gap-9 col-span-3">
@@ -343,7 +344,7 @@ const AddNewPage = () => {
           </div>
         </div> */}
       </div>
-    </AdminLayout>
+   </>
   );
 };
 

@@ -1,5 +1,4 @@
 import React from 'react'
-import AdminLayout from '../../AdminLayout'
 import DoctorsList from '@/components/Doctors/DoctorList';
 
 const Patients = () => {
@@ -28,13 +27,9 @@ const Patients = () => {
 
 
   return (
-    <AdminLayout>
-        
          <DoctorsList doctors={dummyDoctors}/>
          
-
-    </AdminLayout>
-  )
+)
 }
 
 export default Patients

@@ -1,12 +1,11 @@
 import Link from "next/link";
 
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import AdminLayout from "../../AdminLayout";
 
 const Buttons = () => {
   return (
     <>
-      <AdminLayout>
+      <>
 
       <Breadcrumb pageName="Buttons" />
 
@@ -467,7 +466,7 @@ const Buttons = () => {
           </div>
         </div>
       </div>
-      </AdminLayout>
+      </>
 
     </>
   );

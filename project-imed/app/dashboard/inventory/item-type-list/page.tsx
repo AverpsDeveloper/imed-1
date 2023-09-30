@@ -1,5 +1,5 @@
 import React from 'react'
-import AdminLayout from '@/app/dashboard/AdminLayout'
+
 import ItemTypeList from '@/components/inventory/ItemTypeList'
 
 const Inventory = () => {
@@ -11,15 +11,13 @@ const Inventory = () => {
   ];
 
   return (
-    <AdminLayout>
+    
     <div>
     
          <ItemTypeList categories={dummyData} />
       
     </div>
-
-  </AdminLayout>
-  )
+)
 }
 
 export default Inventory

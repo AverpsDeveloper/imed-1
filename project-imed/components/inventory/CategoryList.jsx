@@ -88,7 +88,6 @@ function CategoryList() {
       .then((response) => {
         console.log(response.data.data)
         setCategories(response.data.data);
-         
         setError(null); // Clear any previous errors on successful fetch
       })
       .catch((error) => {

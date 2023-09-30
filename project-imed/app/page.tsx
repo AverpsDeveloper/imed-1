@@ -1,8 +1,4 @@
-"use client"
-import ECommerce from "@/components/Dashboard/Dashboard";
-// import Navbar from "@/iComponents/Navbar/Navbar";
 import Image from "next/image";
-import Link from "next/link";
 import Footer from "@/iComponents/footer/Footer"
 import DoctorConsultSection from "@/iComponents/footer/DoctorConsultSection";
 import FAQSection from "@/iComponents/faqSection/FAQSection"
@@ -40,15 +36,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* <section className="bg-white flex flex-col justify-center items-center">
-        <div className=" mt-10 mb-10  flex flex-col justify-center items-center">
-          <h2 className="text-4xl text-iTextPrimary font-bold">Exactly How We Price</h2>
-          <h3>For example, a 3 month supply of Amlodipine 10 mg (Generic for Norvasc)
-            will cost :Retail price at Pharmacy or Clinic: S$135
-            Your drug cost with us: $ 33.70</h3>
-            <h3>Savings: $101.30</h3>
-        </div>
-      </section> */}
       <section className="bg-white">
         <div className="mx-auto max-w-full px-4 py-12 md:px-4 md:py-32 flex justify-center items-center">
 

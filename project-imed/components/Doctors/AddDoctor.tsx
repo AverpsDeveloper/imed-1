@@ -1,9 +1,6 @@
 "use client"
-
-import React, { useState } from 'react';
+import React from 'react';
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import axios from "axios";
-import toast from "react-hot-toast";
 import Breadcrumb from '../Breadcrumbs/Breadcrumb';
 const AddDoctor = () => {
     const {
@@ -14,6 +11,7 @@ const AddDoctor = () => {
       } = useForm();
     
       const onSubmit = (data: any) => {
+        console.log(data);
         
       };
     

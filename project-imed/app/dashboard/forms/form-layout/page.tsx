@@ -1,10 +1,7 @@
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import AdminLayout from "../../AdminLayout";
-
 const FormLayout = () => {
   return (
     <>
-      <AdminLayout>
 
       <Breadcrumb pageName="FormLayout" />
 
@@ -253,7 +250,6 @@ const FormLayout = () => {
           </div>
         </div>
       </div>
-      </AdminLayout>
 
     </>
   );

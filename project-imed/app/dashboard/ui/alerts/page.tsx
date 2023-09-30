@@ -1,10 +1,10 @@
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import AdminLayout from "../../AdminLayout";
+
 
 const Alerts = () => {
   return (
     <>
-      <AdminLayout>
+      <>
 
       <Breadcrumb pageName="Alerts" />
 
@@ -94,7 +94,7 @@ const Alerts = () => {
           </div>
         </div>
       </div>
-      </AdminLayout>
+      </>
 
     </>
   );

@@ -1,8 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import { useQuill } from "react-quilljs";
-import "quill/dist/quill.snow.css";
 
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import axios from "axios";
