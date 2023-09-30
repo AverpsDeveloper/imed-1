@@ -12,14 +12,12 @@ const categorySchema = new Schema(
       unique: true,
       required: [true, "Please Enter Name"],
     },
-    status: {
-      type: String,
-    //   required: [true, "Please Enter Name"],
-      default:"active"
-    },
     description: {
       type: String,
-    //   required: [true, "Please Enter Name"],
+    },
+    isActive: {
+      type: Boolean,
+      default: false
     },
     deleteAt: {
       type: Date,

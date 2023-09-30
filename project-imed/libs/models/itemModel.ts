@@ -20,7 +20,7 @@ const itemSchema = new Schema(
       validate: {
         validator: async (v: string) =>
           getCongig()?.typeConfig?.itemTypes?.includes(v),
-
+          
         message: "path `{PATH}` invalid enum value {VALUE}",
       },
       required: [true, "Please Enter Item Type"],
@@ -43,27 +43,36 @@ const itemSchema = new Schema(
       // required: [true, "Please item Category"],
       // maxLength: [60, "item category name cannot exceed 60 characters"],
     },
-    qty: {
-      type: Number,
-      // required: [true, "Please item form type"],
-      // maxLength: [60, "Form type cannot exceed 60 characters"],
-    },
-    prefQty: [{ type: Number }],
-
-    monthQty: {
-      type: Number,
-      // required: [true, "Please select alternative Name"],
-    },
     form: {
       type: String,
-      // required: [true, "Please item form type"],
-      // maxLength: [60, "Form type cannot exceed 60 characters"],
+      validate: {
+        validator: async (v: string) =>
+          getCongig()?.typeConfig?.formTypes?.includes(v),
+        message: "path `{PATH}` invalid enum value {VALUE}",
+      },
+      required: [true, "Please Enter form Type"],
     },
     dispanseForm: {
       type: String,
-      // required: [true, "Please item form type"],
+      validate: {
+        validator: async (v: string) =>
+          getCongig()?.typeConfig?.fromTypes?.includes(v),
+        message: "path `{PATH}` invalid enum value {VALUE}",
+      },
+      required: [true, "Please item dispanseForm type"],
+    },
+    qty: {
+      type: Number,
+      required: [true, "Please enter quantity form type"],
       // maxLength: [60, "Form type cannot exceed 60 characters"],
     },
+    monthQty: {
+      type: Number,
+      required: [true, "Please enter month quantity"],
+    },
+    prefQtyOne: { type: Number },
+    prefQtyTwo: { type: Number },
+    prefQtyThree: { type: Number },
     costPrice: { //clculate 
       type: Number,
       // required: [true, "Please Enter Price"],
@@ -78,7 +87,7 @@ const itemSchema = new Schema(
     },
     menufecturePrice: { //calculate
       type: Number,
-      // required: [true, "Please select alternative Name"],
+      required: [true, "Please enter menufecture price"],
     },
     retailPrice: {
       type: Number,
@@ -90,24 +99,28 @@ const itemSchema = new Schema(
     },
     strength: {
       type: String,
-      // required: [true, "Please item form type"],
-      // maxLength: [60, "Form type cannot exceed 60 characters"],
+      required: [true, "Please enter strength "],
     },
     measureUnit: {
       type: String,
-      // required: [true, "Please enter unit Of Measure"],
-      // maxLength: [60, "unit Of Measure cannot exceed 60 characters"],
     },
     description: {
       type: String,
-      // required: [true, "Please Enter Item Description"],
-      // maxLength: [60, "Item Description cannot exceed 60 characters"],
+  
     },
-    deleteAt: {
+    isActive: {
+      type: Boolean,
+      default: false,
+    },
+    yearLimit: {
+      type: Number
+    },
+    repeatConsult: {
+      type: Boolean,
+    },
+    deletedAt: {
       type: Date,
       default: undefined,
-      // required: [true, "Please enter unit Of Measure"],
-      // maxLength: [60, "unit Of Measure cannot exceed 60 characters"],
     },
     totalCount: {
       type: Number,

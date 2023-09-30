@@ -1,12 +1,11 @@
 import itemModel from "@/libs/models/itemModel";
 import categoryModal from "@/libs/models/categoryModal";
 import tcWrap from "@/libs/utils/tcWrap";
-import { getCongig } from "@/libs/config/dbInit";
 import { Types } from "mongoose";
 
 export const GET = tcWrap(async (req, res) => {
   const { search, category, type, price } = req.query;
-  let filter: any = [{ deleteAt: { $exists: false } }];
+  let filter: any = [{ deletedAt: { $exists: false } }];
   if (search) {
     filter.push({
       $or: [
@@ -53,7 +52,7 @@ export const POST = tcWrap(async (req, res) => {
     console.log("category", body.category);// add if data aready axist
     const isCatExist: any = await categoryModal.findOne({ name: body.category });
     if (isCatExist) {
-      if (isCatExist.deleteAt) {
+      if (isCatExist.deletedAt) {
         throw new Error("field category is deleted!  change category or restore category");
       }
       cat = isCatExist;
@@ -123,13 +122,13 @@ export const DELETE = tcWrap(async (req, res) => {
   }
   console.log("bodyData", body.id);
   const findItem: any = await itemModel.findById(body.id);
-  if (findItem.deleteAt as any) {
+  if (findItem.deletedAt as any) {
     throw new Error("Aready deleted");
   }
   const item = await itemModel.findByIdAndUpdate(
     body.id,
     {
-      deleteAt: new Date().toISOString(),
+      deletedAt: new Date().toISOString(),
     },
     { new: true }
   );
