@@ -77,7 +77,7 @@ export const DELETE = tcWrap(async (req, res) => {
     const item = await categoryModal.findByIdAndUpdate(
         body.id,
         {
-            deleteAt: new Date().toISOString(),
+            deletedAt: new Date(),
         },
         { new: true }
     );
