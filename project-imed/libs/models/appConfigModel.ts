@@ -11,6 +11,8 @@ const appConfigSchema = new Schema(
     typeConfig: {
       itemTypes: [{ type: String }],
       unitsTypes: [{ type: String }],
+      formTypes: [{ type: String }],
+      strengthTypes: [{ type: String }],
     },
   },
   {
