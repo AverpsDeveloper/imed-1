@@ -1,9 +1,10 @@
 import React from 'react'
-import DoctorsList from '@/components/Doctors/DoctorList';
 
-const Doctor = () => {
+import ManagerList from '@/components/manager/ManagerList';
 
-  const dummyDoctors = [
+const ManagerListingPage = () => {
+
+  const dummyManager = [
     {
       id: 1,
       name: 'John Doe',
@@ -27,9 +28,9 @@ const Doctor = () => {
 
 
   return (
-         <DoctorsList doctors={dummyDoctors}/>
+         <ManagerList managers={dummyManager}/>
          
 )
 }
 
-export default Doctor
+export default ManagerListingPage;

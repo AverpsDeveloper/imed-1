@@ -1,3 +1,4 @@
+"use client"
 import Image from "next/image";
 import Footer from "@/iComponents/footer/Footer"
 import DoctorConsultSection from "@/iComponents/footer/DoctorConsultSection";

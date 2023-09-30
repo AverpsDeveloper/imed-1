@@ -19,9 +19,9 @@ export default function Template({
 
   const [loading, setLoading] = useState<boolean>(true);
 
-  // useEffect(() => {
-  //   setTimeout(() => setLoading(false), 300);
-  // }, []);
+  useEffect(() => {
+    setTimeout(() => setLoading(false), 300);
+  }, []);
 
   return (
       <div suppressHydrationWarning={true}>
