@@ -71,7 +71,7 @@ export const DELETE = tcWrap(async (req, res) => {
     }
     console.log("bodyData", body.id);
     const findItem: any = await categoryModal.findById(body.id);
-    if (findItem.deleteAt as any) {
+    if (findItem.deletedAt as any) {
         throw new Error("Aready deleted");
     }
     const item = await categoryModal.findByIdAndUpdate(
