@@ -27,6 +27,11 @@ export const POST = tcWrap(async (req, res) => {
     if (body.categories && !body.categories.length) {
         throw new Error("field categories can't empty");
     }
+    if(body.status == "active"){
+        body.isActive = true;
+    }else{
+        body.isActive = false;
+    }
     const item = await categoryModal.create(
         body.categories
             ? body.categories : { ...body }
@@ -39,7 +44,11 @@ export const PUT = tcWrap(async (req, res) => {
     console.log("put");
     const body = await req.json();
     const id = body.id;
-    console.log("id", id);
+    if(body.status == "active"){
+        body.isActive = true;
+    }else{
+        body.isActive = false;
+    }
     if (!id) {
         throw new Error("field `id` required");
     }
@@ -62,7 +71,8 @@ export const PUT = tcWrap(async (req, res) => {
 export const DELETE = tcWrap(async (req, res) => {
     console.log("delete");
     const body = await req.json();
-
+    console.log("BBB",body);
+    
     if (!body.id) {
         throw new Error("field `id` required");
     }
@@ -71,12 +81,13 @@ export const DELETE = tcWrap(async (req, res) => {
     }
     console.log("bodyData", body.id);
     const findItem: any = await categoryModal.findById(body.id);
-    if (findItem.deleteAt as any) {
+    if (findItem.isActive && findItem.deleteAt as any) {
         throw new Error("Aready deleted");
     }
     const item = await categoryModal.findByIdAndUpdate(
         body.id,
         {
+            isActive : false,
             deleteAt: new Date().toISOString(),
         },
         { new: true }

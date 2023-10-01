@@ -1,14 +1,15 @@
-"use client"
-import React from 'react';
+
+import React,{useState,useEffect} from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import Link from 'next/link';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 const validationSchema = Yup.object().shape({
-  categoryName: Yup.string().required('Category Name is required'),
-  categoryStatus: Yup.string().required('Category Status is required'),
+  name: Yup.string().required('Category Name is required'),
+  status: Yup.string().required('Category Status is required'),
 });
 
 function ErrMassage({ name }) {
@@ -23,34 +24,58 @@ function ErrMassage({ name }) {
 }
 
 function AddCategoryForm() {
+  const [isEditable,setIsEditable] = useState(null);
+  const rotuer = useRouter();
+  const params = useSearchParams();
   const initialValues = {
-    categoryName: '',
-    categoryStatus: 'active',
+    name: '',
+    status: 'active',
   };
+
+  useEffect(() => {
+    if(params.get("id")){
+      setIsEditable(params.get("id"));
+      initialValues.placeholder = "Edit Category Name";
+    }
+  },[])
+
+
 
   const onSubmit = (values, { resetForm }) => {
     // Handle the form submission here
-    axios.post('/api/new-inventory-category', values)
-      .then(({ data }) => {
-        if (data.success) {
-          toast.success('New Category added successfully');
-          resetForm(); // Reset the form after successful submission
-        } else {
-          toast.error(data.message);
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        toast.error('There was an error. Please try again');
-      });
-  };
+      if(isEditable){
+        values.id = isEditable;
+        axios.put('/api/categories', values)
+        .then(({ data }) => {
+          toast.success("Category Updated Successfully");
+          rotuer.push("/dashboard/inventory/categorys")
+        }).catch(({error})=>{
+          toast.error(error.message);
+        })
+      }else{
+        axios.post('/api/categories', values)
+        .then(({ data }) => {
+          if (data.success) {
+            toast.success('New Category added successfully');
+            resetForm(); // Reset the form after successful submission
+          } else {
+            toast.error(data.message);
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+          toast.error('There was an error. Please try again');
+        });
+      }
 
+  };
+ 
   return (
     <div className="min-h-screen bg-gray-200 flex flex-col">
       <div className="bg-white w-full h-full p-6">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-2xl font-bold">Add Category</h1>
-          <Link href="/dashboard/inventory/category-list">
+          <Link href="/dashboard/inventory/categorys">
             <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
               Category List
             </button>
@@ -67,32 +92,41 @@ function AddCategoryForm() {
               <label className="block text-gray-600">Category Name</label>
               <Field
                 type="text"
-                name="categoryName"
+                name="name"
                 className="border rounded w-full px-3 py-2 mt-1"
                 placeholder="Enter category name"
               />
-              <ErrMassage name="categoryName" />
+              <ErrMassage name="name" />
             </div>
 
             <div className="mb-4">
               <label className="block text-gray-600">Status</label>
               <Field
                 as="select"
-                name="categoryStatus"
+                name="status"
                 className="border rounded w-full px-3 py-2 mt-1"
               >
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
               </Field>
-              <ErrMassage name="categoryStatus" />
+              <ErrMassage name="status" />
             </div>
-
-            <button
+            {isEditable != null? (
+               <button
+               type="submit"
+               className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+             >
+               Update
+             </button>
+            ): (
+              <button
               type="submit"
               className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
             >
               Save
             </button>
+            )}
+            
           </Form>
         </Formik>
       </div>
