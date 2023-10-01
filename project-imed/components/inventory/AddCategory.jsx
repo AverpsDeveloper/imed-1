@@ -52,9 +52,9 @@ function AddCategoryForm() {
             resetForm(); // Reset the form after successful submission
             // rotuer.push("/dashboard/inventory/categorys")
         })
-        .catch(({error}) => {
-          console.error(error);
-          toast.error('There was an error. Please try again');
+        .catch(({response}) => {
+          console.log("error::",);
+          toast.error(response.data?.error?.error);
         });
       }
 
