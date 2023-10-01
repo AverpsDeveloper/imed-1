@@ -17,8 +17,6 @@ export const GET = tcWrap(async (req, res) => {
 export const POST = tcWrap(async (req, res) => {
     const { type } = req.params;
     const body = await req.json();
-    console.log("body:::",body);
-    
     if (!type) {
         throw new Error("field `type` required!");
     }
@@ -42,8 +40,6 @@ export const POST = tcWrap(async (req, res) => {
                 [`typeConfig.${type}`]: body.name
             }
         }, { new: true });
-        console.log("data:::",data.typeConfig["strengthTypes"]);
-        
     return res.json({ result: { message: `item added to ${type}`, data: data.typeConfig[type] } });
 });
 
