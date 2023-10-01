@@ -5,10 +5,10 @@ import { BsFillChatFill } from "react-icons/bs"
 import { AiFillLinkedin,AiOutlineMail, AiFillTwitterCircle } from "react-icons/ai"
 import axios from "axios"
 export default function Footer() {
-  const [getPages,setGetPages] = useState();
-  useEffect(() =>{
-    axios.get("/api/pages").then((data) => setGetPages(data.data.pageName));
-  },[])
+  // const [getPages,setGetPages] = useState();
+  // useEffect(() =>{
+  //   // axios.get("/api/pages").then((data) => setGetPages(data.data.pageName));
+  // },[])
   return (
     <>
     <footer className=" px-10 py-7 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
@@ -67,14 +67,14 @@ export default function Footer() {
               <div className="">
                 <h3 className="text-title-md">Usefull Links</h3>
                 <ul className="py-5 px-10">
-                  {getPages && getPages.map((pages) => (
+                  {/* {getPages && getPages.map((pages) => (
                     
                     <li className="p-1 md:p-2 list-disc cursor-pointer  text-[14px] md:text-[16px]" key={pages._id}>
                       <a className="text-[14px] md:text-[16px]" href={`/${pages.slug}`}>
                           {pages.page}
                       </a>
                     </li>
-                    ))}
+                    ))} */}
                    {/* <h1>{ publicPages}</h1> */}
                   {/* <li className="p-1 md:p-2 list-disc cursor-pointer text-[14px] md:text-[16px]">Terms & Conditions</li>
                   <li className="p-1 md:p-2 list-disc cursor-pointer text-[14px] md:text-[16px]">Privacy Policy</li>

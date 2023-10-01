@@ -19,7 +19,7 @@ const categorySchema = new Schema(
       type: Boolean,
       default: false
     },
-    deleteAt: {
+    deletedAt: {
       type: Date,
       default: undefined,
     },

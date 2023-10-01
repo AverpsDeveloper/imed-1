@@ -24,30 +24,21 @@ function ErrMassage({ name }) {
 }
 
 function AddCategoryForm() {
-  const [isEditable,setIsEditable] = useState(null);
   const rotuer = useRouter();
   const params = useSearchParams();
+  const paramsId = params.get("id")
   const initialValues = {
     name: '',
     status: 'active',
   };
 
-  useEffect(() => {
-    if(params.get("id")){
-      setIsEditable(params.get("id"));
-      initialValues.placeholder = "Edit Category Name";
-    }
-  },[])
-
-
-
   const onSubmit = (values, { resetForm }) => {
     // Handle the form submission here
-      if(isEditable){
-        values.id = isEditable;
+      if(paramsId){
+        values.id = paramsId;
         axios.put('/api/categories', values)
         .then(({ data }) => {
-          toast.success("Category Updated Successfully");
+          toast.success(data.result.message);
           rotuer.push("/dashboard/inventory/categorys")
         }).catch(({error})=>{
           toast.error(error.message);
@@ -55,14 +46,12 @@ function AddCategoryForm() {
       }else{
         axios.post('/api/categories', values)
         .then(({ data }) => {
-          if (data.success) {
+          console.log(data.error);
             toast.success('New Category added successfully');
             resetForm(); // Reset the form after successful submission
-          } else {
-            toast.error(data.message);
-          }
+            rotuer.push("/dashboard/inventory/categorys")
         })
-        .catch((error) => {
+        .catch(({error}) => {
           console.error(error);
           toast.error('There was an error. Please try again');
         });
@@ -111,7 +100,7 @@ function AddCategoryForm() {
               </Field>
               <ErrMassage name="status" />
             </div>
-            {isEditable != null? (
+            {paramsId ? (
                <button
                type="submit"
                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"

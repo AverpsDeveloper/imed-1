@@ -9,11 +9,7 @@ function CategoryList() {
   const [searchTerm, setSearchTerm] = useState('');
   const [error, setError] = useState(null); // New state for handling errors
   const router = useRouter()
-  const dummyData = [
-    { id: 1, name: 'Category A', status: 'Active' },
-    { id: 2, name: 'Category B', status: 'Inactive' },
-    { id: 3, name: 'Category C', status: 'Active' },
-  ];
+ 
   const deleteHandler = (id) => {
     axios.delete('/api/categories', {data:{id}}).then((respocnse) => {
       toast.success("deleted successfully");
@@ -25,6 +21,7 @@ function CategoryList() {
   const editHandler = (deleteId) => {
     if(deleteId) router.push("/dashboard/inventory/categorys/add?id="+deleteId)
   };
+console.log("searchTerm::",searchTerm);
   useEffect(() => {
     // Fetch categories data from the API route using Axios
     axios.get('/api/categories')

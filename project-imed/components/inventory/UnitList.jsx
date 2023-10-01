@@ -92,7 +92,16 @@ function CategoryList({ categories }) {
   const filteredCategories = categories.filter(category =>
     category.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
+    // useEffect(()=>{
+    //   axios.get(`/api/types`, values)
+    //   .then(({ data }) => {
+    //       console.log(data);
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //     toast.error('There was an error. Please try again');
+    //   });
+    // },[])
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
