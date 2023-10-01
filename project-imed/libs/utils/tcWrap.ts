@@ -23,7 +23,7 @@ export default (
     } catch (err) {
       console.log("err", err)
       const error = await errorHandler(err as Error);
-      return NextResponse.json({ error, result: null }, {status: 400});
+      return NextResponse.json({ error, result: null }, {status: error.status});
     }
   };
 
