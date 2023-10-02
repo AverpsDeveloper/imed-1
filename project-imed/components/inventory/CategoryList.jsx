@@ -21,7 +21,7 @@ function CategoryList() {
   const editHandler = (deleteId) => {
     if(deleteId) router.push("/dashboard/inventory/categorys/add?id="+deleteId)
   };
-console.log("searchTerm::",searchTerm);
+
   useEffect(() => {
     // Fetch categories data from the API route using Axios
     axios.get('/api/categories')
