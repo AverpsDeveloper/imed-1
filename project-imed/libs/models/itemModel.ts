@@ -13,6 +13,23 @@ export interface Iitem extends Document {
   unitOfMeasure: String;
 }
 
+const prefQtySchema: any = {
+  type: {
+    qty: { type: Number },
+    price: { type: Number },
+    saving: { type: Number }
+  },
+  set: function (value: number) {
+    const price = (this.buildCost * value * 1.15) + 3;
+    return {
+      qty: +value,
+      price,
+      saving: (this.retailPrice * value) - price,
+    }
+  },
+  required: true,
+}
+
 const itemSchema = new Schema(
   {
     type: {
@@ -20,13 +37,14 @@ const itemSchema = new Schema(
       validate: {
         validator: async (v: string) =>
           getCongig()?.typeConfig?.itemTypes?.includes(v),
-          
+
         message: "path `{PATH}` invalid enum value {VALUE}",
       },
       required: [true, "Please Enter Item Type"],
     },
     name: {
       type: String,
+      unique: true,
       required: [true, "Please Enter Item Name"],
     },
     altName: {
@@ -63,40 +81,20 @@ const itemSchema = new Schema(
     },
     qty: {
       type: Number,
-      required: [true, "Please enter quantity form type"],
-      // maxLength: [60, "Form type cannot exceed 60 characters"],
+      required: [true, "Please enter quantity"],
     },
-    monthQty: {
+    buildCost: {
       type: Number,
       required: [true, "Please enter month quantity"],
     },
-    prefQtyOne: { type: Number },
-    prefQtyTwo: { type: Number },
-    prefQtyThree: { type: Number },
-    costPrice: { //clculate 
-      type: Number,
-      // required: [true, "Please Enter Price"],
-    },
-    unitPrice: {
-      type: String,
-      // required: [true, "Please select alternative Name"],
-    },
-    sellingPrice: { //clculate
-      type: Number,
-      // required: [true, "Please Enter Price"],
-    },
-    menufecturePrice: { //calculate
-      type: Number,
-      required: [true, "Please enter menufecture price"],
-    },
     retailPrice: {
       type: Number,
-      // required: [true, "Please select alternative Name"],
+      required: [true, "Please enter retail price"],
     },
-    savings: { //savings
-      type: Number,
-      // required: [true, "Please select alternative Name"],
-    },
+    prefQtyMonth: prefQtySchema,
+    prefQtyOne: prefQtySchema,
+    prefQtyTwo: prefQtySchema,
+    prefQtyThree: prefQtySchema,
     strength: {
       type: String,
       required: [true, "Please enter strength "],
@@ -106,17 +104,16 @@ const itemSchema = new Schema(
     },
     description: {
       type: String,
-  
-    },
-    isActive: {
-      type: Boolean,
-      default: false,
     },
     yearLimit: {
       type: Number
     },
     repeatConsult: {
       type: Boolean,
+    },
+    isActive: {
+      type: Boolean,
+      default: false,
     },
     deletedAt: {
       type: Date,
@@ -126,7 +123,7 @@ const itemSchema = new Schema(
       type: Number,
       required: [true, "Please enter totalCount"],
     },
-    medicineImages: [
+    images: [
       {
         type: String,
       },
@@ -134,6 +131,7 @@ const itemSchema = new Schema(
   },
   {
     timestamps: true,
+
   }
 );
 
