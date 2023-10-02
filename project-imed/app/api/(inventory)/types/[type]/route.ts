@@ -52,27 +52,25 @@ export const PUT = tcWrap(async (req, res) => {
     if (!valiedTypes.includes(type)) {
         throw new Error("field `type` invalid!");
     }
+    if (!body.target) {
+        throw new Error("field `target` required!");
+    }
     if (!body.name) {
         throw new Error("field `name` required!");
-    }
-    if (!body.update) {
-        throw new Error("field `update` required!");
     }
     const find: any = await appConfigModel.findOne();
     const typ = find?.typeConfig[type];
 
-    if (typ.length && !typ.includes(body.name)) {
-        throw new Error("field `name` not found");
+    if (typ.length && !typ.includes(body.target)) {
+        throw new Error("field `target` not found");
     }
 
-    const index = typ.indexOf(body.name)
+    const index = typ.indexOf(body.target)
     console.log("index", index, typ);
 
     const data: any = await appConfigModel.findByIdAndUpdate(find.id,
         {
-
-            [`typeConfig.${type}.${index}`]: body.update
-
+            [`typeConfig.${type}.${index}`]: body.name
         }, { new: true });
     return res.json({ result: { message: `item added to ${type}`, data: data.typeConfig[type] } });
 });
