@@ -22,7 +22,7 @@ const prefQtySchema: any = {
   set: function (value: number) {
     const price = (this.buildCost * value * 1.15) + 3;
     return {
-      qty: +value,
+      qty: value,
       price,
       saving: (this.retailPrice * value) - price,
     }
@@ -78,10 +78,6 @@ const itemSchema = new Schema(
         message: "path `{PATH}` invalid enum value {VALUE}",
       },
       required: [true, "Please item dispanseForm type"],
-    },
-    qty: {
-      type: Number,
-      required: [true, "Please enter quantity"],
     },
     buildCost: {
       type: Number,
