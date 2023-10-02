@@ -53,7 +53,7 @@ export const POST = tcWrap(async (req, res) => {
     const isCatExist: any = await categoryModal.findOne({ name: body.category });
     if (isCatExist) {
       if (isCatExist.deletedAt) {
-        throw new Error("field category is deleted!  change category or restore category");
+        throw new Error("field category is deleted! change category or restore category");
       }
       cat = isCatExist;
     } else {

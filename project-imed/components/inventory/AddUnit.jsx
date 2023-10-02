@@ -50,10 +50,16 @@ function AddUnitForm() {
       <div className="bg-white w-full h-full p-6">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-2xl font-bold">Add Unit</h1>
-          <Link href="/dashboard/inventory/units">
+          {/* <Link href="/dashboard/inventory/units">
             <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
               Unit List
             </button>
+          </Link> */}
+          <Link href="/dashboard/inventory/units"
+            className="inline-flex items-center justify-center gap-2.5 rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+          >
+
+            Unit List
           </Link>
         </div>
 
@@ -64,12 +70,16 @@ function AddUnitForm() {
         >
           <Form>
 
-          <div className="mb-4">
-              <label className="block text-gray-600">Status</label>
+            <div className="mb-4">
+              <label className="mb-3 block text-black dark:text-white">
+                Status
+              </label>
               <Field
                 as="select"
                 name="type"
-                className="border rounded w-full px-3 py-2 mt-1"
+
+                className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+
               >
                 <option value="">Select Type</option>
                 <option value="itemTypes">Item Type</option>
@@ -82,21 +92,20 @@ function AddUnitForm() {
 
 
             <div className="mb-4">
-              <label className="block text-gray-600">Unit Name</label>
+              <label className="mb-3 block text-black dark:text-white">
+                Unit Name
+              </label>
               <Field
                 type="text"
                 name="name"
-                className="border rounded w-full px-3 py-2 mt-1"
+                className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                 placeholder="Enter Units name"
               />
               <ErrMessage name="name" />
             </div>
-
-            
-
             <button
               type="submit"
-              className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+              className="inline-flex items-center justify-center rounded-md bg-meta-3 py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
             >
               Save
             </button>
