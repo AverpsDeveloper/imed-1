@@ -9,25 +9,25 @@ import toast from 'react-hot-toast';
 import Select from 'react-select';
 
 const validationSchema = Yup.object().shape({
-  productName: Yup.string().required('Product Name is required'),
-  itemType: Yup.string().required('Item Type is required'),
+  name: Yup.string().required('Product Name is required'),
+  type: Yup.string().required('Item Type is required'),
   category: Yup.string().required('Category is required'),
-  itemCode: Yup.string().required('Item Code is required'),
+  codeName: Yup.string().required('Item Code is required'),
   status: Yup.string().required('Status is required'),
   form: Yup.string().required('Form is required'), 
-  dispensedForm: Yup.string().required('Dispensed Form is required'),
+  dispanseForm: Yup.string().required('Dispensed Form is required'),
   strength: Yup.string().required('Strength is required'),
-  preferredQuantity1: Yup.string().required('Preferred Quantity 1 is required'),  
-  preferredQuantity2: Yup.string().required('Preferred Quantity 2 is required'),  
-  preferredQuantity3: Yup.string().required('Preferred Quantity 3 is required'), 
-  repeatConsultation: Yup.string().required('Repeat Consultation is required'),  
-  limitPerYear: Yup.number().typeError('Limit per Year must be a number').integer('Limit per Year must be an integer').positive('Limit per Year must be positive').required('Limit per Year is required'),  
-  manufacturingPricePerUnit: Yup.number().typeError('Manufacturing Price per Unit must be a number').positive('Manufacturing Price per Unit must be positive').required('Manufacturing Price per Unit is required'),  
-  qtyPerMonthSupply: Yup.number().typeError('Qty per Month Supply must be a number').integer('Qty per Month Supply must be an integer').positive('Qty per Month Supply must be positive').required('Qty per Month Supply is required'),  
+  prefQtyOne: Yup.string().required('Preferred Quantity 1 is required'),  
+  prefQtyTwo: Yup.string().required('Preferred Quantity 2 is required'),  
+  prefQtyThree: Yup.string().required('Preferred Quantity 3 is required'), 
+  repeatConsult: Yup.string().required('Repeat Consultation is required'),  
+  yearLimit: Yup.number().typeError('Limit per Year must be a number').integer('Limit per Year must be an integer').positive('Limit per Year must be positive').required('Limit per Year is required'),  
+  buildCost: Yup.number().typeError('Manufacturing Price per Unit must be a number').positive('Manufacturing Price per Unit must be positive').required('Manufacturing Price per Unit is required'),  
+  prefQtyMonth: Yup.number().typeError('Qty per Month Supply must be a number').integer('Qty per Month Supply must be an integer').positive('Qty per Month Supply must be positive').required('Qty per Month Supply is required'),  
   retailPrice: Yup.number().typeError('Retail Price must be a number').positive('Retail Price must be positive').required('Retail Price is required'),  
 });
 
-function ErrMessage({ name }) {
+function ErrMessage({ name }:any) {
   return (
     <ErrorMessage
       name={name}
@@ -51,15 +51,15 @@ function AddProductForm() {
     prefQtyOne: '', 
     prefQtyTwo: '',  
     prefQtyThree: '', 
-    repeatConsultation: 'no',  
-    limitPerYear: '',  
+    repeatConsult: 'no',  
+    yearLimit: '',  
     buildCost: '',  
     prefQtyMonth: '',  
     retailPrice: '',  
 
   };
 
-  const onSubmit = (values:any, { resetForm } ) => {
+  const onSubmit = (values, { resetForm } ) => {
     // Handle the form submission here
     console.log("values::",values);
     
@@ -169,7 +169,7 @@ function AddProductForm() {
             <div className="mb-4">
               <label className="block text-gray-600">Status</label>
               <Field
-                name="status"
+                name="isActive"
                 as="select"
                 className="border rounded w-full px-3 py-2 mt-1"
               >
@@ -192,11 +192,11 @@ function AddProductForm() {
             <div className="mb-4">
               <label className="block text-gray-600">Dispensed Form</label>
               <Field
-                name="dispensedForm"
+                name="dispanseForm"
                 component={SelectField}
                 options={dispensedFormOptions}
               />
-              <ErrMessage name="dispensedForm" />
+              <ErrMessage name="dispanseForm" />
             </div>
 
             <div className="mb-4">
@@ -214,79 +214,79 @@ function AddProductForm() {
               <label className="block text-gray-600">Preferred Quantity 1</label>
               <Field
                 type="text"
-                name="preferredQuantity1"
+                name="prefQtyOne"
                 className="border rounded w-full px-3 py-2 mt-1"
                 placeholder="Enter Preferred Quantity 1"
               />
-              <ErrMessage name="preferredQuantity1" />
+              <ErrMessage name="prefQtyOne" />
             </div>
 
             <div className="mb-4">
               <label className="block text-gray-600">Preferred Quantity 2</label>
               <Field
                 type="text"
-                name="preferredQuantity2"
+                name="prefQtyTwo"
                 className="border rounded w-full px-3 py-2 mt-1"
                 placeholder="Enter Preferred Quantity 2"
               />
-              <ErrMessage name="preferredQuantity2" />
+              <ErrMessage name="prefQtyTwo" />
             </div>
 
             <div className="mb-4">
               <label className="block text-gray-600">Preferred Quantity 3</label>
               <Field
                 type="text"
-                name="preferredQuantity3"
+                name="prefQtyThree"
                 className="border rounded w-full px-3 py-2 mt-1"
                 placeholder="Enter Preferred Quantity 3"
               />
-              <ErrMessage name="preferredQuantity3" />
+              <ErrMessage name="prefQtyThree" />
             </div>
 
             <div className="mb-4">
                 <label className="block text-gray-600">Repeat Consultation Within 1 Year</label>
                 <Field
                   as="select"
-                  name="repeatConsultation"
+                  name="repeatConsult"
                   className="border rounded w-full px-3 py-2 mt-1"
                 >
                   <option value="yes">Yes</option>
                   <option value="no">No</option>
                 </Field>
-                <ErrMessage name="repeatConsultation" />
+                <ErrMessage name="repeatConsult" />
               </div>
 
               <div className="mb-4">
                 <label className="block text-gray-600">Limit per Year</label>
                 <Field
                   type="number"
-                  name="limitPerYear"
+                  name="yearLimit"
                   className="border rounded w-full px-3 py-2 mt-1"
                   placeholder="Enter Limit per Year"
                 />
-                <ErrMessage name="limitPerYear" />
+                <ErrMessage name="yearLimit" />
               </div>
 
               <div className="mb-4">
                 <label className="block text-gray-600">Manufacturing Price per Unit</label>
                 <Field
                   type="number"
-                  name="manufacturingPricePerUnit"
+                  name="buildCost"
                   className="border rounded w-full px-3 py-2 mt-1"
                   placeholder="Enter Manufacturing Price per Unit"
                 />
-                <ErrMessage name="manufacturingPricePerUnit" />
+                <ErrMessage name="buildCost" />
               </div>
 
               <div className="mb-4">
                 <label className="block text-gray-600">Qty per Month Supply</label>
                 <Field
                   type="number"
-                  name="qtyPerMonthSupply"
+                  name="prefQtyMonth"
                   className="border rounded w-full px-3 py-2 mt-1"
                   placeholder="Enter Qty per Month Supply"
                 />
-                <ErrMessage name="qtyPerMonthSupply" />
+                <ErrMessage name="prefQtyMonth" />
               </div>
 
               <div className="mb-4">

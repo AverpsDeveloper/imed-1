@@ -67,6 +67,8 @@ export const GET = tcWrap(async (req, res) => {
 
 export const POST = tcWrap(async (req, res) => {
   const body = await req.json();
+  console.log("body::",body);
+  
   let cat: any;
   if (body.category) {
     console.log("category", body.category);// add if data aready axist
