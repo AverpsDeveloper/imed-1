@@ -5,7 +5,7 @@ import { Types } from "mongoose";
 
 export const GET = tcWrap(async (req, res) => {
   const { search, category, type, price, page, limit } = req.query;
-  const pagination = {
+  const paginat = {
     page: +page <= 0 ? 0 : parseInt(page, 10) - 1,
     limit: parseInt(limit, 10) || 10
   }
@@ -46,8 +46,8 @@ export const GET = tcWrap(async (req, res) => {
   const [inventroy, total]: any = await Promise.all([
     itemModel.find({ $and: filter }, '',
       {
-        skip: pagination.page * pagination.limit,
-        limit: pagination.limit
+        skip: paginat.page * paginat.limit,
+        limit: paginat.limit
       }).populate('category', "name"),
     itemModel.count({ $and: filter })
   ]);
@@ -58,8 +58,8 @@ export const GET = tcWrap(async (req, res) => {
       data: inventroy,
       meta: {
         total,
-        page: pagination.page + 1,
-        limit: pagination.limit
+        page: paginat.page + 1,
+        limit: paginat.limit
       }
     }
   });
