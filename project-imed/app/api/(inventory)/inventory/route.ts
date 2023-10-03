@@ -4,7 +4,11 @@ import tcWrap from "@/libs/utils/tcWrap";
 import { Types } from "mongoose";
 
 export const GET = tcWrap(async (req, res) => {
-  const { search, category, type, price } = req.query;
+  const { search, category, type, price, page, limit } = req.query;
+  const pagination = {
+    page: +page <= 0 ? 0 : parseInt(page, 10) - 1,
+    limit: parseInt(limit, 10) || 10
+  }
   let filter: any = [{ deletedAt: { $exists: false } }];
   if (search) {
     filter.push({
@@ -39,10 +43,26 @@ export const GET = tcWrap(async (req, res) => {
       });
     }
   }
+  const [inventroy, total]: any = await Promise.all([
+    itemModel.find({ $and: filter }, '',
+      {
+        skip: pagination.page * pagination.limit,
+        limit: pagination.limit
+      }).populate('category', "name"),
+    itemModel.count({ $and: filter })
+  ]);
 
-  const inventroy = await itemModel.find({ $and: filter });
-
-  return res.json({ result: { message: "inventry", data: inventroy } });
+  return res.json({
+    result: {
+      message: "inventry",
+      data: inventroy,
+      meta: {
+        total,
+        page: pagination.page + 1,
+        limit: pagination.limit
+      }
+    }
+  });
 });
 
 export const POST = tcWrap(async (req, res) => {
