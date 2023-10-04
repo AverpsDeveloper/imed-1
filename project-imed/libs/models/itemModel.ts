@@ -16,15 +16,17 @@ export interface Iitem extends Document {
 const prefQtySchema: any = {
   type: {
     qty: { type: Number },
-    price: { type: Number },
+    buildCost: { type: Number },
+    sellingPrice: { type: Number },
     saving: { type: Number }
   },
   set: function (value: number) {
-    const price = (this.buildCost * value * 1.15) + 3;
+    const buildCost = this.buildCostPrUnit * value;
+    const sellingPrice = (buildCost * 1.15) + 3;
     return {
       qty: value,
-      price,
-      saving: (this.retailPrice * value) - price,
+      buildCost,
+      sellingPrice
     }
   },
   required: true,
@@ -79,18 +81,31 @@ const itemSchema = new Schema(
       },
       required: [true, "Please item dispanseForm type"],
     },
-    buildCost: {
+    buildCostPrUnit: {
       type: Number,
-      required: [true, "Please enter month quantity"],
+      required: [true, "Please enter build Cost Pr Unit"],
     },
-    retailPrice: {
+    fixedQty: {
       type: Number,
-      required: [true, "Please enter retail price"],
+      required: [true, "Please enter quantity prmoth"],
     },
-    prefQtyMonth: prefQtySchema,
     prefQtyOne: prefQtySchema,
     prefQtyTwo: prefQtySchema,
     prefQtyThree: prefQtySchema,
+    retailPrice: {
+      type: Number,
+      set: function (value: number) {
+        return this.fixedQty * this.buildCostPrUnit;
+      },
+      required: [true, "Please enter retail price"],
+    },
+    saving: {
+      type: Number,
+      set: function (value: number) {
+        return this.retailPrice - this.prefQtyOne.sellingPrice;
+      },
+      required: [true, "Please enter saving"],
+    },
     strength: {
       type: String,
       required: [true, "Please enter strength "],

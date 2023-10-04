@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 function ProductList() {
   const [products, setProducts] = useState([]);
@@ -15,9 +17,7 @@ function ProductList() {
     // Fetch product data using Axios
     axios
       .get(apiUrl)
-      .then((response) => {
-        console.log("response:::",response);
-        
+      .then((response) => {        
         setProducts(response.data.result.data);
         setLoading(false);
       })
@@ -25,7 +25,23 @@ function ProductList() {
         setError(err);
         setLoading(false);
       });
-  }, []);
+  }, [products]);
+
+
+  function productDeleteHandler(id:string){
+    axios.delete("/api/inventory",{data:{id}}).then(({data}) => {
+      toast.success(data.result.message);
+    }).catch((err) => {
+      toast.success('There was an error. Please try again');
+    })
+  }
+  const router = useRouter();
+  function productEditHandler(id:string){
+    if(id){
+      router.push(`/dashboard/inventory/products/add?id=${id}`)
+    }
+  }
+
 
   if (loading) {
     return <div>Loading...</div>;
@@ -60,11 +76,11 @@ function ProductList() {
             </tr>
           </thead>
           <tbody>
-            {products.map((product :any) => (
+            {products.map((product :any,index) => (
               <tr key={product._id}>
                 <td className="px-4 py-2">{product.name}</td>
                 <td className="px-4 py-2">{product.type}</td>
-                <td className="px-4 py-2">{product.category}</td>
+                <td className="px-4 py-2">{product.category[0].name}</td>
                 <td className="px-4 py-2">
                   <span
                     className={`${
@@ -77,10 +93,10 @@ function ProductList() {
                   </span>
                 </td>
                 <td className="px-4 py-2">
-                  <button className="bg-blue-500 text-white px-2 py-1 rounded-md mr-2">
+                  <button onClick={()=> productEditHandler(product._id)} className="bg-blue-500 text-white px-2 py-1 rounded-md mr-2">
                     Edit
                   </button>
-                  <button className="bg-red-500 text-white px-2 py-1 rounded-md">
+                  <button onClick={()=>productDeleteHandler(product._id)} className="bg-red-500 text-white px-2 py-1 rounded-md">
                     Delete
                   </button>
                 </td>

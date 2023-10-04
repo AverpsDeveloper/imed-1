@@ -122,7 +122,7 @@ export const PUT = tcWrap(async (req, res) => {
     };
   }
 
-  console.log("bodyData", bodyData);
+  console.log("bodyData::", bodyData);
   const item = await itemModel.findByIdAndUpdate(id, bodyData, {
     new: true,
   });
