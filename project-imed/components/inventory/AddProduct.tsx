@@ -66,10 +66,8 @@ fixedQty: '',
   const params = useSearchParams();
   const paramsId = params.get("id")
   
-  const onSubmit = (values:any, { resetForm } ) => {
-    // Handle the form submission here
-    console.log("=================",values);
-    
+  const onSubmit = (values:any, { resetForm }:any ) => {
+    // Handle the form submission here    
     if(paramsId){
       values.id = paramsId;
       axios.put('/api/inventory', values)
@@ -381,8 +379,8 @@ const SelectField = ({ field, form, options }:any) => (
   <Select
     {...field}
     options={options}
-    onChange={(selectedOption) => {
-      form.setFieldValue(field.name, selectedOption ? selectedOption.value : ''); // Extract the value property or set an empty string if nothing is selected
+    onChange={(selectedOption:any) => {
+      form.setFieldValue(field.name, selectedOption ? selectedOption : ''); // Extract the value property or set an empty string if nothing is selected
       form.setFieldTouched(field.name, true);
     }}
     onBlur={() => {

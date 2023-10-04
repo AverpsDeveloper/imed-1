@@ -48,7 +48,7 @@ function ProductList() {
   }
 
   if (error) {
-    return <div>Error: {error.message}</div>;
+    return <div>There Is some issue Type again</div>;
   }
 
   return (

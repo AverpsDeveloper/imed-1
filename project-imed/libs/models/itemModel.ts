@@ -3,6 +3,7 @@ import { getCongig } from "@/libs/config/dbInit";
 
 export interface Iitem extends Document {
   itemType: String;
+  type: String,
   alternativeName: String;
   form: String;
   itemCategory: String;
