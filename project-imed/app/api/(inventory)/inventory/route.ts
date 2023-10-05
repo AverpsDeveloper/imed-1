@@ -67,6 +67,8 @@ export const GET = tcWrap(async (req, res) => {
 
 export const POST = tcWrap(async (req, res) => {
   const body = await req.json();
+  console.log("body::",body);
+  
   let cat: any;
   if (body.category) {
     console.log("category", body.category);// add if data aready axist
@@ -120,7 +122,7 @@ export const PUT = tcWrap(async (req, res) => {
     };
   }
 
-  console.log("bodyData", bodyData);
+  console.log("bodyData::", bodyData);
   const item = await itemModel.findByIdAndUpdate(id, bodyData, {
     new: true,
   });

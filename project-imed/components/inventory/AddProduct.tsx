@@ -1,273 +1,398 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
+"use client"
 
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import axios from "axios";
-import toast from "react-hot-toast";
+import React,{useEffect,useState} from 'react';
+import { Formik, Field, Form, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import Link from 'next/link';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+import Select from 'react-select';
+import { useSearchParams } from 'next/navigation';
 
-const AddNewInventry = () => {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm();
+const validationSchema = Yup.object().shape({
+  name: Yup.string().required('Product Name is required'),
+  type: Yup.string().required('Item Type is required'),
+  category: Yup.string().required('Category is required'),
+  codeName: Yup.string().required('Item Code is required'),
+  status: Yup.string().required('Status is required'),
+  form: Yup.string().required('Form is required'), 
+  dispanseForm: Yup.string().required('Dispensed Form is required'),
+  strength: Yup.string().required('Strength is required'),
+  prefQtyOne: Yup.string().required('Preferred Quantity 1 is required'),  
+  prefQtyTwo: Yup.string().required('Preferred Quantity 2 is required'),  
+  prefQtyThree: Yup.string().required('Preferred Quantity 3 is required'), 
+  repeatConsult: Yup.string().required('Repeat Consultation is required'),  
+  yearLimit: Yup.number().typeError('Limit per Year must be a number').integer('Limit per Year must be an integer').positive('Limit per Year must be positive').required('Limit per Year is required'),  
+  buildCostPrUnit : Yup.number().typeError('Manufacturing Price per Unit must be a number').positive('Manufacturing Price per Unit must be positive').required('Manufacturing Price per Unit is required'),  
+  fixedQty: Yup.number().typeError('Qty per Month Supply must be a number').integer('Qty per Month Supply must be an integer').positive('Qty per Month Supply must be positive').required('Qty per Month Supply is required'),  
+  retailPrice: Yup.number().typeError('Retail Price must be a number').positive('Retail Price must be positive').required('Retail Price is required'),  
+});
 
-  const onSubmit = (data: any) => {
-    axios.post("/api/add-inventory", data)
-    .then(({data}) => {
-      if(data.success) {
-        toast.success("New Product added successfully");
-      }else{
-        toast.error(data.message);
-      }
-    })
-    .catch((error) => {
-      toast.error("There was an error. Please try again");
-    });
+function ErrMessage({ name }:any) {
+  return (
+    <ErrorMessage
+      name={name}
+      render={(msg) => (
+        <div className="text-red-500 text-sm">{msg}</div>
+      )}
+    />
+  );
+}
+
+function AddProductForm() {
+
+  const [itemTypes, setItemTypes ] = useState([]);
+  const [formOptions, setFormOptions ] = useState([]);
+  const [categories,setCategories] = useState([]);
+  const [initialValues, setInitialValues] = useState({
+    name: '',
+    type: null,
+    category: null,
+    codeName: '',
+    status: true,
+    form: null,  
+    dispanseForm: null,  
+    strength: '',
+    prefQtyOne: '', 
+    prefQtyTwo: '',  
+    prefQtyThree: '', 
+    repeatConsult: 'no',  
+    yearLimit: '',  
+    buildCostPrUnit
+: '',  
+fixedQty: '',  
+    retailPrice: '',  
+  });
+  const params = useSearchParams();
+  const paramsId = params.get("id")
+  
+  const onSubmit = (values:any, { resetForm }:any ) => {
+    // Handle the form submission here    
+    if(paramsId){
+      values.id = paramsId;
+      axios.put('/api/inventory', values)
+        .then(({ data }) => {
+          console.log("data::",data);
+            toast.success(data.result.message);
+            resetForm(); // Reset the form after successful submission
+        })
+        .catch((error) => {
+          console.error(error);
+          toast.error('There was an error. Please try again');
+        });
+    }else{
+      values.totalCount = 10,
+      values.fixedQty = "90";
+      axios.post('/api/inventory', values)
+        .then(({ data }) => {
+          console.log(data);
+            toast.success(data.result.message);
+            resetForm(); // Reset the form after successful submission
+        })
+        .catch((error) => {
+          console.error(error);
+          toast.error('There was an error. Please try again');
+        });
+    }
+
   };
 
+  // Mock data for item types and categories (you can fetch this data from an API)
+
+  // const categories = [
+  //   { value: 'category1', label: 'Category 1' },
+  //   { value: 'category2', label: 'Category 2' },
+  //   // Add more categories as needed
+  // ];
+
+  // const formOptions = [
+  //   { value: 'SYRUP', label: 'SYRUP' },
+  //   { value: 'PLASTER', label: 'PLASTER' },
+  //   // Add more form options as needed
+  // ];
+
+  useEffect(() => {
+    if (paramsId) {
+      axios.get(`/api/inventory/${paramsId}`)
+        .then(({ data }) => {
+          console.log("data.result.data.prefOtyOne.qty",data.result.data.prefQtyOne);
+          
+          let productItem = {...data.result.data,
+            prefQtyOne: data.result.data.prefQtyOne.qty,
+            prefQtyThree: data.result.data.prefQtyThree.qty,
+            prefQtyTwo: data.result.data.prefQtyTwo.qty,
+            category : data.result.data.category[0].name
+          }
+          setInitialValues(productItem)
+
+        }).catch((err) => {
+          console.log("error:::",err);
+          
+          // toast.error(error.message);
+        })
+    }
+    
+    axios.get(`/api/types/itemTypes`)
+    .then(({ data }) => {
+     let items = data.result.data.map((item:any)=>(
+      {value : item, label : item}
+     ))
+     setItemTypes(items)
+    })
+    
+    axios.get(`/api/types/formTypes`)
+    .then(({ data }) => {
+     let items = data.result.data.map((item:any)=>(
+      {value : item, label : item}
+     ))
+     setFormOptions(items)
+    })
+
+    axios.get(`/api/categories`)
+    .then(({ data }) => {
+     let items = data.result.data.map((item:any)=>(
+      {value : item.name, label : item.name}
+     ))
+     setCategories(items)
+    })
+},[paramsId])
+  
+  // const dispensedFormOptions = [
+  //   { value: 'box', label: 'Box' },
+  //   { value: 'bottle', label: 'Bottle' },
+  //   // Add more dispensed form options as needed
+  // ];
+  
+
   return (
-    <>
-      <Breadcrumb pageName="Add New Page" />
-      <div className="grid grid-cols-1 gap-9 sm:grid-cols-3">
-        <div className="flex flex-col gap-9 col-span-3">
-          {/* <!-- Contact Form --> */}
-          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-              <h3 className="font-medium text-black dark:text-white">
-                New Product
-              </h3>
-            </div>
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="p-6.5">
-                <div className="mb-4.5">
-                  <label className="mb-2.5 block text-black dark:text-white">
-                    Item Name
-                  </label>
-                  <input
-                    type="text"
-                    {...register("itemName", { required: true })}
-                    placeholder="Enter Item Name"
-                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                  />
-                  {errors.itemName && (
-                    <span className="mb-2.5 block text-errors  dark:text-white">
-                      This field is required
-                    </span>
-                  )}
-                </div>
-
-                <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                  <div className="w-full xl:w-1/2">
-                  <label className="mb-2.5 block text-black dark:text-white">
-                  Item Category <span className="text-meta-1">*</span>
-                    </label>
-                    <div className="relative z-20 bg-transparent dark:bg-form-input">
-                      <select
-                        {...register("itemCategory", { required: true })}
-                        className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                      >
-                        <option value="">Select</option>
-                        <option value="Cab">Tab</option>
-                        <option value="bottle">Bottle</option>
-                        <option value="pack">Pack</option>
-                        <option value="Unit etc">Unit etc</option>
-                      </select>
-                      <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2">
-                        <svg
-                          className="fill-current"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <g opacity="0.8">
-                            <path
-                              fillRule="evenodd"
-                              clipRule="evenodd"
-                              d="M5.29289 8.29289C5.68342 7.90237 6.31658 7.90237 6.70711 8.29289L12 13.5858L17.2929 8.29289C17.6834 7.90237 18.3166 7.90237 18.7071 8.29289C19.0976 8.68342 19.0976 9.31658 18.7071 9.70711L12.7071 15.7071C12.3166 16.0976 11.6834 16.0976 11.2929 15.7071L5.29289 9.70711C4.90237 9.31658 4.90237 8.68342 5.29289 8.29289Z"
-                              fill=""
-                            ></path>
-                          </g>
-                        </svg>
-                      </span>
-                      {errors.itemCategory && (
-                        <span className="mb-2.5 block text-errors  dark:text-white">
-                          This field is required
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  <div className="w-full xl:w-1/2">
-                    <label className="mb-2.5 block text-black dark:text-white">
-                      Form <span className="text-meta-1">*</span>
-                    </label>
-                    <div className="relative z-20 bg-transparent dark:bg-form-input">
-                      <select
-                        {...register("form", { required: true })}
-                        className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                      >
-                        <option value="">Select</option>
-                        <option value="Cab">Tab</option>
-                        <option value="bottle">Bottle</option>
-                        <option value="pack">Pack</option>
-                        <option value="Unit etc">Unit etc</option>
-                      </select>
-                      <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2">
-                        <svg
-                          className="fill-current"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <g opacity="0.8">
-                            <path
-                              fillRule="evenodd"
-                              clipRule="evenodd"
-                              d="M5.29289 8.29289C5.68342 7.90237 6.31658 7.90237 6.70711 8.29289L12 13.5858L17.2929 8.29289C17.6834 7.90237 18.3166 7.90237 18.7071 8.29289C19.0976 8.68342 19.0976 9.31658 18.7071 9.70711L12.7071 15.7071C12.3166 16.0976 11.6834 16.0976 11.2929 15.7071L5.29289 9.70711C4.90237 9.31658 4.90237 8.68342 5.29289 8.29289Z"
-                              fill=""
-                            ></path>
-                          </g>
-                        </svg>
-                      </span>
-                      {errors.form && (
-                        <span className="mb-2.5 block text-errors  dark:text-white">
-                          This field is required
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                  <div className="w-full xl:w-1/2">
-                    <label className="mb-2.5 block text-black dark:text-white">
-                      Alternative Name<span className="text-meta-1">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Enter Alternative Name"
-                      {...register("alternativeName", { required: true })}
-                      className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                    />
-                    {errors.alternativeName && (
-                      <span className="mb-2.5 block text-errors dark:text-danger">
-                        This field is required
-                      </span>
-                    )}
-                  </div>
-                  <div className="w-full xl:w-1/2">
-                    <label className="mb-2.5 block text-black dark:text-white">
-                      Unit of measure <span className="text-meta-1">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Enter Unit of measure"
-                      {...register("unitOfMeasure", { required: true })}
-                      className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                    />
-                    {errors.unitOfMeasure && (
-                      <span className="mb-2.5 block text-errors  dark:text-white">
-                        This field is required
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                  <div className="w-full xl:w-1/2">
-                    <label className="mb-2.5 block text-black dark:text-white">
-                      Price <span className="text-meta-1">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      placeholder="Enter Item Price"
-                      {...register("price", { required: true })}
-                      className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                    />
-                    {errors.price && (
-                      <span className="mb-2.5 block text-errors  dark:text-white">
-                        This field is required
-                      </span>
-                    )}
-                  </div>
-                  <div className="w-full xl:w-1/2">
-                    <label className="mb-2.5 block text-black dark:text-white">
-                    Preset Quantity <span className="text-meta-1">*</span>
-                    </label>
-                    <div className="relative z-20 bg-transparent dark:bg-form-input">
-                      <select
-                        {...register("presetQuantity", { required: true })}
-                        className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                      >
-                        <option value="">Select</option>
-                        <option value="30">30 tablets</option>
-                        <option value="60">60 tablets</option>
-                        <option value="90">90 tablets</option>
-                      </select>
-                      <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2">
-                        <svg
-                          className="fill-current"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <g opacity="0.8">
-                            <path
-                              fillRule="evenodd"
-                              clipRule="evenodd"
-                              d="M5.29289 8.29289C5.68342 7.90237 6.31658 7.90237 6.70711 8.29289L12 13.5858L17.2929 8.29289C17.6834 7.90237 18.3166 7.90237 18.7071 8.29289C19.0976 8.68342 19.0976 9.31658 18.7071 9.70711L12.7071 15.7071C12.3166 16.0976 11.6834 16.0976 11.2929 15.7071L5.29289 9.70711C4.90237 9.31658 4.90237 8.68342 5.29289 8.29289Z"
-                              fill=""
-                            ></path>
-                          </g>
-                        </svg>
-                      </span>
-                      {errors.presetQuantity && (
-                        <span className="mb-2.5 block text-errors  dark:text-white">
-                          This field is required
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-
-                <div className="mb-4.5">
-                  <label className="mb-2.5 block text-black dark:text-white">
-                  Product description
-                  </label>
-                  <input
-                    type="text"
-                    {...register("productDescription", { required: true })}
-                    placeholder="Enter Product Description"
-                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                  />
-                  {errors.productDescription && (
-                    <span className="mb-2.5 block text-errors  dark:text-white">
-                      This field is required
-                    </span>
-                  )}
-                </div>
-
-
-                <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray">
-                  Save Product
-                </button>
-              </div>
-            </form>
-          </div>
+    <div className="min-h-screen bg-gray-200 flex ">
+      <div className="bg-white w-full h-full p-6">
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-2xl font-bold">Add Product</h1>
+          <Link href="/dashboard/inventory/products">
+            <button className="inline-flex items-center justify-center gap-2.5 rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
+              Product List
+            </button>
+          </Link>
         </div>
 
-      </div>
-    </>
-  );
-};
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={onSubmit}
+          enableReinitialize={true}
+        >
+          <Form>
+            <div className="mb-4">
+              <label className="block text-gray-600">Product Name</label>
+              <Field
+                type="text"
+                name="name"
+                className="border rounded w-full px-3 py-2 mt-1"
+                placeholder="Enter Product Name"
+              />
+              <ErrMessage name="name" />
+            </div>
 
-export default AddNewInventry;
+            <div className="mb-4">
+              <label className="block text-gray-600">Item Type</label>
+              <Field
+                name="type"
+                component={SelectField} // Custom component for react-select
+                options={itemTypes}
+              />
+              <ErrMessage name="type" />
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-gray-600">Category</label>
+              <Field
+                name="category"
+                component={SelectField} // Custom component for react-select
+                options={categories}
+              />
+              <ErrMessage name="category" />
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-gray-600">Item Code</label>
+              <Field
+                type="text"
+                name="codeName"
+                className="border rounded w-full px-3 py-2 mt-1"
+                placeholder="Enter Item Code"
+              />
+              <ErrMessage name="codeName" />
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-gray-600">Status</label>
+              <Field
+                name="isActive"
+                as="select"
+                className="border rounded w-full px-3 py-2 mt-1"
+              >
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </Field>
+              <ErrMessage name="status" />
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-gray-600">Form</label>
+              <Field
+                name="form"
+                component={SelectField}
+                options={formOptions}
+              />
+              <ErrMessage name="form" />
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-gray-600">Dispensed Form</label>
+              <Field
+                name="dispanseForm"
+                component={SelectField}
+                options={formOptions}
+              />
+              <ErrMessage name="dispanseForm" />
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-gray-600">Strength</label>
+              <Field
+                type="text"
+                name="strength"
+                className="border rounded w-full px-3 py-2 mt-1"
+                placeholder="Enter Strength"
+              />
+              <ErrMessage name="strength" />
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-gray-600">Preferred Quantity 1</label>
+              <Field
+                type="text"
+                name="prefQtyOne"
+                className="border rounded w-full px-3 py-2 mt-1"
+                placeholder="Enter Preferred Quantity 1"
+              />
+              <ErrMessage name="prefQtyOne" />
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-gray-600">Preferred Quantity 2</label>
+              <Field
+                type="text"
+                name="prefQtyTwo"
+                className="border rounded w-full px-3 py-2 mt-1"
+                placeholder="Enter Preferred Quantity 2"
+              />
+              <ErrMessage name="prefQtyTwo" />
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-gray-600">Preferred Quantity 3</label>
+              <Field
+                type="text"
+                name="prefQtyThree"
+                className="border rounded w-full px-3 py-2 mt-1"
+                placeholder="Enter Preferred Quantity 3"
+              />
+              <ErrMessage name="prefQtyThree" />
+            </div>
+
+            <div className="mb-4">
+                <label className="block text-gray-600">Repeat Consultation Within 1 Year</label>
+                <Field
+                  as="select"
+                  name="repeatConsult"
+                  className="border rounded w-full px-3 py-2 mt-1"
+                >
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </Field>
+                <ErrMessage name="repeatConsult" />
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-gray-600">Limit per Year</label>
+                <Field
+                  type="number"
+                  name="yearLimit"
+                  className="border rounded w-full px-3 py-2 mt-1"
+                  placeholder="Enter Limit per Year"
+                />
+                <ErrMessage name="yearLimit" />
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-gray-600">Manufacturing Price per Unit</label>
+                <Field
+                  type="number"
+                  name="buildCostPrUnit"
+                  className="border rounded w-full px-3 py-2 mt-1"
+                  placeholder="Enter Manufacturing Price per Unit"
+                />
+                <ErrMessage name="buildCostPrUnit" />
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-gray-600">Qty per Month Supply</label>
+                <Field
+                  type="number"
+                  name="fixedQty"
+                  className="border rounded w-full px-3 py-2 mt-1"
+                  placeholder="Enter Qty per Month Supply"
+                />
+                <ErrMessage name="fixedQty" />
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-gray-600">Retail Price</label>
+                <Field
+                  type="number"
+                  name="retailPrice"
+                  className="border rounded w-full px-3 py-2 mt-1"
+                  placeholder="Enter Retail Price"
+                />
+                <ErrMessage name="retailPrice" />
+              </div>
+          
+                <button
+              type="submit"
+              className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+            >
+              {paramsId ? "Update" : "Save"}
+            </button>
+         
+          </Form>
+        </Formik>
+      </div>
+    </div>
+  );
+}
+
+// Custom component for react-select
+
+const SelectField = ({ field, form, options }:any) => (
+  <Select
+    {...field}
+    options={options}
+    onChange={(selectedOption:any) => {
+      form.setFieldValue(field.name, selectedOption ? selectedOption : ''); // Extract the value property or set an empty string if nothing is selected
+      form.setFieldTouched(field.name, true);
+    }}
+    onBlur={() => {
+      // Trigger onBlur only when the user clicks on the Select component
+      form.setFieldTouched(field.name, true);
+    }}
+    value={options.find((option:any) => option.value === field.value)} // Set the value prop to the corresponding field value
+    isClearable
+  />
+);
+
+
+
+
+export default AddProductForm;

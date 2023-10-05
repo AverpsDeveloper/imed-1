@@ -4,7 +4,7 @@ import { Types } from "mongoose";
 
 export const GET = tcWrap(async (req, res) => {
     const { search, name } = req.query;
-    let filter: any = [{ deletedAt: { $exists: false } }];
+    let filter: any = [{ deletedAt: { $exists: false }, isActive: true }];
     if (search) {
         filter.push({
             $or: [

@@ -46,8 +46,6 @@ function AddCategoryForm() {
     } else {
       axios.post('/api/categories', values)
         .then(({ data }) => {
-          console.log("================================");
-          console.log(data);
           toast.success('New Category added successfully');
           resetForm(); // Reset the form after successful submission
           // rotuer.push("/dashboard/inventory/categorys")
