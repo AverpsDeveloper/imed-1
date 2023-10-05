@@ -148,4 +148,4 @@ const itemSchema = new Schema(
 );
 
 export default (mongoose.models.item ||
-  model("item", itemSchema)) as Model<Iitem>;
+  model("item", itemSchema)) as Model<any>;
