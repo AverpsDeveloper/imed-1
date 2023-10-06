@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import connectToDatabase from "@/libs/mongooDB";
-import { PagesModel } from "@/models/publicPages";
+// import connectToDatabase from "@/libs/models/publicPages";
+// import { PagesModel } from "@/models/publicPages";
 export async function GET(req:Request){
-    await connectToDatabase();
-     let page = await PagesModel.find()
+    // await connectToDatabase();
+    //  let page = await PagesModel.find()
     // create({
     //     page : "contact",
     //     title: "contact us Page",
@@ -13,7 +13,7 @@ export async function GET(req:Request){
     //     Description: "contact String",
     //     published: true,
     // })
-    console.log(page);
+    // console.log(page);
     
     return NextResponse.json({
         message : "Hello India33333333",

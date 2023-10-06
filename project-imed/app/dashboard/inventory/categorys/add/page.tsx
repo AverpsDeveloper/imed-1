@@ -1,7 +1,9 @@
+"use client"
 import React from 'react'
 import AddCategory from '@/components/inventory/AddCategory'
 
-const Inventory = () => {
+const CategoryPage = () => {
+
   return (
     <div>
       <AddCategory/>
@@ -9,4 +11,4 @@ const Inventory = () => {
 )
 }
 
-export default Inventory
+export default CategoryPage

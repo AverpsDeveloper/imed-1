@@ -12,7 +12,7 @@ const Inventory = () => {
 
   return (
     <div>    
-      <UnitList categories={dummyData} />
+      <UnitList />
     </div>
 )
 }

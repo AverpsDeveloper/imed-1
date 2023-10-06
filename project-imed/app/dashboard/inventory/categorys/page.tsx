@@ -2,7 +2,7 @@ import React from 'react'
 
 import CategoryList from '@/components/inventory/CategoryList'
 
-const Inventory = () => {
+const Inventory = () => {  
   return (
     <div>
       <CategoryList/>
