@@ -2,16 +2,33 @@ import mongoose, { Document, model, Model, Schema } from "mongoose";
 import { getCongig } from "@/libs/config/dbInit";
 
 export interface Iitem extends Document {
-  itemType: String;
-  type: String,
-  alternativeName: String;
-  form: String;
-  itemCategory: String;
-  itemName: String;
-  presetQuantity: String;
-  price: Number;
-  productDescription: String;
-  unitOfMeasure: String;
+  itemType?: string;
+  type?: string,
+  alternativeName?: string;
+  form?: string;
+  dispanseForm?: string;
+  category?: any;
+  name?: string;
+  altName?: string;
+  codeName?: string;
+  presetQuantity?: string;
+  buildCostPrUnit?: number;
+  fixedQty?: number;
+  prefQtyOne?: any;
+  prefQtyTwo?: any;
+  prefQtyThree?: any;
+  retailPrice?: number;
+  saving?: number;
+  strength?: String;
+  yearLimit?: number;
+  measureUnit?: string;
+  description?: string;
+  repeatConsult?: boolean;
+  isActive?: boolean;
+  deletedAt?: any;
+  totalCount?: number;
+  unitOfMeasure?: string;
+  images?: any;
 }
 
 const prefQtySchema: any = {
@@ -22,7 +39,9 @@ const prefQtySchema: any = {
     saving: { type: Number }
   },
   set: function (value: number) {
-    const buildCost = this.buildCostPrUnit * value;
+    const d: any = this instanceof Document
+      ? this : this._update.$set;
+    const buildCost = d.buildCostPrUnit * value;
     const sellingPrice = (buildCost * 1.15) + 3;
     return {
       qty: value,
@@ -96,14 +115,18 @@ const itemSchema = new Schema(
     retailPrice: {
       type: Number,
       set: function (value: number) {
-        return this.fixedQty * this.buildCostPrUnit;
+        const d: any = this instanceof Document
+          ? this : this._update.$set;
+        return d.fixedQty * d.buildCostPrUnit;
       },
       required: [true, "Please enter retail price"],
     },
     saving: {
       type: Number,
       set: function (value: number) {
-        return this.retailPrice - this.prefQtyOne.sellingPrice;
+        const d: any = this instanceof Document
+          ? this : this._update.$set;
+        return d.retailPrice - d.prefQtyOne.sellingPrice;
       },
       required: [true, "Please enter saving"],
     },
@@ -148,4 +171,4 @@ const itemSchema = new Schema(
 );
 
 export default (mongoose.models.item ||
-  model("item", itemSchema)) as Model<any>;
+  model("item", itemSchema)) as Model<Iitem>;

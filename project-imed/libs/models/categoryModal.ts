@@ -1,8 +1,10 @@
 import mongoose, { Document, model, Model, Schema } from "mongoose";
 
 export interface IPropsType extends Document {
-  title: String;
-  status: String;
+  name?: string;
+  description?: string;
+  isActive?: boolean;
+  deletedAt?: any;
 }
 
 const categorySchema = new Schema(

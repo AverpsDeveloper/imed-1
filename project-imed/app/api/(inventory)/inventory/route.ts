@@ -67,10 +67,14 @@ export const GET = tcWrap(async (req, res) => {
 
 export const POST = tcWrap(async (req, res) => {
   const body = await req.json();
-  console.log("body::",body);
-  
+  console.log("body::", body);
+
   let cat: any;
-  if (body.category) {
+  if (Array.isArray(body.category)) {
+    if (!body.category.every((c: any) => Types.ObjectId.isValid(c))) {
+      throw new Error("field categories is invalid!");
+    }
+  } else {
     console.log("category", body.category);// add if data aready axist
     const isCatExist: any = await categoryModal.findOne({ name: body.category });
     if (isCatExist) {
@@ -104,10 +108,19 @@ export const PUT = tcWrap(async (req, res) => {
   if (!Types.ObjectId.isValid(id)) {
     throw new Error("field `id` invalid");
   }
-  delete body.id;
-  let bodyData = body;
+  // delete body.id;
+  let bodyData = {
+    ...body,
+    prefQtyOne: convertPrefQty(body, body.prefQtyOne),
+    prefQtyTwo: convertPrefQty(body, body.prefQtyTwo),
+    prefQtyThree: convertPrefQty(body, body.prefQtyThree),
+  }
 
-  if (body.category) {
+  if (Array.isArray(body.category)) {
+    if (!body.category.every((c: any) => Types.ObjectId.isValid(c))) {
+      throw new Error("field categories is invalid!");
+    }
+  } else {
     const getCat = async () => {
       const categoryDoc = await categoryModal.find({
         name: body.category,
@@ -124,7 +137,7 @@ export const PUT = tcWrap(async (req, res) => {
 
   console.log("bodyData::", bodyData);
   const item = await itemModel.findByIdAndUpdate(id, bodyData, {
-    new: true,
+    new: true, runValidators: true
   });
   console.log("item", item);
 
@@ -159,5 +172,17 @@ export const DELETE = tcWrap(async (req, res) => {
   console.log("reqbody", body);
   return res.json({ result: { message: "item delted to inventory", item } });
 });
+
+
+const convertPrefQty = (body: any, value: number) => {
+  console.log("body", body);
+  const buildCost = body.buildCostPrUnit * value;
+  const sellingPrice = (buildCost * 1.15) + 3;
+  return {
+    qty: value,
+    buildCost,
+    sellingPrice
+  }
+}
 
 

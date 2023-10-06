@@ -50,15 +50,9 @@ function AddUnitForm() {
       <div className="bg-white w-full h-full p-6">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-2xl font-bold">Add Unit</h1>
-          {/* <Link href="/dashboard/inventory/units">
-            <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-              Unit List
-            </button>
-          </Link> */}
           <Link href="/dashboard/inventory/units"
             className="inline-flex items-center justify-center gap-2.5 rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
           >
-
             Unit List
           </Link>
         </div>
@@ -77,7 +71,6 @@ function AddUnitForm() {
               <Field
                 as="select"
                 name="type"
-
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
 
               >

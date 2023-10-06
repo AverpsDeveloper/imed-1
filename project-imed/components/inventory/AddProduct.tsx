@@ -1,15 +1,13 @@
 "use client"
 
 import React, { useEffect, useState } from 'react';
-import { Formik, Field, Form, ErrorMessage } from 'formik';
+import { Formik, Field, Form, ErrorMessage, useFormikContext, useField } from 'formik';
 import * as Yup from 'yup';
 import Link from 'next/link';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import Select from 'react-select';
 import { useSearchParams } from 'next/navigation';
-
-
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('Product Name is required'),
@@ -87,7 +85,7 @@ function AddProductForm() {
         })
         .catch((error) => {
           console.error(error);
-          toast.error('There was an error. Please try again');
+          toast.error(error.response.data.error.message);
         });
     } else {
       values.totalCount = 10,
@@ -101,7 +99,7 @@ function AddProductForm() {
         })
         .catch((error) => {
           console.error(error);
-          toast.error('There was an error. Please try again');
+          toast.error(error.response.data.error.message);
         });
     }
 
@@ -118,7 +116,9 @@ function AddProductForm() {
             prefQtyOne: data.result.data.prefQtyOne.qty,
             prefQtyThree: data.result.data.prefQtyThree.qty,
             prefQtyTwo: data.result.data.prefQtyTwo.qty,
-            category: data.result.data.category.map((c: any) => c._id)
+            category: data.result.data.category.map((c: any) => c._id),
+            isActive: data.result.data.isActive ? "1" : "0",
+            repeatConsult: data.result.data.repeatConsult ? "1" : "0",
           }
           setInitialValues(productItem)
 
@@ -234,10 +234,10 @@ function AddProductForm() {
                   as="select"
                   className="border rounded w-full px-3 py-2 mt-1"
                 >
-                  <option value='0'>Active</option>
-                  <option value="1">Inactive</option>
+                  <option value='1'>Active</option>
+                  <option value="0">Inactive</option>
                 </Field>
-                <ErrMessage name="status" />
+                <ErrMessage name="isActive" />
               </div>
 
               <div className="mb-4">
@@ -352,11 +352,18 @@ function AddProductForm() {
 
               <div className="mb-4">
                 <label className="block text-gray-600">Retail Price</label>
-                <Field
+                {/* <Field
                   type="number"
                   name="retailPrice"
                   className="border rounded w-full px-3 py-2 mt-1"
                   placeholder="Enter Retail Price"
+                /> */}
+                <MyField
+                 type="number"
+                 name="retailPrice"
+                 className="border rounded w-full px-3 py-2 mt-1"
+                 placeholder="Enter Retail Price"
+                 disabled
                 />
                 <ErrMessage name="retailPrice" />
               </div>
@@ -400,7 +407,33 @@ const SelectField = ({ field, form, options, isMulti = false }: any) => (
 )
 
 
+const MyField = (props:any) => {
+  const {
+    values: { buildCostPrUnit, fixedQty },
+    touched,
+    setFieldValue,
+  } = useFormikContext<any>();
+  const [field, meta] = useField(props);
 
+  React.useEffect(() => {
+    // set the value of textC, based on textA and textB
+    if (
+      fixedQty  &&
+      buildCostPrUnit &&
+      touched.fixedQty &&
+      touched.buildCostPrUnit
+    ) {
+      setFieldValue(props.name, (+fixedQty) * (+buildCostPrUnit));
+    }
+  }, [fixedQty, buildCostPrUnit, touched.fixedQty, touched.buildCostPrUnit, setFieldValue, props.name]);
+
+  return (
+    <>
+      <input {...props} {...field} />
+      {!!meta.touched && !!meta.error && <div>{meta.error}</div>}
+    </>
+  );
+};
 
 
 
