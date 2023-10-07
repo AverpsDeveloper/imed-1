@@ -4,11 +4,13 @@ import axios from 'axios';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import Loader from "@/components/common/Loader";
 
 function ProductList() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+ 
 
   useEffect(() => {
     // Define your API endpoint URL
@@ -25,18 +27,20 @@ function ProductList() {
         setError(err);
         setLoading(false);
       });
-  }, [products]);
+  }, [loading]);
 
 
-  function productDeleteHandler(id:string){
+  function productDeleteHandler(id){
+    setLoading(true)
     axios.delete("/api/inventory",{data:{id}}).then(({data}) => {
+      setLoading(false)
       toast.success(data.result.message);
     }).catch((err) => {
       toast.success('There was an error. Please try again');
     })
   }
   const router = useRouter();
-  function productEditHandler(id:string){
+  function productEditHandler(id ){
     if(id){
       router.push(`/dashboard/inventory/products/add?id=${id}`)
     }
@@ -44,7 +48,7 @@ function ProductList() {
 
 
   if (loading) {
-    return <div>Loading...</div>;
+    return  <Loader/>;
   }
 
   if (error) {
@@ -87,7 +91,7 @@ function ProductList() {
                 </tr>
           </thead>
           <tbody>
-            {products.map((product :any,index) => (
+            {products.map((product  ,index) => (
               <tr key={product._id}>
               <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark pl-9 xl:pl-11">
                 <p className="text-black dark:text-white">
@@ -101,7 +105,7 @@ function ProductList() {
               </td>
               <td className="border-b border-[#eee] py-5 px-4  dark:border-strokedark ">
                 <h5 className="font-medium text-black dark:text-white">
-                  {product.category?.map((d:any)=>d.name).join(", ")}
+                  {product.category?.map((d )=>d.name).join(", ")}
                 </h5>
               </td>
 

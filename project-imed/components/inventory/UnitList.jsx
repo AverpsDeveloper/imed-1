@@ -4,10 +4,13 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import Loader from "@/components/common/Loader";
+
 function CategoryList() {
 
   const [filterType, setFilterType] = useState('itemTypes');
   const [categories, setTypesData] = useState([])
+  const [loading , setloading] = useState(false)
 
   // Check if categories is undefined or not an array, and set it to an empty array if necessary.
   // if (!Array.isArray(categories)) {
@@ -23,13 +26,17 @@ function CategoryList() {
     category.toLowerCase().includes(searchTerm.toLowerCase())
   );
   function filterHandler(type) {
+    setloading(true)
     setFilterType(type)
   }
   function deleteHandler(name) {
+    setloading(true)
     axios.delete(`/api/types/${filterType}`, { data: { name } }).then(({ data }) => {
       console.log(data);
+      setloading(false)
       toast.success(data.result.message);
     }).catch((error) => {
+      setloading(false)
       toast.error('There was an error. Please try again');
     });
   }
@@ -37,23 +44,32 @@ function CategoryList() {
     axios.get(`/api/types/${filterType}`)
       .then(({ data }) => {
         setTypesData(data.result.data);
+        setloading(false)
       })
       .catch((err) => {
         console.error(err);
+        setloading(false)
         toast.error('There was an error. Please try again');
       });
-  }, [filterType, deleteHandler])
+  }, [loading])
+
+  if (loading){
+    return <>
+      <Loader/>
+    </>
+  }
+
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Unit List</h1>
+        <h1 className="text-2xl font-bold">Type List</h1>
         <Link href="/dashboard/inventory/units/add"
           className="inline-flex items-center justify-center gap-2.5 rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
         >
           <span>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2v-6Z" /></svg>
           </span>
-          Add Unit
+          Add Types
         </Link>
       </div>
       <div className="flex items-center space-x-2">
