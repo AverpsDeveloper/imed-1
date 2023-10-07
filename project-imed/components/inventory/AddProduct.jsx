@@ -8,6 +8,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import Select from 'react-select';
 import { useSearchParams } from 'next/navigation';
+import Loader from "@/components/common/Loader";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('Product Name is required'),
@@ -30,7 +31,7 @@ const validationSchema = Yup.object().shape({
   retailPrice: Yup.number().typeError('Retail Price must be a number').positive('Retail Price must be positive').required('Retail Price is required'),
 });
 
-function ErrMessage({ name }: any) {
+function ErrMessage({ name }) {
   return (
     <ErrorMessage
       name={name}
@@ -42,7 +43,8 @@ function ErrMessage({ name }: any) {
 }
 
 function AddProductForm() {
-
+  
+  const [Loading, setLoading]= useState(false)
   const [itemTypes, setItemTypes] = useState([]);
   const [formOptions, setFormOptions] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -72,7 +74,8 @@ function AddProductForm() {
 
   // console.log("erros", errors)
 
-  const onSubmit = (values: any, { resetForm }: any) => {
+  const onSubmit = (values, { resetForm }) => {
+    setLoading(true)
     // Handle the form submission here    
     if (paramsId) {
       values.id = paramsId;
@@ -80,26 +83,32 @@ function AddProductForm() {
       axios.put('/api/inventory', values)
         .then(({ data }) => {
           console.log("data::", data);
-          toast.success(data.result.message);
           resetForm(); // Reset the form after successful submission
+          setLoading(false)
+          toast.success(data.result.message);
         })
         .catch((error) => {
+          setLoading(false)
           console.error(error);
           toast.error(error.response.data.error.message);
+          
         });
     } else {
       values.totalCount = 10,
         values.fixedQty = "90";
       values.saving = "calc";
+      setLoading(true)
       axios.post('/api/inventory', values)
         .then(({ data }) => {
           console.log(data);
           toast.success(data.result.message);
           resetForm(); // Reset the form after successful submission
+          setLoading(false)
         })
         .catch((error) => {
           console.error(error);
           toast.error(error.response.data.error.message);
+          setLoading(false)
         });
     }
 
@@ -107,6 +116,7 @@ function AddProductForm() {
 
   useEffect(() => {
     if (paramsId) {
+      setLoading(true)
       axios.get(`/api/inventory/${paramsId}`)
         .then(({ data }) => {
           console.log("data.result.data.prefOtyOne.qty", data.result.data.prefQtyOne);
@@ -116,22 +126,23 @@ function AddProductForm() {
             prefQtyOne: data.result.data.prefQtyOne.qty,
             prefQtyThree: data.result.data.prefQtyThree.qty,
             prefQtyTwo: data.result.data.prefQtyTwo.qty,
-            category: data.result.data.category.map((c: any) => c._id),
+            category: data.result.data.category.map((c) => c._id),
             isActive: data.result.data.isActive ? "1" : "0",
             repeatConsult: data.result.data.repeatConsult ? "1" : "0",
           }
           setInitialValues(productItem)
+          setLoading(false)
 
         }).catch((err) => {
           console.log("error:::", err);
-
+          setLoading(false)
           // toast.error(error.message);
         })
     }
 
     axios.get(`/api/types/itemTypes`)
       .then(({ data }) => {
-        let items = data.result.data.map((item: any) => (
+        let items = data.result.data.map((item) => (
           { value: item, label: item }
         ))
         setItemTypes(items)
@@ -139,7 +150,7 @@ function AddProductForm() {
 
     axios.get(`/api/types/formTypes`)
       .then(({ data }) => {
-        let items = data.result.data.map((item: any) => (
+        let items = data.result.data.map((item) => (
           { value: item, label: item }
         ))
         setFormOptions(items)
@@ -147,19 +158,24 @@ function AddProductForm() {
 
     axios.get(`/api/categories`)
       .then(({ data }) => {
-        let items = data.result.data.map((item: any) => (
+        let items = data.result.data.map((item) => (
           { value: item.name, label: item.name, id: item._id }
         ))
         setCategories(items)
       })
-  }, [paramsId])
+      setLoading(false)
+  }, [paramsId, Loading])
 
   // const dispensedFormOptions = [
   //   { value: 'box', label: 'Box' },
   //   { value: 'bottle', label: 'Bottle' },
   //   // Add more dispensed form options as needed
   // ];
-
+if (Loading){
+  return <>
+    <Loader/>
+  </>
+}
 
   return (
     <div className="min-h-screen bg-gray-200 flex ">
@@ -385,13 +401,13 @@ function AddProductForm() {
 
 // Custom component for react-select
 
-const SelectField = ({ field, form, options, isMulti = false }: any) => (
+const SelectField = ({ field, form, options, isMulti = false }) => (
   <Select
     {...field}
     isMulti={isMulti}
     options={options}
     defaultValue={field.value || 'Select'}
-    onChange={(selectedOption: any) => {
+    onChange={(selectedOption) => {
       form.setFieldValue(field.name, selectedOption ?
         Array.isArray(selectedOption) ? selectedOption.map(s => s.id) : selectedOption.value : ''
       ); // Extract the value property or set an empty string if nothing is selected
@@ -401,18 +417,18 @@ const SelectField = ({ field, form, options, isMulti = false }: any) => (
       // Trigger onBlur only when the user clicks on the Select component
       form.setFieldTouched(field.name, true);
     }}
-    value={options.filter((option: any) => Array.isArray(field.value) ? field.value.includes(option.id) : option.value === field.value)} // Set the value prop to the corresponding field value
+    value={options.filter((option) => Array.isArray(field.value) ? field.value.includes(option.id) : option.value === field.value)} // Set the value prop to the corresponding field value
     isClearable
   />
 )
 
 
-const MyField = (props:any) => {
+const MyField = (props) => {
   const {
     values: { buildCostPrUnit, fixedQty },
     touched,
     setFieldValue,
-  } = useFormikContext<any>();
+  } = useFormikContext();
   const [field, meta] = useField(props);
 
   React.useEffect(() => {
