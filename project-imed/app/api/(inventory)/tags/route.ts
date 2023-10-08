@@ -1,10 +1,10 @@
-import categoryModal from "@/libs/models/categoryModal";
+import tagModel from "@/libs/models/tagModel";
 import tcWrap from "@/libs/utils/tcWrap";
 import { Types } from "mongoose";
 
 export const GET = tcWrap(async (req, res) => {
     const { search, name } = req.query;
-    let filter: any = [{ deletedAt: { $exists: false }, isActive: true }];
+    let filter: any = [{ deletedAt: { $exists: false } }];
     if (search) {
         filter.push({
             $or: [
@@ -18,26 +18,26 @@ export const GET = tcWrap(async (req, res) => {
             name: name
         });
     }
-    const data = await categoryModal.find({ $and: filter });
-    return res.json({ result: { message: "categories", data: data } });
+    const data = await tagModel.find({ $and: filter });
+    return res.json({ result: { message: "tags", data: data } });
 });
 
 export const POST = tcWrap(async (req, res) => {
     const body = await req.json();
-    if (body.categories && !body.categories.length) {
-        throw new Error("field categories can't empty");
+    if (body.tags && !body.tags.length) {
+        throw new Error("field tags can't empty");
     }
     if(body.status == "active"){
         body.isActive = true;
     }else{
         body.isActive = false;
     }
-    const item = await categoryModal.create(
-        body.categories
-            ? body.categories : { ...body }
+    const item = await tagModel.create(
+        body.tags
+            ? body.tags : { ...body }
     );
     console.log("reqbody", body);
-    return res.json({ result: { message: "item add to categories", item } });
+    return res.json({ result: { message: "item add to tags", item } });
 });
 
 export const PUT = tcWrap(async (req, res) => {
@@ -55,17 +55,17 @@ export const PUT = tcWrap(async (req, res) => {
     if (!Types.ObjectId.isValid(id)) {
         throw new Error("field `id` invalid");
     }
-    delete body.id;
+ 
     let bodyData = body;
 
     console.log("bodyData", bodyData);
-    const data = await categoryModal.findByIdAndUpdate(id, bodyData, {
+    const data = await tagModel.findByIdAndUpdate(id, bodyData, {
         new: true,
     });
     console.log("item", data);
 
     console.log("reqbody", body);
-    return res.json({ result: { message: "item updated to categories", data } });
+    return res.json({ result: { message: "item updated to tags", data } });
 });
 
 export const DELETE = tcWrap(async (req, res) => {
@@ -80,15 +80,15 @@ export const DELETE = tcWrap(async (req, res) => {
         throw new Error("field `id` invalid");
     }
     console.log("bodyData", body.id);
-    const findItem: any = await categoryModal.findById(body.id);
+    const findItem: any = await tagModel.findById(body.id);
     if (findItem.deletedAt as any) {
         throw new Error("Aready deleted");
     }
-    const item = await categoryModal.findByIdAndDelete(
-        body.id,
+    const item = await tagModel.findByIdAndDelete(
+        body.id
     );
     console.log("item", item);
 
     console.log("reqbody", body);
-    return res.json({ result: { message: "item delted to categories", item } });
+    return res.json({ result: { message: "item delted to tags", item } });
 });

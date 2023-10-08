@@ -13,7 +13,9 @@ import Loader from "@/components/common/Loader";
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('Product Name is required'),
   type: Yup.string().required('Item Type is required'),
-  category: Yup.array().of(Yup.string()).min(1),
+  categories: Yup.array().of(Yup.string()).min(1),
+  tags: Yup.array().of(Yup.string()).min(1),
+  healthConditions: Yup.array().of(Yup.string()).min(1),
   codeName: Yup.string().required('Item Code is required'),
   form: Yup.string().required('Form is required'),
   dispanseForm: Yup.string().required('Dispensed Form is required'),
@@ -27,7 +29,7 @@ const validationSchema = Yup.object().shape({
     (value) => value == 0 || value == 1),
   yearLimit: Yup.number().typeError('Limit per Year must be a number').integer('Limit per Year must be an integer').positive('Limit per Year must be positive').required('Limit per Year is required'),
   buildCostPrUnit: Yup.number().typeError('Manufacturing Price per Unit must be a number').positive('Manufacturing Price per Unit must be positive').required('Manufacturing Price per Unit is required'),
-  fixedQty: Yup.number().typeError('Qty per Month Supply must be a number').integer('Qty per Month Supply must be an integer').positive('Qty per Month Supply must be positive').required('Qty per Month Supply is required'),
+  prefQtyFixed: Yup.number().typeError('Qty per Month Supply must be a number').integer('Qty per Month Supply must be an integer').positive('Qty per Month Supply must be positive').required('Qty per Month Supply is required'),
   retailPrice: Yup.number().typeError('Retail Price must be a number').positive('Retail Price must be positive').required('Retail Price is required'),
 });
 
@@ -48,10 +50,12 @@ function AddProductForm() {
   const [itemTypes, setItemTypes] = useState([]);
   const [formOptions, setFormOptions] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [tags, setTags] = useState([]);
+  const [healthConditions, setHealthConditions] = useState([]);
   const [initialValues, setInitialValues] = useState({
     name: '',
     type: null,
-    category: null,
+    categories: null,
     codeName: '',
     status: true,
     form: null,
@@ -64,7 +68,7 @@ function AddProductForm() {
     yearLimit: '',
     buildCostPrUnit
       : '',
-    fixedQty: '',
+    prefQtyFixed: '',
     retailPrice: '',
   });
   const params = useSearchParams();
@@ -95,7 +99,7 @@ function AddProductForm() {
         });
     } else {
       values.totalCount = 10,
-        values.fixedQty = "90";
+        values.prefQtyFixed = "90";
       values.saving = "calc";
       setLoading(true)
       axios.post('/api/inventory', values)
@@ -111,7 +115,6 @@ function AddProductForm() {
           setLoading(false)
         });
     }
-
   };
 
   useEffect(() => {
@@ -126,7 +129,7 @@ function AddProductForm() {
             prefQtyOne: data.result.data.prefQtyOne.qty,
             prefQtyThree: data.result.data.prefQtyThree.qty,
             prefQtyTwo: data.result.data.prefQtyTwo.qty,
-            category: data.result.data.category.map((c) => c._id),
+            prefQtyFixed: data.result.data.prefQtyFixed.qty,
             isActive: data.result.data.isActive ? "1" : "0",
             repeatConsult: data.result.data.repeatConsult ? "1" : "0",
           }
@@ -159,12 +162,25 @@ function AddProductForm() {
     axios.get(`/api/categories`)
       .then(({ data }) => {
         let items = data.result.data.map((item) => (
-          { value: item.name, label: item.name, id: item._id }
+          { value: item.name, label: item.name, }
         ))
         setCategories(items)
       })
-      setLoading(false)
-  }, [paramsId, Loading])
+    axios.get(`/api/tags`)
+      .then(({ data }) => {
+        let items = data.result.data.map((item) => (
+          { value: item.name, label: item.name,  }
+        ))
+        setTags(items)
+      })
+    axios.get(`/api/health-conditions`)
+      .then(({ data }) => {
+        let items = data.result.data.map((item) => (
+          { value: item.name, label: item.name,  }
+        ))
+        setHealthConditions(items)
+      })
+  }, [paramsId])
 
   // const dispensedFormOptions = [
   //   { value: 'box', label: 'Box' },
@@ -188,13 +204,11 @@ if (Loading){
             </button>
           </Link>
         </div>
-
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={onSubmit}
           enableReinitialize={true}
-
         >
           {({ errors, touched }) =>{ 
             console.log("erors", errors);
@@ -222,14 +236,34 @@ if (Loading){
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-600">Category</label>
+                <label className="block text-gray-600">Categories</label>
                 <Field
-                  name="category"
+                  name="categories"
                   component={SelectField} // Custom component for react-select
                   options={categories}
                   isMulti="true"
                 />
-                <ErrMessage name="category" />
+                <ErrMessage name="categories" />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-600">health Conditions</label>
+                <Field
+                  name="healthConditions"
+                  component={SelectField} // Custom component for react-select
+                  options={healthConditions}
+                  isMulti="true"
+                />
+                <ErrMessage name="healthConditions" />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-600">Tags</label>
+                <Field
+                  name="tags"
+                  component={SelectField} // Custom component for react-select
+                  options={tags}
+                  isMulti="true"
+                />
+                <ErrMessage name="tags" />
               </div>
 
               <div className="mb-4">
@@ -359,27 +393,20 @@ if (Loading){
                 <label className="block text-gray-600">Qty per Month Supply</label>
                 <Field
                   type="number"
-                  name="fixedQty"
+                  name="prefQtyFixed"
                   className="border rounded w-full px-3 py-2 mt-1"
                   placeholder="Enter Qty per Month Supply"
                 />
-                <ErrMessage name="fixedQty" />
+                <ErrMessage name="prefQtyFixed" />
               </div>
 
               <div className="mb-4">
                 <label className="block text-gray-600">Retail Price</label>
-                {/* <Field
-                  type="number"
-                  name="retailPrice"
-                  className="border rounded w-full px-3 py-2 mt-1"
-                  placeholder="Enter Retail Price"
-                /> */}
-                <MyField
+                <Field
                  type="number"
                  name="retailPrice"
                  className="border rounded w-full px-3 py-2 mt-1"
                  placeholder="Enter Retail Price"
-                 disabled
                 />
                 <ErrMessage name="retailPrice" />
               </div>
@@ -390,7 +417,6 @@ if (Loading){
               >
                 {paramsId ? "Update" : "Save"}
               </button>
-
             </Form>
           )}}
         </Formik>
@@ -409,7 +435,7 @@ const SelectField = ({ field, form, options, isMulti = false }) => (
     defaultValue={field.value || 'Select'}
     onChange={(selectedOption) => {
       form.setFieldValue(field.name, selectedOption ?
-        Array.isArray(selectedOption) ? selectedOption.map(s => s.id) : selectedOption.value : ''
+        Array.isArray(selectedOption) ? selectedOption.map(s => s.value) : selectedOption.value : ''
       ); // Extract the value property or set an empty string if nothing is selected
       form.setFieldTouched(field.name, true);
     }}
@@ -417,39 +443,39 @@ const SelectField = ({ field, form, options, isMulti = false }) => (
       // Trigger onBlur only when the user clicks on the Select component
       form.setFieldTouched(field.name, true);
     }}
-    value={options.filter((option) => Array.isArray(field.value) ? field.value.includes(option.id) : option.value === field.value)} // Set the value prop to the corresponding field value
+    value={options.filter((option) => Array.isArray(field.value) ? field.value.includes(option.value) : option.value === field.value)} // Set the value prop to the corresponding field value
     isClearable
   />
 )
 
 
-const MyField = (props) => {
-  const {
-    values: { buildCostPrUnit, fixedQty },
-    touched,
-    setFieldValue,
-  } = useFormikContext();
-  const [field, meta] = useField(props);
+// const MyField = (props:any) => {
+//   const {
+//     values: { buildCostPrUnit, prefQtyFixed },
+//     touched,
+//     setFieldValue,
+//   } = useFormikContext<any>();
+//   const [field, meta] = useField(props);
 
-  React.useEffect(() => {
-    // set the value of textC, based on textA and textB
-    if (
-      fixedQty  &&
-      buildCostPrUnit &&
-      touched.fixedQty &&
-      touched.buildCostPrUnit
-    ) {
-      setFieldValue(props.name, (+fixedQty) * (+buildCostPrUnit));
-    }
-  }, [fixedQty, buildCostPrUnit, touched.fixedQty, touched.buildCostPrUnit, setFieldValue, props.name]);
+//   React.useEffect(() => {
+//     // set the value of textC, based on textA and textB
+//     if (
+//       prefQtyFixed  &&
+//       buildCostPrUnit &&
+//       touched.prefQtyFixed &&
+//       touched.buildCostPrUnit
+//     ) {
+//       setFieldValue(props.name, (+prefQtyFixed) * (+buildCostPrUnit));
+//     }
+//   }, [prefQtyFixed, buildCostPrUnit, touched.prefQtyFixed, touched.buildCostPrUnit, setFieldValue, props.name]);
 
-  return (
-    <>
-      <input {...props} {...field} />
-      {!!meta.touched && !!meta.error && <div>{meta.error}</div>}
-    </>
-  );
-};
+//   return (
+//     <>
+//       <input {...props} {...field} />
+//       {!!meta.touched && !!meta.error && <div>{meta.error}</div>}
+//     </>
+//   );
+// };
 
 
 
