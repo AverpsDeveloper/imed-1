@@ -2,6 +2,7 @@ import itemModel from "@/libs/models/itemModel";
 import categoryModal from "@/libs/models/categoryModal";
 import tcWrap from "@/libs/utils/tcWrap";
 import { Types } from "mongoose";
+import adminConfModel from "@/libs/models/adminConfModel";
 
 export const GET = tcWrap(async (req, res) => {
   const { search, category, type, price, page, limit } = req.query;
@@ -34,12 +35,7 @@ export const GET = tcWrap(async (req, res) => {
     console.log("category", category);
     if (Types.ObjectId.isValid(category)) {
       filter.push({
-        category: { $all: [category] },
-      });
-    } else {
-      const categoryDoc = await categoryModal.find({ name: category });
-      filter.push({
-        category: { $all: categoryDoc.map((d) => new Types.ObjectId(d._id)) },
+        categories: { $in: [category] },
       });
     }
   }
@@ -48,7 +44,7 @@ export const GET = tcWrap(async (req, res) => {
       {
         skip: paginat.page * paginat.limit,
         limit: paginat.limit
-      }).populate('category', "name"),
+      }),
     itemModel.count({ $and: filter })
   ]);
 
@@ -69,30 +65,15 @@ export const POST = tcWrap(async (req, res) => {
   const body = await req.json();
   console.log("body::", body);
 
-  let cat: any;
-  if (Array.isArray(body.category)) {
-    if (!body.category.every((c: any) => Types.ObjectId.isValid(c))) {
-      throw new Error("field categories is invalid!");
-    }
-  } else {
-    console.log("category", body.category);// add if data aready axist
-    const isCatExist: any = await categoryModal.findOne({ name: body.category });
-    if (isCatExist) {
-      if (isCatExist.deletedAt) {
-        throw new Error("field category is deleted! change category or restore category");
-      }
-      cat = isCatExist;
-    } else {
-      cat = await categoryModal.create({ name: body.category });
-    }
-    console.log("categoryDoc", cat);
-  }
-
-  const item = await itemModel.create({
+  const admin: any = await adminConfModel.findOne();
+  const bodyData = {
     ...body,
-    ...(cat?._id && { category: cat._id }),
-  });
-
+    prefQtyFixed: convertPrefQty(body, body.prefQtyFixed, admin.charge),
+    prefQtyOne: convertPrefQty(body, body.prefQtyOne, admin.charge),
+    prefQtyTwo: convertPrefQty(body, body.prefQtyTwo, admin.charge),
+    prefQtyThree: convertPrefQty(body, body.prefQtyThree, admin.charge),
+  }
+  const item = await itemModel.create(bodyData);
   console.log("reqbody", body);
   return res.json({ result: { message: "item add to inventory", item } });
 });
@@ -109,30 +90,13 @@ export const PUT = tcWrap(async (req, res) => {
     throw new Error("field `id` invalid");
   }
   // delete body.id;
+  const admin: any = await adminConfModel.findOne();
   let bodyData = {
     ...body,
-    prefQtyOne: convertPrefQty(body, body.prefQtyOne),
-    prefQtyTwo: convertPrefQty(body, body.prefQtyTwo),
-    prefQtyThree: convertPrefQty(body, body.prefQtyThree),
-  }
-
-  if (Array.isArray(body.category)) {
-    if (!body.category.every((c: any) => Types.ObjectId.isValid(c))) {
-      throw new Error("field categories is invalid!");
-    }
-  } else {
-    const getCat = async () => {
-      const categoryDoc = await categoryModal.find({
-        name: body.category,
-      });
-      return categoryDoc.map((d) => d._id);
-    };
-    bodyData = {
-      ...bodyData,
-      category: Types.ObjectId.isValid(body.category)
-        ? [body.category]
-        : await getCat(),
-    };
+    prefQtyFixed: convertPrefQty(body, body.prefQtyOne, admin.charge),
+    prefQtyOne: convertPrefQty(body, body.prefQtyOne, admin.charge),
+    prefQtyTwo: convertPrefQty(body, body.prefQtyTwo, admin.charge),
+    prefQtyThree: convertPrefQty(body, body.prefQtyThree, admin.charge),
   }
 
   console.log("bodyData::", bodyData);
@@ -174,14 +138,14 @@ export const DELETE = tcWrap(async (req, res) => {
 });
 
 
-const convertPrefQty = (body: any, value: number) => {
-  console.log("body", body);
+const convertPrefQty = (body: any, value: number, charge: any) => {
   const buildCost = body.buildCostPrUnit * value;
-  const sellingPrice = (buildCost * 1.15) + 3;
+  const sellingPrice = (buildCost * charge.serviceRate) + charge.serviceCharge;
   return {
     qty: value,
     buildCost,
-    sellingPrice
+    sellingPrice,
+    saving: body.retailPrice - sellingPrice
   }
 }
 
