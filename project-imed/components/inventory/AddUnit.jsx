@@ -10,8 +10,8 @@ import Loader from "@/components/common/Loader";
 
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string().required('Unit Name is required'),
-  type: Yup.string().required('Select type is required'),
+  name: Yup.string().required('Unit name is required'),
+  type: Yup.string().required('Please select type'),
 });
 
 function ErrMessage({ name }) {
@@ -104,7 +104,7 @@ if (loading){
                 type="text"
                 name="name"
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                placeholder="Enter type name"
+                placeholder="Type name"
               />
               <ErrMessage name="name" />
             </div>

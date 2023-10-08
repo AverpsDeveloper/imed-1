@@ -11,26 +11,40 @@ import { useSearchParams } from 'next/navigation';
 import Loader from "@/components/common/Loader";
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string().required('Product Name is required'),
-  type: Yup.string().required('Item Type is required'),
+  name: Yup.string().required('Product Name is required.'),
+  type: Yup.string().required('Item Type is required.'),
   categories: Yup.array().of(Yup.string()).min(1),
   tags: Yup.array().of(Yup.string()).min(1),
   healthConditions: Yup.array().of(Yup.string()).min(1),
-  codeName: Yup.string().required('Item Code is required'),
-  form: Yup.string().required('Form is required'),
-  dispanseForm: Yup.string().required('Dispensed Form is required'),
-  strength: Yup.string().required('Strength is required'),
-  prefQtyOne: Yup.string().required('Preferred Quantity 1 is required'),
-  prefQtyTwo: Yup.string().required('Preferred Quantity 2 is required'),
-  prefQtyThree: Yup.string().required('Preferred Quantity 3 is required'),
-  repeatConsult: Yup.number().test('is boolean', 'Please enter either 1 or 0',
-    (value) => value == 0 || value == 1),
-  isActive: Yup.number().test('is boolean', 'Please enter either 1 or 0',
-    (value) => value == 0 || value == 1),
-  yearLimit: Yup.number().typeError('Limit per Year must be a number').integer('Limit per Year must be an integer').positive('Limit per Year must be positive').required('Limit per Year is required'),
-  buildCostPrUnit: Yup.number().typeError('Manufacturing Price per Unit must be a number').positive('Manufacturing Price per Unit must be positive').required('Manufacturing Price per Unit is required'),
-  prefQtyFixed: Yup.number().typeError('Qty per Month Supply must be a number').integer('Qty per Month Supply must be an integer').positive('Qty per Month Supply must be positive').required('Qty per Month Supply is required'),
-  retailPrice: Yup.number().typeError('Retail Price must be a number').positive('Retail Price must be positive').required('Retail Price is required'),
+  codeName: Yup.string().required('Item Code is required.'),
+  form: Yup.string().required('Form is required.'),
+  dispanseForm: Yup.string().required('Dispensed Form is required.'),
+  strength: Yup.string().required('Strength is required.'),
+  prefQtyOne: Yup.string().required('Preferred quantity 1 is required.'),
+  prefQtyTwo: Yup.string().required('Preferred quantity 2 is required.'),
+  prefQtyThree: Yup.string().required('Preferred quantity 3 is required.'),
+  repeatConsult: Yup.number().test('is boolean', 'Please enter either 1 or 0.',
+    (value) => value === 0 || value === 1),
+  isActive: Yup.number().test('is boolean', 'Please enter either 1 or 0.',
+    (value) => value === 0 || value === 1),
+  yearLimit: Yup.number()
+    .typeError('Limit per year must be a number.')
+    .integer('Limit per year must be an integer.')
+    .positive('Limit per year must be positive.')
+    .required('Limit per year is required.'),
+  buildCostPrUnit: Yup.number()
+    .typeError('Manufacturing price per unit must be a number.')
+    .positive('Manufacturing price per unit must be positive.')
+    .required('Manufacturing price per unit is required.'),
+  prefQtyFixed: Yup.number()
+    .typeError('Quantity per month supply must be a number.')
+    .integer('Quantity per month supply must be an integer.')
+    .positive('Quantity per month supply must be positive.')
+    .required('Quantity per month supply is required.'),
+  retailPrice: Yup.number()
+    .typeError('Retail price must be a number.')
+    .positive('Retail price must be positive.')
+    .required('Retail price is required.'),
 });
 
 function ErrMessage({ name }) {
@@ -122,8 +136,6 @@ function AddProductForm() {
       setLoading(true)
       axios.get(`/api/inventory/${paramsId}`)
         .then(({ data }) => {
-          console.log("data.result.data.prefOtyOne.qty", data.result.data.prefQtyOne);
-
           let productItem = {
             ...data.result.data,
             prefQtyOne: data.result.data.prefQtyOne.qty,
@@ -137,9 +149,8 @@ function AddProductForm() {
           setLoading(false)
 
         }).catch((err) => {
-          console.log("error:::", err);
           setLoading(false)
-          // toast.error(error.message);
+          toast.error("There is some issue please refresh page");
         })
     }
 
@@ -197,7 +208,7 @@ if (Loading){
     <div className="min-h-screen bg-gray-200 flex ">
       <div className="bg-white w-full h-full p-6">
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold">Add Product</h1>
+          <h1 className="text-2xl font-bold">Add new product</h1>
           <Link href="/dashboard/inventory/products">
             <button className="inline-flex items-center justify-center gap-2.5 rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
               Product List
@@ -215,18 +226,18 @@ if (Loading){
             return (
             <Form >
               <div className="mb-4">
-                <label className="block text-gray-600">Product Name</label>
+                <label className="block text-gray-600">Product name</label>
                 <Field
                   type="text"
                   name="name"
                   className="border rounded w-full px-3 py-2 mt-1"
-                  placeholder="Enter Product Name"
+                  placeholder="Product name"
                 />
                 <ErrMessage name="name" />
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-600">Item Type</label>
+                <label className="block text-gray-600">Item type</label>
                 <Field
                   name="type"
                   component={SelectField} // Custom component for react-select
@@ -236,7 +247,7 @@ if (Loading){
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-600">Categories</label>
+                <label className="block text-gray-600">Select categories</label>
                 <Field
                   name="categories"
                   component={SelectField} // Custom component for react-select
@@ -246,7 +257,7 @@ if (Loading){
                 <ErrMessage name="categories" />
               </div>
               <div className="mb-4">
-                <label className="block text-gray-600">health Conditions</label>
+                <label className="block text-gray-600">Health conditions</label>
                 <Field
                   name="healthConditions"
                   component={SelectField} // Custom component for react-select
@@ -256,7 +267,7 @@ if (Loading){
                 <ErrMessage name="healthConditions" />
               </div>
               <div className="mb-4">
-                <label className="block text-gray-600">Tags</label>
+                <label className="block text-gray-600">Select tags</label>
                 <Field
                   name="tags"
                   component={SelectField} // Custom component for react-select
@@ -272,13 +283,13 @@ if (Loading){
                   type="text"
                   name="codeName"
                   className="border rounded w-full px-3 py-2 mt-1"
-                  placeholder="Enter Item Code"
+                  placeholder="Item code"
                 />
                 <ErrMessage name="codeName" />
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-600">Status</label>
+                <label className="block text-gray-600">Select product Status</label>
                 <Field
                   name="isActive"
                   as="select"
@@ -291,7 +302,7 @@ if (Loading){
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-600">Form</label>
+                <label className="block text-gray-600">Form type</label>
                 <Field
                   name="form"
                   component={SelectField}
@@ -301,7 +312,7 @@ if (Loading){
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-600">Dispensed Form</label>
+                <label className="block text-gray-600">Dispensed Form type</label>
                 <Field
                   name="dispanseForm"
                   component={SelectField}
@@ -316,46 +327,46 @@ if (Loading){
                   type="text"
                   name="strength"
                   className="border rounded w-full px-3 py-2 mt-1"
-                  placeholder="Enter Strength"
+                  placeholder="Strength"
                 />
                 <ErrMessage name="strength" />
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-600">Preferred Quantity 1</label>
+                <label className="block text-gray-600">Preferred quantity 1</label>
                 <Field
                   type="text"
                   name="prefQtyOne"
                   className="border rounded w-full px-3 py-2 mt-1"
-                  placeholder="Enter Preferred Quantity 1"
+                  placeholder="Preferred quantity 1"
                 />
                 <ErrMessage name="prefQtyOne" />
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-600">Preferred Quantity 2</label>
+                <label className="block text-gray-600">Preferred quantity 2</label>
                 <Field
                   type="text"
                   name="prefQtyTwo"
                   className="border rounded w-full px-3 py-2 mt-1"
-                  placeholder="Enter Preferred Quantity 2"
+                  placeholder="Preferred quantity 2"
                 />
                 <ErrMessage name="prefQtyTwo" />
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-600">Preferred Quantity 3</label>
+                <label className="block text-gray-600">Preferred quantity 3</label>
                 <Field
                   type="text"
                   name="prefQtyThree"
                   className="border rounded w-full px-3 py-2 mt-1"
-                  placeholder="Enter Preferred Quantity 3"
+                  placeholder="Preferred quantity 3"
                 />
                 <ErrMessage name="prefQtyThree" />
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-600">Repeat Consultation Within 1 Year</label>
+                <label className="block text-gray-600">Repeat consultation within 1 year</label>
                 <Field
                   as="select"
                   name="repeatConsult"
@@ -368,45 +379,45 @@ if (Loading){
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-600">Limit per Year</label>
+                <label className="block text-gray-600">Limit per year</label>
                 <Field
                   type="number"
                   name="yearLimit"
                   className="border rounded w-full px-3 py-2 mt-1"
-                  placeholder="Enter Limit per Year"
+                  placeholder="Limit per year"
                 />
                 <ErrMessage name="yearLimit" />
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-600">Manufacturing Price per Unit</label>
+                <label className="block text-gray-600">Manufacturing price per unit</label>
                 <Field
                   type="number"
                   name="buildCostPrUnit"
                   className="border rounded w-full px-3 py-2 mt-1"
-                  placeholder="Enter Manufacturing Price per Unit"
+                  placeholder="Manufacturing price per unit"
                 />
                 <ErrMessage name="buildCostPrUnit" />
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-600">Qty per Month Supply</label>
+                <label className="block text-gray-600">Quantity per month supply</label>
                 <Field
                   type="number"
                   name="prefQtyFixed"
                   className="border rounded w-full px-3 py-2 mt-1"
-                  placeholder="Enter Qty per Month Supply"
+                  placeholder="Quantity per month supply"
                 />
                 <ErrMessage name="prefQtyFixed" />
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-600">Retail Price</label>
+                <label className="block text-gray-600">Retail price</label>
                 <Field
                  type="number"
                  name="retailPrice"
                  className="border rounded w-full px-3 py-2 mt-1"
-                 placeholder="Enter Retail Price"
+                 placeholder="Retail price"
                 />
                 <ErrMessage name="retailPrice" />
               </div>

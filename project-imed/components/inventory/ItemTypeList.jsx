@@ -23,7 +23,7 @@ function CategoryList({ categories }) {
         <h1 className="text-2xl font-bold">Item Type List</h1>
         <Link href="/dashboard/inventory/items-type/add">
           <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-            Add Item Type 
+            Add Item type 
           </button>
         </Link>
       </div>
