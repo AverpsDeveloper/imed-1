@@ -8,6 +8,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import Select from 'react-select';
 import { useSearchParams } from 'next/navigation';
+import Loader from "@/components/common/Loader";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('Product Name is required'),
@@ -32,7 +33,7 @@ const validationSchema = Yup.object().shape({
   retailPrice: Yup.number().typeError('Retail Price must be a number').positive('Retail Price must be positive').required('Retail Price is required'),
 });
 
-function ErrMessage({ name }: any) {
+function ErrMessage({ name }) {
   return (
     <ErrorMessage
       name={name}
@@ -44,7 +45,8 @@ function ErrMessage({ name }: any) {
 }
 
 function AddProductForm() {
-
+  
+  const [Loading, setLoading]= useState(false)
   const [itemTypes, setItemTypes] = useState([]);
   const [formOptions, setFormOptions] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -76,7 +78,8 @@ function AddProductForm() {
 
   // console.log("erros", errors)
 
-  const onSubmit = (values: any, { resetForm }: any) => {
+  const onSubmit = (values, { resetForm }) => {
+    setLoading(true)
     // Handle the form submission here    
     if (paramsId) {
       values.id = paramsId;
@@ -84,32 +87,39 @@ function AddProductForm() {
       axios.put('/api/inventory', values)
         .then(({ data }) => {
           console.log("data::", data);
-          toast.success(data.result.message);
           resetForm(); // Reset the form after successful submission
+          setLoading(false)
+          toast.success(data.result.message);
         })
         .catch((error) => {
+          setLoading(false)
           console.error(error);
           toast.error(error.response.data.error.message);
+          
         });
     } else {
       values.totalCount = 10,
         values.prefQtyFixed = "90";
       values.saving = "calc";
+      setLoading(true)
       axios.post('/api/inventory', values)
         .then(({ data }) => {
           console.log(data);
           toast.success(data.result.message);
           resetForm(); // Reset the form after successful submission
+          setLoading(false)
         })
         .catch((error) => {
           console.error(error);
           toast.error(error.response.data.error.message);
+          setLoading(false)
         });
     }
   };
 
   useEffect(() => {
     if (paramsId) {
+      setLoading(true)
       axios.get(`/api/inventory/${paramsId}`)
         .then(({ data }) => {
           console.log("data.result.data.prefOtyOne.qty", data.result.data.prefQtyOne);
@@ -124,17 +134,18 @@ function AddProductForm() {
             repeatConsult: data.result.data.repeatConsult ? "1" : "0",
           }
           setInitialValues(productItem)
+          setLoading(false)
 
         }).catch((err) => {
           console.log("error:::", err);
-
+          setLoading(false)
           // toast.error(error.message);
         })
     }
 
     axios.get(`/api/types/itemTypes`)
       .then(({ data }) => {
-        let items = data.result.data.map((item: any) => (
+        let items = data.result.data.map((item) => (
           { value: item, label: item }
         ))
         setItemTypes(items)
@@ -142,7 +153,7 @@ function AddProductForm() {
 
     axios.get(`/api/types/formTypes`)
       .then(({ data }) => {
-        let items = data.result.data.map((item: any) => (
+        let items = data.result.data.map((item) => (
           { value: item, label: item }
         ))
         setFormOptions(items)
@@ -150,21 +161,21 @@ function AddProductForm() {
 
     axios.get(`/api/categories`)
       .then(({ data }) => {
-        let items = data.result.data.map((item: any) => (
+        let items = data.result.data.map((item) => (
           { value: item.name, label: item.name, }
         ))
         setCategories(items)
       })
     axios.get(`/api/tags`)
       .then(({ data }) => {
-        let items = data.result.data.map((item: any) => (
+        let items = data.result.data.map((item) => (
           { value: item.name, label: item.name,  }
         ))
         setTags(items)
       })
     axios.get(`/api/health-conditions`)
       .then(({ data }) => {
-        let items = data.result.data.map((item: any) => (
+        let items = data.result.data.map((item) => (
           { value: item.name, label: item.name,  }
         ))
         setHealthConditions(items)
@@ -176,7 +187,11 @@ function AddProductForm() {
   //   { value: 'bottle', label: 'Bottle' },
   //   // Add more dispensed form options as needed
   // ];
-
+if (Loading){
+  return <>
+    <Loader/>
+  </>
+}
 
   return (
     <div className="min-h-screen bg-gray-200 flex ">
@@ -412,13 +427,13 @@ function AddProductForm() {
 
 // Custom component for react-select
 
-const SelectField = ({ field, form, options, isMulti = false }: any) => (
+const SelectField = ({ field, form, options, isMulti = false }) => (
   <Select
     {...field}
     isMulti={isMulti}
     options={options}
     defaultValue={field.value || 'Select'}
-    onChange={(selectedOption: any) => {
+    onChange={(selectedOption) => {
       form.setFieldValue(field.name, selectedOption ?
         Array.isArray(selectedOption) ? selectedOption.map(s => s.value) : selectedOption.value : ''
       ); // Extract the value property or set an empty string if nothing is selected
@@ -428,7 +443,7 @@ const SelectField = ({ field, form, options, isMulti = false }: any) => (
       // Trigger onBlur only when the user clicks on the Select component
       form.setFieldTouched(field.name, true);
     }}
-    value={options.filter((option: any) => Array.isArray(field.value) ? field.value.includes(option.value) : option.value === field.value)} // Set the value prop to the corresponding field value
+    value={options.filter((option) => Array.isArray(field.value) ? field.value.includes(option.value) : option.value === field.value)} // Set the value prop to the corresponding field value
     isClearable
   />
 )
