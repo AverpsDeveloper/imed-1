@@ -5,13 +5,39 @@ import Link from 'next/link';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import Loader from "@/components/common/Loader";
+import Modal from "./Modal"
+
+import { Formik, Field, Form, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+
+
+const validationSchema = Yup.object().shape({
+  name: Yup.string().required('Please enter item name'),
+  type: Yup.string().required('Please select item type'),
+});
+
+function ErrMessage({ name }) {
+  return (
+    <ErrorMessage
+      name={name}
+      render={(msg) => (
+        <div className="text-red-500 text-sm">{msg}</div>
+      )}
+    />
+  );
+}
 
 function CategoryList() {
 
   const [filterType, setFilterType] = useState('itemTypes');
   const [categories, setTypesData] = useState([])
   const [loading , setloading] = useState(false)
-
+  const [showModal,setShowModal] = useState(false)
+  const [initialValues, setInitialValues] = useState({
+    name: '',
+    type: '',
+  })
+  const [oldType, setOldType] = useState("")
   // Check if categories is undefined or not an array, and set it to an empty array if necessary.
   // if (!Array.isArray(categories)) {
   //   categories = [];
@@ -52,7 +78,34 @@ function CategoryList() {
         toast.error('There was an error. Please try again');
       });
   }, [loading])
-
+ 
+  function editHander(name,type){
+    setOldType(name)
+    setInitialValues({name: name,type: type})
+  }
+  
+  const onSubmit = (values, { resetForm }) => {
+    setloading(true)
+    // Handle the form submission here
+    values.target = oldType;
+    axios.put(`/api/types/${values.type}`, values)
+      .then(({ data }) => {
+        if (!data.error) {
+          resetForm(); // Reset the form after successful submission
+          setShowModal(false);
+          setloading(false)
+          toast.success('Type update successfully');
+        } else {
+          setloading(false)
+          toast.error(data.error.message);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        setloading(false)
+        toast.error('There was an error. Please try again');
+      });
+  }
   if (loading){
     return <>
       <Loader/>
@@ -60,6 +113,7 @@ function CategoryList() {
   }
 
   return (
+    <>
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Type List</h1>
@@ -152,6 +206,15 @@ function CategoryList() {
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <div className="flex items-center space-x-3.5">
+                  <button
+                          onClick={() => {setShowModal(true) ,editHander(name,filterType)}}
+                          className="inline-flex items-center justify-center gap-1 rounded-full bg-opacity-50 text-white bg-primary py-1.5 px-4 text-center font-medium hover:bg-opacity-90 lg:px-8 xl:px-4 hover:text-white"
+                        >
+                          <span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M19.045 7.401c.378-.378.586-.88.586-1.414s-.208-1.036-.586-1.414l-1.586-1.586c-.378-.378-.88-.586-1.414-.586s-1.036.208-1.413.585L4 13.585V18h4.413L19.045 7.401zm-3-3l1.587 1.585l-1.59 1.584l-1.586-1.585l1.589-1.584zM6 16v-1.585l7.04-7.018l1.586 1.586L7.587 16H6zm-2 4h16v2H4z" /></svg>
+                          </span>
+                          Edit
+                        </button>
                     <button
                       onClick={() => deleteHandler(name)}
                       className="inline-flex items-center justify-center gap-1 rounded-full bg-opacity-30 text-danger bg-danger py-1.5 px-4 text-center font-medium hover:bg-opacity-90 lg:px-8 xl:px-4 hover:text-white"
@@ -193,7 +256,61 @@ function CategoryList() {
         </table>
       )}
     </div>
-  );
+    <Modal isVisibale={showModal} onClose={()=>setShowModal(false)}>
+      <h1 className='text-xl mb-2 font-bold text-center text-black'>Edit items Modal Modal</h1>
+      <hr />
+       <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={onSubmit}
+          enableReinitialize={true}
+        >
+          <Form className='p-5'>
+
+            <div className="mb-4 ">
+              <label className="mb-3 block text-black dark:text-white">
+                Select Type
+              </label>
+              <Field
+                as="select"
+                name="type"
+                disabled={true}
+                className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+
+              >
+                <option value="">Select Type</option>
+                <option value="itemTypes">Item Type</option>
+                <option value="formTypes">Form Type</option>
+                <option value="unitsTypes">Units Type</option>
+                <option value="strengthTypes">Strength Type</option>
+              </Field>
+              <ErrMessage name="type" />
+            </div>
+
+
+            <div className="mb-4">
+              <label className="mb-3 block text-black dark:text-white">
+                Type Name
+              </label>
+              <Field
+                type="text"
+                name="name"
+                className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                placeholder="Enter type name"
+              />
+              <ErrMessage name="name" />
+            </div>
+            <button
+              type="submit"
+              className="inline-flex items-center justify-center rounded-md bg-meta-3 py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+            >
+              Update
+            </button>
+          </Form>
+        </Formik>
+    </Modal>
+</>
+    );
 }
 
 export default CategoryList;
