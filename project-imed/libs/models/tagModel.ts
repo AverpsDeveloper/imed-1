@@ -4,10 +4,9 @@ export interface IPropsType extends Document {
   name?: string;
   description?: string;
   isActive?: boolean;
-  deletedAt?: any;
 }
 
-const categorySchema = new Schema(
+const tagSchema = new Schema(
   {
     name: {
       type: String,
@@ -21,14 +20,11 @@ const categorySchema = new Schema(
       type: Boolean,
       default: false
     },
-    parent: {
-      type: Schema.Types.ObjectId, ref: "category"
-    }
   },
   {
     timestamps: true,
   }
 );
 
-export default (mongoose.models.category ||
-  model("category", categorySchema)) as Model<IPropsType>;
+export default (mongoose.models.tag ||
+  model("tag", tagSchema)) as Model<IPropsType>;
