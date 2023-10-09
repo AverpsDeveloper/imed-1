@@ -12,10 +12,10 @@ const validationSchema = Yup.object().shape({
   name: Yup.string().required('Batch name is required'),
   isActive: Yup.string().required('Batch status is required'),
   description: Yup.string(),
-  location : Yup.string().required('Location is required'),
-  arriveAt:  Yup.number().required('Date is required'),
-  batchCost:  Yup.number().required('Batch cost is required'),
-  sellingPrice:  Yup.number().required('Selling price is required'),
+  location: Yup.string().required('Location is required'),
+  arriveAt: Yup.date().required('Date is required'),
+  batchCost: Yup.number().required('Batch cost is required'),
+  sellingPrice: Yup.number().required('Selling price is required'),
 });
 
 function ErrMassage({ name }) {
@@ -32,11 +32,12 @@ function ErrMassage({ name }) {
 function AddNewBatch() {
   const rotuer = useRouter();
   const params = useSearchParams();
+  const [itemOptions, setItemOptions] = useState([]);
   const paramsId = params.get("id")
   const initialValues = {
     name: '',
     isActive: 'active',
-    description : '',
+    description: '',
     location: "",
     arriveAt: "",
     batchCost: "",
@@ -68,7 +69,18 @@ function AddNewBatch() {
     }
 
   };
- 
+
+  const loadOptionsHandler = async (search) => {
+    try {
+      const { data } = await axios.get('/api/inventory', { params: { search } })
+      const d = data.result.data.map(d => ({ value: d.name, label: d.name, id: d._id }))
+      setItemOptions(d);
+      return d;
+    } catch (error) {
+      return []
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-200 flex flex-col">
       <div className="bg-white w-full h-full p-6">
@@ -86,7 +98,6 @@ function AddNewBatch() {
           validationSchema={validationSchema}
           onSubmit={onSubmit}
         >
-            
           <Form>
             <div className="mb-4">
               <label className="mb-3 block text-black dark:text-white">Batch Name</label>
@@ -98,8 +109,19 @@ function AddNewBatch() {
               />
               <ErrMassage name="name" />
             </div>
-
-            
+            <div className="mb-4">
+              <label className="mb-3 block text-black dark:text-white">Product</label>
+              <Field
+                type="text"
+                component={SelectField}
+                loadOptions={loadOptionsHandler}
+                options={itemOptions}
+                name="item"
+                className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                placeholder="Batch name"
+              />
+              <ErrMassage name="name" />
+            </div>
 
             <div className="mb-4">
               <label className="mb-3 block text-black dark:text-white">Location</label>
@@ -116,8 +138,7 @@ function AddNewBatch() {
             <div className="mb-4">
               <label className="mb-3 block text-black dark:text-white">Date</label>
               <Field
-                datepicker 
-                type="text"
+                type="date"
                 name="arriveAt"
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                 placeholder="Date"
@@ -127,7 +148,7 @@ function AddNewBatch() {
 
             <div className="mb-4">
               <label className="mb-3 block text-black dark:text-white">Batch cost</label>
-              <Field 
+              <Field
                 type="text"
                 name="batchCost"
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
@@ -136,11 +157,10 @@ function AddNewBatch() {
               <ErrMassage name="batchCost" />
             </div>
 
-            
+
             <div className="mb-4">
               <label className="mb-3 block text-black dark:text-white">Selling price</label>
               <Field
-                datepicker 
                 type="text"
                 name="sellingPrice"
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
@@ -152,7 +172,6 @@ function AddNewBatch() {
             <div className="mb-4">
               <label className="mb-3 block text-black dark:text-white">Description</label>
               <Field
-                datepicker 
                 type="text"
                 name="description"
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
@@ -169,8 +188,8 @@ function AddNewBatch() {
                 name="isActive"
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
               >
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
+                <option value="1">Active</option>
+                <option value="0">Inactive</option>
               </Field>
               <ErrMassage name="isActive" />
             </div>
@@ -188,3 +207,27 @@ function AddNewBatch() {
 }
 
 export default AddNewBatch;
+
+const SelectField = ({ field, form, options = [], isMulti = false, loadOptions }) => (
+  <AsyncSelect
+    {...field}
+    isMulti={isMulti}
+    options={options}
+    loadOptions={loadOptions}
+    cacheOptions
+    defaultOptions={options}
+    onChange={(selectedOption) => {
+      console.log("selectedOption", selectedOption)
+      form.setFieldValue(field.name, selectedOption ?
+        Array.isArray(selectedOption) ? selectedOption.map(s => s.value) : selectedOption.id : ''
+      ); // Extract the value property or set an empty string if nothing is selected
+      form.setFieldTouched(field.name, true);
+    }}
+    onBlur={() => {
+      // Trigger onBlur only when the user clicks on the Select component
+      form.setFieldTouched(field.name, true);
+    }}
+    value={options.filter((option) => Array.isArray(field.value) ? field.value.includes(option.value) : option.id === field.value)} // Set the value prop to the corresponding field value
+    isClearable
+  />
+)
