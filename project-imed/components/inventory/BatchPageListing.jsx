@@ -7,25 +7,7 @@ import toast from 'react-hot-toast';
 import Loader from "@/components/common/Loader";
 import Modal from "./Modal"
 import { useRouter } from 'next/navigation';
-import { Formik, Field, Form, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
 
-
-const validationSchema = Yup.object().shape({
-  name: Yup.string().required('Please enter item name'),
-  type: Yup.string().required('Please select item type'),
-});
-
-function ErrMessage({ name }) {
-  return (
-    <ErrorMessage
-      name={name}
-      render={(msg) => (
-        <div className="text-red-500 text-sm">{msg}</div>
-      )}
-    />
-  );
-}
 
 function BatchPageListing() {
   const [batchs, setBatch] = useState([]);
@@ -35,12 +17,13 @@ function BatchPageListing() {
 
   useEffect(() => {
     // Define your API endpoint URL
-    const apiUrl = '/api/inventory';
+    const apiUrl = '/api/batch';
 
     // Fetch product data using Axios
     axios
       .get(apiUrl)
-      .then((response) => {        
+      .then((response) => {  
+        console.log("response::",response);      
         setBatch(response.data.result.data);
         setLoading(false);
       })
@@ -126,17 +109,17 @@ function BatchPageListing() {
               </td>
               <td className="border-b border-[#eee] py-5 px-4  dark:border-strokedark ">
                 <h5 className="font-medium text-black dark:text-white">
-                  {batch.type}
+                  {batch.arriveAt}
                 </h5>
               </td>
               <td className="border-b border-[#eee] py-5 px-4  dark:border-strokedark ">
                 <h5 className="font-medium text-black dark:text-white">
-                  {batch.type}
+                  {batch.batchCost}
                 </h5>
               </td>
               <td className="border-b border-[#eee] py-5 px-4  dark:border-strokedark ">
                 <h5 className="font-medium text-black dark:text-white">
-                  {batch.categories?.join(", ")}
+                  {batch.sellingPrice}
                 </h5>
               </td>
 

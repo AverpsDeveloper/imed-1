@@ -68,12 +68,7 @@ function AddNewBatch() {
     }
 
   };
-  const promiseOptions = (inputValue) => 
-  new Promise<ColourOption>((resolve) => {
-      setTimeout(() => {
-        resolve(filterColors(inputValue));
-      }, 1000);
-    });
+ 
   return (
     <div className="min-h-screen bg-gray-200 flex flex-col">
       <div className="bg-white w-full h-full p-6">
@@ -91,8 +86,7 @@ function AddNewBatch() {
           validationSchema={validationSchema}
           onSubmit={onSubmit}
         >
-            <AsyncSelect cacheOptions defaultOptions loadOptions={promiseOptions} />
-
+            
           <Form>
             <div className="mb-4">
               <label className="mb-3 block text-black dark:text-white">Batch Name</label>
