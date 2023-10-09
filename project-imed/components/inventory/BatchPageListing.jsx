@@ -17,7 +17,7 @@ function BatchPageListing() {
 
   useEffect(() => {
     // Define your API endpoint URL
-    const apiUrl = '/api/batch';
+    const apiUrl = '/api/item-batch';
 
     // Fetch product data using Axios
     axios
