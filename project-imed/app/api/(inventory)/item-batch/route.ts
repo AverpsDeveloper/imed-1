@@ -113,6 +113,6 @@ export const PUT = tcWrap(async (req, res) => {
     console.log("item", item);
   
     console.log("reqbody", body);
-    return res.json({ result: { message: "item delted to inventory", item } });
+    return res.json({ result: { message: "item deleted to inventory", item } });
   });
 
