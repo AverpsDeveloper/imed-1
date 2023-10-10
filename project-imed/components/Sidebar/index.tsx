@@ -1065,6 +1065,43 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                             </Link>
                           </li>
 
+                          <li>
+                            <Link
+                              href="/dashboard/inventory/batch"
+                              className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${
+                                pathname === "/inventory/batch" && "text-white"
+                              }`}
+                            >
+                               Batches
+                            </Link>
+                          </li>
+
+                          
+                          <li>
+                            <Link
+                              href="/dashboard/inventory/tags"
+                              className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${
+                                pathname === "/inventory/tags" && "text-white"
+                              }`}
+                            >
+                               Tags
+                            </Link>
+                          </li>
+
+                          
+                          
+                          <li>
+                            <Link
+                              href="/dashboard/inventory/health-conditions"
+                              className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${
+                                pathname === "/inventory/health-conditions" && "text-white"
+                              }`}
+                            >
+                               Health Condition
+                            </Link>
+                          </li>
+
+
                           {/* <li>
                             <Link
                               href="/dashboard/inventory/items-type"

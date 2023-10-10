@@ -1,3 +1,4 @@
+"use client"
 
 import React, { useState, useEffect } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
@@ -6,10 +7,12 @@ import Link from 'next/link';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Loader from "@/components/common/Loader";
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string().required('Category name is required'),
-  status: Yup.string().required('Category status is required'),
+  name: Yup.string().required('Health condition name is required'),
+  description: Yup.string(),
+  status: Yup.string().required('Health condition status is required'),
 });
 
 function ErrMassage({ name }) {
@@ -23,30 +26,31 @@ function ErrMassage({ name }) {
   );
 }
 
-function AddCategoryForm() {
+function AddHealthConditionPage() {
   const rotuer = useRouter();
   const params = useSearchParams();
   const paramsId = params.get("id")
-  const initialValues = {
+  const [loading, setLoading] = useState(false);
+  const [initialValues, setInitialValues] = useState({  
     name: '',
-    status: 'active',
-  };
+    description:'',
+    status: 'active',})
 
   const onSubmit = (values, { resetForm }) => {
     // Handle the form submission here
     if (paramsId) {
       values.id = paramsId;
-      axios.put('/api/categories', values)
+      axios.put('/api/health-conditions', values)
         .then(({ data }) => {
           toast.success(data.result.message);
-          rotuer.push("/dashboard/inventory/categorys")
+          rotuer.push("/dashboard/inventory/health-conditions")
         }).catch(({ error }) => {
           toast.error(error.message);
         })
     } else {
-      axios.post('/api/categories', values)
+      axios.post('/api/health-conditions', values)
         .then(({ data }) => {
-          toast.success('New Category added successfully');
+          toast.success('New health conditions added successfully');
           resetForm(); // Reset the form after successful submission
           // rotuer.push("/dashboard/inventory/categorys")
         })
@@ -62,11 +66,11 @@ function AddCategoryForm() {
     <div className="min-h-screen bg-gray-200 flex flex-col">
       <div className="bg-white w-full h-full p-6">
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold">Add new category</h1>
-          <Link href="/dashboard/inventory/categorys"
+          <h1 className="text-2xl font-bold">Add new Tag</h1>
+          <Link href="/dashboard/inventory/health-conditions"
             className="inline-flex items-center justify-center gap-2.5 rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
           >
-            Category List
+            View Listing
           </Link>
         </div>
 
@@ -74,21 +78,34 @@ function AddCategoryForm() {
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={onSubmit}
+          enableReinitialize={true}
         >
           <Form>
             <div className="mb-4">
-              <label className="mb-3 block text-black dark:text-white">Category Name</label>
+              <label className="mb-3 block text-black dark:text-white">Tag name</label>
               <Field
                 type="text"
                 name="name"
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                placeholder="Category name"
+                placeholder="Tag name"
               />
               <ErrMassage name="name" />
             </div>
+            
+            <div className="mb-4">
+              <label className="mb-3 block text-black dark:text-white">Description</label>
+              <Field
+                type="text"
+                name="description"
+                className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                placeholder="Description"
+              />
+              <ErrMassage name="description" />
+            </div>
+
 
             <div className="mb-4">
-              <label className="mb-3 block text-black dark:text-white">category status</label>
+              <label className="mb-3 block text-black dark:text-white">status</label>
               <Field
                 as="select"
                 name="status"
@@ -112,4 +129,4 @@ function AddCategoryForm() {
   );
 }
 
-export default AddCategoryForm;
+export default AddHealthConditionPage;
