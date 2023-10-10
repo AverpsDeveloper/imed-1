@@ -7,6 +7,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useRouter, useSearchParams } from 'next/navigation';
 import AsyncSelect from 'react-select/async';
+import Loader from "@/components/common/Loader";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('Batch name is required'),
@@ -33,37 +34,43 @@ function AddNewBatch() {
   const rotuer = useRouter();
   const params = useSearchParams();
   const [itemOptions, setItemOptions] = useState([]);
-  const paramsId = params.get("id")
-  const initialValues = {
-    name: '',
-    isActive: 'active',
-    description: '',
-    // location: "",
-    arriveAt: "",
-    // batchCost: "",
-    // sellingPrice: "",
-  };
+  const paramsId = params.get("id");
+  const [loading, setLoading] = useState(false);
 
+  const [initialValues,setinitialValues] = useState({
+          name: '',
+          isActive: 'active',
+          description: '',
+          // location: "",
+          arriveAt: Date.now(),
+          // batchCost: "",
+          // sellingPrice: "",
+        });
+  
   const onSubmit = (values, { resetForm }) => {
     // Handle the form submission here
+    setLoading(true)
     if (paramsId) {
       values.id = paramsId;
       axios.put('/api/item-batch', values)
         .then(({ data }) => {
+          setLoading(false)
           toast.success(data.result.message);
           rotuer.push("/dashboard/inventory/categorys")
         }).catch(({ error }) => {
+          setLoading(false)
           toast.error(error.message);
         })
     } else {
       axios.post('/api/item-batch', values)
         .then(({ data }) => {
+          setLoading(false)
           toast.success('New Batch added successfully');
           resetForm(); // Reset the form after successful submission
           // rotuer.push("/dashboard/inventory/categorys")
         })
         .catch((data) => {
-          console.log("error::",data);
+          setLoading(false)
           toast.error("There was an error");
         });
     }
@@ -80,7 +87,29 @@ function AddNewBatch() {
       return []
     }
   }
-  
+
+  useEffect(()=>{
+    if(paramsId){
+      setLoading(true)
+      axios.get(`/api/item-batch/${paramsId}`)
+      .then((response) => {  
+        // const d = response.data.result.data.item.map(d => ({ value: d.name, label: d.name, id: d._id }))
+        console.log("d ::::::",response.data.result.data.item);
+        setItemOptions([{ value: response.data.result.data.item.name, label: response.data.result.data.item.name, id: response.data.result.data.item._id }]);
+        setinitialValues(response.data.result.data);
+        console.log("response::",response);      
+        setLoading(false)
+      })
+      .catch((err) => {
+        setLoading(false);
+        setError(err);
+      });
+    }
+  },[])
+
+  if(loading){
+    return <Loader />
+  }
 
   return (
     <div className="min-h-screen bg-gray-200 flex flex-col">
@@ -98,6 +127,7 @@ function AddNewBatch() {
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={onSubmit}
+          enableReinitialize = {true}
         >
           <Form>
             <div className="mb-4">

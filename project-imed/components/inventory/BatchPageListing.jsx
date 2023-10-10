@@ -5,7 +5,6 @@ import Link from 'next/link';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import Loader from "@/components/common/Loader";
-import Modal from "./Modal"
 import { useRouter } from 'next/navigation';
 
 
