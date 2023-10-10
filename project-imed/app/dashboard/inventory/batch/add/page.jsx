@@ -12,10 +12,10 @@ const validationSchema = Yup.object().shape({
   name: Yup.string().required('Batch name is required'),
   isActive: Yup.string().required('Batch status is required'),
   description: Yup.string(),
-  location: Yup.string().required('Location is required'),
+  // location: Yup.string().required('Location is required'),
   arriveAt: Yup.date().required('Date is required'),
-  batchCost: Yup.number().required('Batch cost is required'),
-  sellingPrice: Yup.number().required('Selling price is required'),
+  // batchCost: Yup.number().required('Batch cost is required'),
+  // sellingPrice: Yup.number().required('Selling price is required'),
 });
 
 function ErrMassage({ name }) {
@@ -38,10 +38,10 @@ function AddNewBatch() {
     name: '',
     isActive: 'active',
     description: '',
-    location: "",
+    // location: "",
     arriveAt: "",
-    batchCost: "",
-    sellingPrice: "",
+    // batchCost: "",
+    // sellingPrice: "",
   };
 
   const onSubmit = (values, { resetForm }) => {
@@ -58,13 +58,13 @@ function AddNewBatch() {
     } else {
       axios.post('/api/item-batch', values)
         .then(({ data }) => {
-          toast.success('New Category added successfully');
+          toast.success('New Batch added successfully');
           resetForm(); // Reset the form after successful submission
           // rotuer.push("/dashboard/inventory/categorys")
         })
-        .catch(({ response }) => {
-          console.log("error::",);
-          toast.error(response.data?.error?.error);
+        .catch((data) => {
+          console.log("error::",data);
+          toast.error("There was an error");
         });
     }
 
@@ -80,6 +80,7 @@ function AddNewBatch() {
       return []
     }
   }
+  
 
   return (
     <div className="min-h-screen bg-gray-200 flex flex-col">
@@ -123,7 +124,7 @@ function AddNewBatch() {
               <ErrMassage name="name" />
             </div>
 
-            <div className="mb-4">
+            {/* <div className="mb-4">
               <label className="mb-3 block text-black dark:text-white">Location</label>
               <Field
                 type="text"
@@ -132,7 +133,7 @@ function AddNewBatch() {
                 placeholder="Enter location"
               />
               <ErrMassage name="location" />
-            </div>
+            </div> */}
 
 
             <div className="mb-4">
@@ -146,7 +147,7 @@ function AddNewBatch() {
               <ErrMassage name="arriveAt" />
             </div>
 
-            <div className="mb-4">
+            {/* <div className="mb-4">
               <label className="mb-3 block text-black dark:text-white">Batch cost</label>
               <Field
                 type="text"
@@ -155,10 +156,10 @@ function AddNewBatch() {
                 placeholder="Batch cost"
               />
               <ErrMassage name="batchCost" />
-            </div>
+            </div> */}
 
 
-            <div className="mb-4">
+            {/* <div className="mb-4">
               <label className="mb-3 block text-black dark:text-white">Selling price</label>
               <Field
                 type="text"
@@ -167,7 +168,7 @@ function AddNewBatch() {
                 placeholder="Selling price"
               />
               <ErrMassage name="sellingPrice" />
-            </div>
+            </div> */}
 
             <div className="mb-4">
               <label className="mb-3 block text-black dark:text-white">Description</label>
