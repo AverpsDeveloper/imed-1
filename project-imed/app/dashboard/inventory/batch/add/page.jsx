@@ -39,7 +39,7 @@ function AddNewBatch() {
 
   const [initialValues,setinitialValues] = useState({
           name: '',
-          isActive: 'active',
+          isActive: 'isActive',
           description: '',
           // location: "",
           arriveAt: Date.now(),
