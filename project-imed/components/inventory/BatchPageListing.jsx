@@ -51,13 +51,16 @@ function BatchPageListing() {
     }
   }
 
-
+  
   if (loading) {
     return  <Loader/>;
   }
 
   if (error) {
     return <div>There Is some issue Type again</div>;
+  }
+  if(batchs.length == 0) {
+    return <div>batch items not available</div>;
   }
 
   return (

@@ -61,13 +61,13 @@ export const POST = tcWrap(async (req, res) => {
     if (!body.item) {
         throw new Error("field itmeId required");
     }
-    if(body.isActive == "1"){
+    if(body.isActive == "isActive"){
       body.isActive = true
     }else{
       body.isActive = false
     } 
     const item = await itemBatchModel.create(body);
-    console.log("reqbody", body);
+    console.log(item,"reqbody", body);
     return res.json({ result: { message: "item added to batch", item } });
 });
 
