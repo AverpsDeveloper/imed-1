@@ -38,7 +38,7 @@ export const GET = tcWrap(async (req, res) => {
             {
                 skip: paginat.page * paginat.limit,
                 limit: paginat.limit
-            }).populate('item', "name"),
+            }).populate("name"), //"item"
         itemBatchModel.count({ $and: filter })
     ]);
 
@@ -61,9 +61,13 @@ export const POST = tcWrap(async (req, res) => {
     if (!body.item) {
         throw new Error("field itmeId required");
     }
-
-    const item = await itemModel.create(body);
-    console.log("reqbody", body);
+    if(body.isActive == "isActive"){
+      body.isActive = true
+    }else{
+      body.isActive = false
+    } 
+    const item = await itemBatchModel.create(body);
+    console.log(item,"reqbody", body);
     return res.json({ result: { message: "item added to batch", item } });
 });
 
@@ -100,19 +104,13 @@ export const PUT = tcWrap(async (req, res) => {
     }
     console.log("bodyData", body.id);
     const findItem: any = await itemBatchModel.findById(body.id);
-    if (findItem.deletedAt as any) {
-      throw new Error("Aready deleted");
-    }
-    const item = await itemModel.findByIdAndUpdate(
-      body.id,
-      {
-        deletedAt: new Date().toISOString(),
-      },
-      { new: true }
+    if(!findItem) throw "Invalid Batch item."
+    const item = await itemBatchModel.findByIdAndDelete(
+      body.id
     );
     console.log("item", item);
   
     console.log("reqbody", body);
-    return res.json({ result: { message: "item deleted to inventory", item } });
+    return res.json({ result: { message: "Batch item deleted.", item } });
   });
 

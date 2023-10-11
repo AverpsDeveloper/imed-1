@@ -5,7 +5,6 @@ import Link from 'next/link';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import Loader from "@/components/common/Loader";
-import Modal from "./Modal"
 import { useRouter } from 'next/navigation';
 
 
@@ -36,11 +35,13 @@ function BatchPageListing() {
 
   function batchDeleteHandler(id){
     setLoading(true)
-    axios.delete("/api/inventory/batch",{data:{id}}).then(({data}) => {
+    axios.delete("/api/item-batch",{data:{id}}).then(({data}) => {
       setLoading(false)
       toast.success(data.result.message);
     }).catch((err) => {
-      toast.success('There was an error. Please try again');
+      console.log(err);
+      setLoading(false)
+      toast.error('There was an error. Please try again');
     })
   }
   const router = useRouter();
@@ -50,13 +51,16 @@ function BatchPageListing() {
     }
   }
 
-
+  
   if (loading) {
     return  <Loader/>;
   }
 
   if (error) {
     return <div>There Is some issue Type again</div>;
+  }
+  if(batchs.length == 0) {
+    return <div>batch items not available</div>;
   }
 
   return (
@@ -83,14 +87,14 @@ function BatchPageListing() {
                   <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
                   Date
                   </th>
-                  <th className="min-w-[140px] py-4 px-4 font-medium text-black dark:text-white">
+                  {/* <th className="min-w-[140px] py-4 px-4 font-medium text-black dark:text-white">
                   Batch cost
 
                   </th>
                   <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
                   Selling price
 
-                  </th>
+                  </th> */}
                   <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
                   Status
                   </th>
@@ -112,16 +116,16 @@ function BatchPageListing() {
                   {batch.arriveAt}
                 </h5>
               </td>
-              <td className="border-b border-[#eee] py-5 px-4  dark:border-strokedark ">
+              {/* <td className="border-b border-[#eee] py-5 px-4  dark:border-strokedark ">
                 <h5 className="font-medium text-black dark:text-white">
                   {batch.batchCost}
                 </h5>
-              </td>
-              <td className="border-b border-[#eee] py-5 px-4  dark:border-strokedark ">
+              </td> */}
+              {/* <td className="border-b border-[#eee] py-5 px-4  dark:border-strokedark ">
                 <h5 className="font-medium text-black dark:text-white">
                   {batch.sellingPrice}
                 </h5>
-              </td>
+              </td> */}
 
               <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                 <p

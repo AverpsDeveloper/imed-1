@@ -7,15 +7,16 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useRouter, useSearchParams } from 'next/navigation';
 import AsyncSelect from 'react-select/async';
+import Loader from "@/components/common/Loader";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('Batch name is required'),
   isActive: Yup.string().required('Batch status is required'),
   description: Yup.string(),
-  location: Yup.string().required('Location is required'),
+  // location: Yup.string().required('Location is required'),
   arriveAt: Yup.date().required('Date is required'),
-  batchCost: Yup.number().required('Batch cost is required'),
-  sellingPrice: Yup.number().required('Selling price is required'),
+  // batchCost: Yup.number().required('Batch cost is required'),
+  // sellingPrice: Yup.number().required('Selling price is required'),
 });
 
 function ErrMassage({ name }) {
@@ -33,38 +34,44 @@ function AddNewBatch() {
   const rotuer = useRouter();
   const params = useSearchParams();
   const [itemOptions, setItemOptions] = useState([]);
-  const paramsId = params.get("id")
-  const initialValues = {
-    name: '',
-    isActive: 'active',
-    description: '',
-    location: "",
-    arriveAt: "",
-    batchCost: "",
-    sellingPrice: "",
-  };
+  const paramsId = params.get("id");
+  const [loading, setLoading] = useState(false);
 
+  const [initialValues,setinitialValues] = useState({
+          name: '',
+          isActive: 'isActive',
+          description: '',
+          // location: "",
+          arriveAt: Date.now(),
+          // batchCost: "",
+          // sellingPrice: "",
+        });
+  
   const onSubmit = (values, { resetForm }) => {
     // Handle the form submission here
+    setLoading(true)
     if (paramsId) {
       values.id = paramsId;
       axios.put('/api/item-batch', values)
         .then(({ data }) => {
+          setLoading(false)
           toast.success(data.result.message);
-          rotuer.push("/dashboard/inventory/categorys")
+          rotuer.push("/dashboard/inventory/batch")
         }).catch(({ error }) => {
+          setLoading(false)
           toast.error(error.message);
         })
     } else {
       axios.post('/api/item-batch', values)
         .then(({ data }) => {
-          toast.success('New Category added successfully');
+          setLoading(false)
+          toast.success('New Batch added successfully');
           resetForm(); // Reset the form after successful submission
-          // rotuer.push("/dashboard/inventory/categorys")
+          // rotuer.push("/dashboard/inventory/batch")
         })
-        .catch(({ response }) => {
-          console.log("error::",);
-          toast.error(response.data?.error?.error);
+        .catch((data) => {
+          setLoading(false)
+          toast.error("There was an error");
         });
     }
 
@@ -79,6 +86,27 @@ function AddNewBatch() {
     } catch (error) {
       return []
     }
+  }
+
+  useEffect(()=>{
+    if(paramsId){
+      setLoading(true)
+      axios.get(`/api/item-batch/${paramsId}`)
+      .then((response) => {  
+        setItemOptions([{ value: response.data.result.data.item.name, label: response.data.result.data.item.name, id: response.data.result.data.item._id }]);
+        setinitialValues(response.data.result.data);
+        console.log("response::",response);      
+        setLoading(false)
+      })
+      .catch((err) => {
+        setLoading(false);
+        setError(err);
+      });
+    }
+  },[])
+
+  if(loading){
+    return <Loader />
   }
 
   return (
@@ -97,6 +125,7 @@ function AddNewBatch() {
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={onSubmit}
+          enableReinitialize = {true}
         >
           <Form>
             <div className="mb-4">
@@ -123,7 +152,7 @@ function AddNewBatch() {
               <ErrMassage name="name" />
             </div>
 
-            <div className="mb-4">
+            {/* <div className="mb-4">
               <label className="mb-3 block text-black dark:text-white">Location</label>
               <Field
                 type="text"
@@ -132,7 +161,7 @@ function AddNewBatch() {
                 placeholder="Enter location"
               />
               <ErrMassage name="location" />
-            </div>
+            </div> */}
 
 
             <div className="mb-4">
@@ -146,7 +175,7 @@ function AddNewBatch() {
               <ErrMassage name="arriveAt" />
             </div>
 
-            <div className="mb-4">
+            {/* <div className="mb-4">
               <label className="mb-3 block text-black dark:text-white">Batch cost</label>
               <Field
                 type="text"
@@ -155,10 +184,10 @@ function AddNewBatch() {
                 placeholder="Batch cost"
               />
               <ErrMassage name="batchCost" />
-            </div>
+            </div> */}
 
 
-            <div className="mb-4">
+            {/* <div className="mb-4">
               <label className="mb-3 block text-black dark:text-white">Selling price</label>
               <Field
                 type="text"
@@ -167,7 +196,7 @@ function AddNewBatch() {
                 placeholder="Selling price"
               />
               <ErrMassage name="sellingPrice" />
-            </div>
+            </div> */}
 
             <div className="mb-4">
               <label className="mb-3 block text-black dark:text-white">Description</label>

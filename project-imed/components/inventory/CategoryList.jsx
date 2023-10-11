@@ -10,6 +10,17 @@ function CategoryList() {
   const [error, setError] = useState(null); // New state for handling errors
   const router = useRouter()
 
+  const filteredCategories = categories.filter(categoryItem =>
+    categoryItem.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  console.log("filteredCategories::",filteredCategories);
+// if(searchTerm){
+//   console.log("------");
+//   if(filteredCategories){
+//     setCategories(filteredCategories)
+//   }
+// }
+
   const deleteHandler = (id) => {
     axios.delete('/api/categories', { data: { id } }).then((respocnse) => {
       toast.success("deleted successfully");
@@ -33,6 +44,7 @@ function CategoryList() {
         setError('Error fetching data. Please try again later.'); // Set an error message
         console.error('Error fetching data:', error);
       });
+      
   }, []);
 
   return (
