@@ -38,7 +38,7 @@ export const GET = tcWrap(async (req, res) => {
             {
                 skip: paginat.page * paginat.limit,
                 limit: paginat.limit
-            }).populate('item', "name"),
+            }).populate("name"), //"item"
         itemBatchModel.count({ $and: filter })
     ]);
 
