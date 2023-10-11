@@ -13,7 +13,7 @@ const itemBatchSchema = new Schema(
             unique: true,
             required: [true, "Please Enter Name"],
         },
-        item: { type: Schema.Types.ObjectId, ref: "item" },
+        item: { type: Schema.Types.ObjectId, ref: mongoose.models.item },
         description: {
             type: String,
         },
@@ -32,7 +32,7 @@ const itemBatchSchema = new Schema(
         },
         batchCost: { type: Number },
         sellingPrice: { type: Number },
-        
+
     },
     {
         timestamps: true,
