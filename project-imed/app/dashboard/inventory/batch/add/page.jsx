@@ -56,7 +56,7 @@ function AddNewBatch() {
         .then(({ data }) => {
           setLoading(false)
           toast.success(data.result.message);
-          rotuer.push("/dashboard/inventory/categorys")
+          rotuer.push("/dashboard/inventory/batch")
         }).catch(({ error }) => {
           setLoading(false)
           toast.error(error.message);
@@ -67,7 +67,7 @@ function AddNewBatch() {
           setLoading(false)
           toast.success('New Batch added successfully');
           resetForm(); // Reset the form after successful submission
-          // rotuer.push("/dashboard/inventory/categorys")
+          // rotuer.push("/dashboard/inventory/batch")
         })
         .catch((data) => {
           setLoading(false)
@@ -93,8 +93,6 @@ function AddNewBatch() {
       setLoading(true)
       axios.get(`/api/item-batch/${paramsId}`)
       .then((response) => {  
-        // const d = response.data.result.data.item.map(d => ({ value: d.name, label: d.name, id: d._id }))
-        console.log("d ::::::",response.data.result.data.item);
         setItemOptions([{ value: response.data.result.data.item.name, label: response.data.result.data.item.name, id: response.data.result.data.item._id }]);
         setinitialValues(response.data.result.data);
         console.log("response::",response);      

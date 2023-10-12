@@ -11,13 +11,13 @@ const page = () => {
                 </a>
             </div>
             <div className='flex'>
-                <Image src="/images/vector.png" alt="" />
-                <Image src="/images/vector_1.png" alt="" />
+                <img src="/images/vector.png" alt="" />
+                <img src="/images/vector_1.png" alt="" />
             </div>
             <div className="w-full absolute top-40">
                 <div className=" grid grid-flow-col-1 md:grid-cols-2 ">
                     <div className="w-auto md:px-20 h-[450px] bg-[#1B3C74] hidden md:block rounded-lg">
-                        <Image className='md:h-[460px]' src="/images/doctor_01.png" alt="" />
+                        <img className='md:h-[460px]' src="/images/doctor_01.png" alt="" />
                     </div>
                     <div className="w-full bg-transparent md:pl-16 rounded-lg lg:rounded-l-none">
                         <h3 className="text-title-xl px-10 text-white">Register Account to iMed</h3>
