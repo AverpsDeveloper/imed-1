@@ -40,8 +40,8 @@ function AddCategoryForm() {
         .then(({ data }) => {
           toast.success(data.result.message);
           rotuer.push("/dashboard/inventory/categorys")
-        }).catch(({ error }) => {
-          toast.error(error.message);
+        }).catch(({response}) => {
+        toast.error(response.data.error.message)
         })
     } else {
       axios.post('/api/categories', values)
@@ -51,7 +51,6 @@ function AddCategoryForm() {
           // rotuer.push("/dashboard/inventory/categorys")
         })
         .catch(({ response }) => {
-          console.log("error::",);
           toast.error(response.data?.error?.error);
         });
     }
