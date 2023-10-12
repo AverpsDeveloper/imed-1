@@ -1,7 +1,27 @@
+"use client"
 import Image from 'next/image'
-import React from 'react'
+import React, { useState } from 'react'
+import { signIn } from "next-auth/react";
+import { useSearchParams, useRouter } from "next/navigation";
 
 const page = () => {
+    const [email, setEmail] = useState();
+    const [password, setPassword] = useState();
+    const searchParams = useSearchParams();
+    const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
+    const loginClickHandler = async ()=>{
+        const res = await signIn("credentials", {
+            redirect: false,
+            email: email,
+            password: password,
+            callbackUrl
+          });
+    
+         
+    
+          console.log(res);
+
+    }
     return (
         <div className='overflow-hidden bg-[#0E1E3A] h-[100vh] max-h-screen relative'>
             <div className='absolute px-20 py-10'>
@@ -11,14 +31,13 @@ const page = () => {
                 </a>
             </div>
             <div className='flex'>
-                <Image 
-                 src="/images/vector.png" alt="" />
-                <Image src="/images/vector_1.png" alt="" />
+                <img src="/images/vector.png" alt="" width={100} />
+                <img src="/images/vector_1.png" alt="" width={100} />
             </div>
             <div className="w-full  absolute top-40">
                 <div className=" grid grid-flow-col-1 md:grid-cols-2 ">
                     <div className="w-auto md:px-20 bg-[#1B3C74] hidden md:block rounded-lg">
-                        <Image className='md:h-[460px]' src="/images/doctor_01.png" alt="" />
+                        <img className='md:h-[460px]' src="/images/doctor_01.png" alt="" />
                     </div>
                     <div className="w-full bg-transparent md:p-5 rounded-lg lg:rounded-l-none">
                         <h3 className="pt-4 text-2xl text-center">Welcome Back!</h3>
@@ -27,18 +46,18 @@ const page = () => {
                                 <label className="block mb-2 text-sm font-bold text-white" htmlFor="username">
                                     Email
                                 </label>
-                                <input className="w-full px-3 py-2 text-sm leading-tight text-white border rounded shadow appearance-none focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Email Address" />
+                                <input onChange={(e)=>setEmail(e.target.value)} className="w-full px-3 py-2 text-sm leading-tight text-white border rounded shadow appearance-none focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Email Address" />
                             </div>
                             <div className="mb-4">
                                 <label className="block mb-2 text-sm font-bold text-white" htmlFor="password">
                                     Password
                                 </label>
-                                <input className="w-full px-3 py-2 mb-3 text-sm leading-tight text-gray-700 border border-red-500 rounded shadow appearance-none focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="Password" />
+                                <input onChange={(e)=>setPassword(e.target.value)} className="w-full px-3 py-2 mb-3 text-sm leading-tight text-gray-700 border border-red-500 rounded shadow appearance-none focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="Password" />
                                 <p className="text-xs italic text-white">Please choose a password.</p>
                             </div>
     
                             <div className="mb-6 text-center">
-                                <button className="w-full px-4 py-2 font-bold text-white bg-iPrimary rounded-full hover:bg-blue-700 focus:outline-none focus:shadow-outline" type="button">
+                                <button onClick={loginClickHandler} className="w-full px-4 py-2 font-bold text-white bg-iPrimary rounded-full hover:bg-blue-700 focus:outline-none focus:shadow-outline" type="button">
                                     Login
                                 </button>
                             </div>
