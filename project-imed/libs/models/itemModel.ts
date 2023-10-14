@@ -150,5 +150,5 @@ const itemSchema = new Schema(
   }
 );
 
-export default (mongoose.models.item ||
-  model("item", itemSchema)) as Model<Iitem>;
+export default (mongoose.models.Item ||
+  model("Item", itemSchema)) as Model<Iitem>;

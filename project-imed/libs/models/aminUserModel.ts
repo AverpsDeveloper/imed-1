@@ -8,15 +8,11 @@ export interface IPropsType extends Document {
     deletedAt?: any;
 }
 
-const userSchema = new Schema(
+const adminUserSchema = new Schema(
     {
         name: {
             type: String,
             required: [true, "Please Enter Name"],
-        },
-        role: {
-            type: String,
-            required: [true, "Please Enter Role"]
         },
         email: {
             unique: true,
@@ -45,5 +41,5 @@ const userSchema = new Schema(
     }
 );
 
-export default (mongoose.models.user ||
-    model("user", userSchema)) as Model<IPropsType>;
+export default (mongoose.models.adminUser ||
+    model("adminUser", adminUserSchema)) as Model<IPropsType>;

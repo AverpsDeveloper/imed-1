@@ -1,4 +1,5 @@
 import mongoose, { Document, model, Model, Schema } from "mongoose";
+import itemModel from "./itemModel";
 
 export interface IPropsType extends Document {
     name?: string;
@@ -13,7 +14,7 @@ const itemBatchSchema = new Schema(
             unique: true,
             required: [true, "Please Enter Name"],
         },
-        item: { type: Schema.Types.ObjectId, ref: mongoose.models.item },
+        item: { type: Schema.Types.ObjectId, ref: "Item" },
         description: {
             type: String,
         },
@@ -39,5 +40,5 @@ const itemBatchSchema = new Schema(
     }
 );
 
-export default (mongoose.models.itemBatch ||
-    model("itemBatch", itemBatchSchema)) as Model<IPropsType>;
+export default (mongoose.models.ItemBatch ||
+    model("ItemBatch", itemBatchSchema)) as Model<IPropsType>;

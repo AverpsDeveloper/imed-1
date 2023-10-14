@@ -1,11 +1,13 @@
 import userModel from "@/libs/models/userModel";
 import tcWrap from "@/libs/utils/tcWrap";
 
+
 export const POST = tcWrap(async (req, res) => {
-    const { name, email, password } = (await req.json()) as {
+    const { name, email, password, } = (await req.json()) as {
         name: string;
         email: string;
         password: string;
+        role?: string;
     };
 
     if (!name) {
@@ -17,8 +19,7 @@ export const POST = tcWrap(async (req, res) => {
     if (!password) {
         throw new Error("field password required");
     }
-
-
+    
     const data = await userModel.create({
         name, email, password
     })
