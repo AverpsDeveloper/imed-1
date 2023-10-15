@@ -10,9 +10,16 @@ export interface IPropsType extends Document {
 
 const adminUserSchema = new Schema(
     {
-        name: {
+        username: {
             type: String,
-            required: [true, "Please Enter Name"],
+        },
+        firstname: {
+            type: String,
+            required: [true, "Please Enter First Name"],
+        },
+        lastname: {
+            type: String,
+            required: [true, "Please Enter Last Name"],
         },
         email: {
             unique: true,
@@ -24,6 +31,19 @@ const adminUserSchema = new Schema(
         phone: {
             type: String,
         },
+        bio: {
+            type: String,
+        },
+        age: {
+            type: Number,
+        },
+        gender: {
+            type: String
+        },
+        address: [{
+            ref: "UserAddress",
+            type: Schema.Types.ObjectId,
+        }],
         isActive: {
             type: Boolean,
             default: false
@@ -39,9 +59,6 @@ const adminUserSchema = new Schema(
             type: Boolean,
             default: false
         },
-        bio: {
-            type: String,
-        }
     },
     {
         timestamps: true,
