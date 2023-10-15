@@ -27,9 +27,9 @@ const Doctor = () => {
 
 
   return (
-         <DoctorsList doctors={dummyDoctors}/>
-         
-)
+    <DoctorsList doctors={dummyDoctors} />
+
+  )
 }
 
 export default Doctor
