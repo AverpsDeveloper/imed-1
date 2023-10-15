@@ -117,7 +117,9 @@ const page = () => {
 
                             <div className="mb-6 text-center">
                                 <button onClick={loginClickHandler} className="w-full px-4 py-2 font-bold text-white bg-iPrimary rounded-full hover:bg-blue-700 focus:outline-none focus:shadow-outline" type="button">
-                                    Login
+                                    {
+                                        session ? "Submit" : "Login"
+                                    }
                                 </button>
                             </div>
                             <hr className="mb-6 border-t" />
