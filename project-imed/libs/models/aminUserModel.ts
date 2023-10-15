@@ -28,6 +28,13 @@ const adminUserSchema = new Schema(
             type: Boolean,
             default: false
         },
+        isTfa: {
+            type: Boolean,
+            default: false
+        },
+        tfaHash: {
+            type: String,
+        },
         isBlocked: {
             type: Boolean,
             default: false
@@ -41,5 +48,5 @@ const adminUserSchema = new Schema(
     }
 );
 
-export default (mongoose.models.adminUser ||
-    model("adminUser", adminUserSchema)) as Model<IPropsType>;
+export default (mongoose.models.AdminUser ||
+    model("AdminUser", adminUserSchema)) as Model<IPropsType>;
