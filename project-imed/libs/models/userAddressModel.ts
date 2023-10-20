@@ -8,14 +8,11 @@ export interface IPropsType extends Document {
 
 const userAddressSchema = new Schema(
   {
-    houseNo: {
+    house: {
       type: String,
-      unique: true,
-      required: [true, "Please Enter Name"],
     },
     type: {
       type: String,
-      required: true,
       trim: true
     },
     street: {

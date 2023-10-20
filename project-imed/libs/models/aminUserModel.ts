@@ -40,10 +40,11 @@ const adminUserSchema = new Schema(
         gender: {
             type: String
         },
-        address: [{
-            ref: "UserAddress",
-            type: Schema.Types.ObjectId,
-        }],
+        // address: [{
+        //     ref: "UserAddress",
+        //     type: Schema.Types.ObjectId,
+        // }],
+        address: { type: String },
         isActive: {
             type: Boolean,
             default: false
