@@ -12,6 +12,7 @@ const adminUserSchema = new Schema(
     {
         username: {
             type: String,
+            unique:true,
         },
         firstName: {
             type: String,
@@ -45,6 +46,8 @@ const adminUserSchema = new Schema(
         //     type: Schema.Types.ObjectId,
         // }],
         address: { type: String },
+        speciality: { type: String },
+        role: { type: String, require: true },
         isActive: {
             type: Boolean,
             default: false

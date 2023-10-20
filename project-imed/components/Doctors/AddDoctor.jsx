@@ -3,10 +3,11 @@ import React from 'react';
 import Breadcrumb from '../Breadcrumbs/Breadcrumb';
 import { Formik, Field, Form, ErrorMessage, useFormikContext, useField } from 'formik';
 import * as Yup from 'yup';
+import axios from 'axios';
 
 const validationSchema = Yup.object().shape({
-  username: Yup.string().required('Username is required.'),
-  email: Yup.string().required('Email is required.'),
+  username: Yup.string().matches(/^\S*$/, "This field cannot contain white space.").required('Username is required.'),
+  email: Yup.string().email().required('Email is required.'),
   password: Yup.string().required('Password is required.'),
   firstName: Yup.string().required('First name is required.'),
   lastName: Yup.string().required('Last name is required.'),
@@ -47,8 +48,12 @@ const AddManager = () => {
     availableHours : '',
   }
   const onSubmit = (data) => {
-    console.log(data);
-
+    data.role = "DOCTOR"
+    axios.post("/api/users-admin",data).then((res)=>{
+      console.log(res);
+    }).catch((err)=>{
+      console.log(err);
+    })
   };
 
   return (
@@ -290,7 +295,7 @@ const AddManager = () => {
                       </div>
 
                       <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray">
-                        Add Manager
+                        Add Doctor
                       </button>
                     </div>
                   </Form>
