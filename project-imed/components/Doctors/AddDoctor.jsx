@@ -15,7 +15,7 @@ const validationSchema = Yup.object().shape({
   profilePhoto: Yup.string(),
   gender: Yup.string().required('Please select user gender.'),
   phoneNumber: Yup.number().required('Phone number is required.'),
-  age: Yup.number().required('Age is required.'),
+  age: Yup.number().required('Age is required.'), 
   status: Yup.string().required('Please select status.'),
   speciality: Yup.string().required('Please select status.'),
   availableHours: Yup.string().required('Please select status.'),
