@@ -6,8 +6,9 @@ function ImportProductPage() {
   const [products, setProduct] = useState([]);
   const [fields, setFields] = useState([])
   const handleFile = (event) => {
+    const { files } = event.target;
     console.log("==============");
-    Papa.parse(event.target.files[0], {
+    Papa.parse(files[0], {
       header: true,
       skipEmptyLines: true,
       complete: function (result) {
@@ -93,16 +94,16 @@ function ImportProductPage() {
                   Exp
                 </th>
                 <th className="py-4 px-4 font-medium text-black dark:text-white">
-                Category
+                  Category
                 </th>
                 <th className="py-4 px-4 font-medium text-black dark:text-white">
-                FORM
+                  FORM
                 </th>
                 <th className="py-4 px-4 font-medium text-black dark:text-white">
-                Vendor
+                  Vendor
                 </th>
                 <th className="py-4 px-4 font-medium text-black dark:text-white">
-                Active
+                  Active
                 </th>
               </tr>
             </thead>
@@ -146,7 +147,7 @@ function ImportProductPage() {
                   </td>
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <p
-                      className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${product.Status? "text-success bg-success" : "text-danger bg-danger"
+                      className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${product.Status ? "text-success bg-success" : "text-danger bg-danger"
                         }`}
                     >
                       {product.Status ? "Active" : "Deactive"}

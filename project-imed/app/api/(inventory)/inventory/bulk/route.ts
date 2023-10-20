@@ -72,13 +72,45 @@ export const POST = tcWrap(async (req, res) => {
     }
 
     const admin: any = await adminConfModel.findOne();
-    const bulkdata = body.products?.map((product: any) => ({
-        ...product, prefQtyFixed: convertPrefQty(product, product.prefQtyFixed, admin.charge),
-        prefQtyOne: convertPrefQty(product, product.prefQtyOne, admin.charge),
-        prefQtyTwo: convertPrefQty(product, product.prefQtyTwo, admin.charge),
-        prefQtyThree: convertPrefQty(product, product.prefQtyThree, admin.charge),
-    }))
 
+    const keyMap: any = {
+        "type": "type",
+        "name": "name",
+        "alternativename": "altName",
+        "form": "form",
+        "dispanseForm": "dispanseForm",
+        "category": "category",
+        "itemcode": "codeName",
+        "manufactureprice": "buildCostPrUnit",
+        "preferredquantityon": "fixedQty",
+        "preferredquantityone": "prefQtyOne",
+        "preferredquantitytwo": "prefQtyTwo",
+        "preferredquantitythree": "prefQtyThree",
+        "retailPrice": "retailPrice",
+        "strength": "strength",
+        "yearLimit": "yearLimit",
+        "measureUnit": "measureUnit",
+        "description": "discription",
+        "repeatConsult": "repeatConsult",
+        "status": "isActive",
+        "images": "images"
+    }
+
+
+    const bulkdata = body.products?.map((product: any) => {
+        const modifiedProduct: any = {};
+        for (let d in product) {
+            modifiedProduct[keyMap[d.trim().replace(/\s/g, '')]] = product[d];
+        }
+        return ({
+            ...modifiedProduct,
+            prefQtyFixed: convertPrefQty(modifiedProduct, modifiedProduct.prefQtyFixed, admin.charge),
+            prefQtyOne: convertPrefQty(modifiedProduct, modifiedProduct.prefQtyOne, admin.charge),
+            prefQtyTwo: convertPrefQty(modifiedProduct, modifiedProduct.prefQtyTwo, admin.charge),
+            prefQtyThree: convertPrefQty(modifiedProduct, modifiedProduct.prefQtyThree, admin.charge),
+        })
+    })
+    console.log("bulkdata", bulkdata)
     const item = await itemModel.create(bulkdata);
     console.log("reqbody", body);
     return res.json({ result: { message: "item added to inventory", item } });
