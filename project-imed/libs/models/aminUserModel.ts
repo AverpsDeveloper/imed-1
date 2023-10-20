@@ -1,7 +1,7 @@
 import mongoose, { Document, model, Model, Schema } from "mongoose";
 
 export interface IPropsType extends Document {
-    name?: string;
+    username?: string;
     email?: string;
     phone?: string;
     isActive?: boolean;
@@ -13,11 +13,11 @@ const adminUserSchema = new Schema(
         username: {
             type: String,
         },
-        firstname: {
+        firstName: {
             type: String,
             required: [true, "Please Enter First Name"],
         },
-        lastname: {
+        lastName: {
             type: String,
             required: [true, "Please Enter Last Name"],
         },
@@ -28,7 +28,7 @@ const adminUserSchema = new Schema(
         password: {
             type: String,
         },
-        phone: {
+        phoneNumber: {
             type: String,
         },
         bio: {

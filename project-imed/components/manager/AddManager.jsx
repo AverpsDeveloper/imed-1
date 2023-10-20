@@ -3,6 +3,7 @@ import React from 'react';
 import Breadcrumb from '../Breadcrumbs/Breadcrumb';
 import { Formik, Field, Form, ErrorMessage, useFormikContext, useField } from 'formik';
 import * as Yup from 'yup';
+import axios from 'axios';
 
 const validationSchema = Yup.object().shape({
   username: Yup.string().required('Username is required.'),
@@ -44,6 +45,12 @@ const AddManager = () => {
   }
   const onSubmit = (data) => {
     console.log(data);
+    data.name = "test"
+    axios.post("/api/users-admin",data).then((res)=>{
+      console.log(res);
+    }).catch((err)=>{
+      console.log(err);
+    })
 
   };
 
@@ -187,8 +194,8 @@ const AddManager = () => {
                                 className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                               >
                                 <option >Select Status</option>
-                                <option value="online">Online</option>
-                                <option value="ofline">Ofline</option>
+                                <option value="true">Online</option>
+                                <option value="false">Ofline</option>
                               </Field>
                               <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2">
                                 <svg
