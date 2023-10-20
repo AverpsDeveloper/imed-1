@@ -15,12 +15,12 @@ function ImportProductPage() {
         console.log("products::", result);
         setFields(result.meta.fields)
         setProduct(result.data)
-        // console.log("result::",result);
-        // axios.post("/api/inventory/bulk",result.data).then((response)=>{
-        //   console.log(response);
-        // }).catch((err)=>{
-        //   console.log(err);
-        // })
+        console.log("result::", result);
+        axios.post("/api/inventory/bulk", { products: result.data }).then((response) => {
+          console.log(response);
+        }).catch((err) => {
+          console.log(err);
+        })
       }
     })
   }
