@@ -1,56 +1,36 @@
 "use client"
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '@/http';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
-import Loader from "@/components/common/Loader";
 import Papa from "papaparse";
 import { MdSaveAlt } from 'react-icons/md';
 
 function ProductList() {
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
+  const router = useRouter();
 
   useEffect(() => {
-    // Define your API endpoint URL
-    const apiUrl = '/api/inventory';
-
-    // Fetch product data using Axios
-    axios
-      .get(apiUrl)
+    // Fetch product data using
+    api.get("/inventory")
       .then((response) => {
         setProducts(response.data.result.data);
-        setLoading(false);
       })
-      .catch((err) => {
-        setError(err);
-        setLoading(false);
-      });
-  }, [loading]);
+  }, []);
 
 
   function productDeleteHandler(id) {
-    setLoading(true)
-    axios.delete("/api/inventory", { data: { id } }).then(({ data }) => {
-      setLoading(false)
-      toast.success(data.result.message);
-    }).catch((err) => {
-      toast.success('There was an error. Please try again');
-    })
+    api.delete("/inventory", { data: { id } })
+      .then(({ data }) => {
+        toast.success(data.result.message);
+      })
   }
-  const router = useRouter();
+
   function productEditHandler(id) {
     if (id) {
       router.push(`/dashboard/inventory/products/add?id=${id}`)
     }
-  }
-
-
-  if (loading) {
-    return <Loader />;
   }
 
   const downloadCSV = (data, filename) => {
@@ -67,29 +47,10 @@ function ProductList() {
     window.URL.revokeObjectURL(url);
   };
 
-  const saveCSV = (data, filename) => {
-    const csvData = Papa.unparse(data);
-
-    const blob = new Blob([csvData], { type: "text/csv;charset=utf-8" });
-    const url = window.URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    a.click();
-
-    window.URL.revokeObjectURL(url);
-  };
-
   // Example usage:
 
-  function dataExprotHandler(){
+  function dataExprotHandler() {
     downloadCSV(products, "products.csv");
-    saveCSV(products, "products.csv");
-  }
-
-  if (error) {
-    return <div>There Is some issue Type again</div>;
   }
 
 
@@ -106,10 +67,10 @@ function ProductList() {
           Add Product
         </Link>
         <button
-        onClick={()=>dataExprotHandler()}
+          onClick={() => dataExprotHandler()}
           className="inline-flex items-center justify-center gap-2.5 rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
         >
-          <MdSaveAlt/>
+          <MdSaveAlt />
           Exprot Data
         </button>
       </div>
@@ -118,7 +79,7 @@ function ProductList() {
           <thead>
 
             <tr className="bg-gray-2 text-left dark:bg-meta-4">
-            <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
+              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
                 SR. No.
               </th>
               <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
@@ -143,7 +104,7 @@ function ProductList() {
               <tr key={product._id}>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark pl-9 xl:pl-11">
                   <p className="text-black dark:text-white">
-                    {index+1}
+                    {index + 1}
                   </p>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark pl-9 xl:pl-11">

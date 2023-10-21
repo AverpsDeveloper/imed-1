@@ -3,7 +3,7 @@ import React from 'react';
 import Breadcrumb from '../Breadcrumbs/Breadcrumb';
 import { Formik, Field, Form, ErrorMessage, useFormikContext, useField } from 'formik';
 import * as Yup from 'yup';
-import axios from 'axios';
+import api from '@/http';
 
 const validationSchema = Yup.object().shape({
   username: Yup.string().matches(/^\S*$/, "This field cannot contain white space.")
@@ -47,12 +47,7 @@ const AddManager = () => {
   const onSubmit = (data) => {
     console.log(data);
     data.role = "MANAGER"
-    axios.post("/api/users-admin",data).then(({response})=>{
-      toast.success(response.data.error.message);
-    }).catch(({response})=>{
-      toast.error(response.data.error.message);
-    })
-
+    api.post("/users-admin",data)
   };
 
   return (

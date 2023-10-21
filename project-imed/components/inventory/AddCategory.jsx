@@ -3,9 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import Link from 'next/link';
-import axios from 'axios';
-import toast from 'react-hot-toast';
 import { useRouter, useSearchParams } from 'next/navigation';
+import api from '@/http';
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('Category name is required'),
@@ -36,25 +35,17 @@ function AddCategoryForm() {
     // Handle the form submission here
     if (paramsId) {
       values.id = paramsId;
-      axios.put('/api/categories', values)
+      api.put('/categories', values)
         .then(({ data }) => {
-          toast.success(data.result.message);
           rotuer.push("/dashboard/inventory/categorys")
-        }).catch(({response}) => {
-        toast.error(response.data.error.message)
         })
     } else {
-      axios.post('/api/categories', values)
+      api.post('/categories', values)
         .then(({ data }) => {
-          toast.success('New Category added successfully');
           resetForm(); // Reset the form after successful submission
           // rotuer.push("/dashboard/inventory/categorys")
         })
-        .catch(({ response }) => {
-          toast.error(response.data?.error?.error);
-        });
     }
-
   };
 
   return (

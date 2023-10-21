@@ -4,10 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import Link from 'next/link';
-import axios from 'axios';
-import toast from 'react-hot-toast';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Loader from "@/components/common/Loader";
+import api from '@/http';
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('Tag name is required'),
@@ -30,36 +28,27 @@ function AddTagsPage() {
   const rotuer = useRouter();
   const params = useSearchParams();
   const paramsId = params.get("id")
-  const [loading, setLoading] = useState(false);
-  const [initialValues, setInitialValues] = useState({  
+  const [initialValues, setInitialValues] = useState({
     name: '',
-    description:'',
-    status: 'active',})
+    description: '',
+    status: 'active',
+  })
 
   const onSubmit = (values, { resetForm }) => {
     // Handle the form submission here
     if (paramsId) {
       values.id = paramsId;
-      axios.put('/api/tags', values)
+      api.put('/tags', values)
         .then(({ data }) => {
-          toast.success(data.result.message);
           rotuer.push("/dashboard/inventory/tags")
-        }).catch(({ error }) => {
-          toast.error(error.message);
         })
     } else {
-      axios.post('/api/tags', values)
+      api.post('/tags', values)
         .then(({ data }) => {
-          toast.success('New Tag added successfully');
           resetForm(); // Reset the form after successful submission
           // rotuer.push("/dashboard/inventory/categorys")
         })
-        .catch(({ response }) => {
-          console.log("error::",);
-          toast.error(response.data?.error?.error);
-        });
     }
-
   };
 
   return (
@@ -91,7 +80,7 @@ function AddTagsPage() {
               />
               <ErrMassage name="name" />
             </div>
-            
+
             <div className="mb-4">
               <label className="mb-3 block text-black dark:text-white">Description</label>
               <Field

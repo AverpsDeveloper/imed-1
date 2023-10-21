@@ -1,11 +1,9 @@
 "use client"
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import Link from 'next/link';
-import axios from 'axios';
-import toast from 'react-hot-toast';
-import Loader from "@/components/common/Loader";
+import api from '@/http';
 
 
 
@@ -30,33 +28,14 @@ function AddUnitForm() {
     name: '',
     type: '',
   };
- 
-  const [loading, setloading] = useState(false)
   const onSubmit = (values, { resetForm }) => {
-    setloading(true)
     // Handle the form submission here
-    axios.post(`/api/types/${values.type}`, values)
+    api.post(`/types/${values.type}`, values)
       .then(({ data }) => {
-        if (!data.error) {
-          resetForm(); // Reset the form after successful submission
-          setloading(false)
-          toast.success('New Unit added successfully');
-        } else {
-          setloading(false)
-          toast.error(data.error.message);
-        }
+        resetForm(); // Reset the form after successful submission
       })
-      .catch((error) => {
-        console.error(error);
-        setloading(false)
-        toast.error('There was an error. Please try again');
-      });
   };
 
-
-if (loading){
-  return <Loader/>
-}  
   return (
     <div className="min-h-screen bg-gray-200 flex flex-col">
       <div className="w-full h-full p-6 rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">

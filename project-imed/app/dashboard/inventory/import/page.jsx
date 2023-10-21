@@ -1,18 +1,15 @@
 "use client"
 import React, { useState } from "react"
 import Papa from "papaparse"
-import axios from "axios";
-import toast from "react-hot-toast";
+import api from "@/http"
 function ImportProductPage() {
   const [products, setProduct] = useState([]);
-  const [fields, setFields] = useState([])
   const handleFile = (event) => {
     const { files } = event.target;
     Papa.parse(files[0], {
       header: true,
       skipEmptyLines: true,
       complete: function (result) {
-        setFields(result.meta.fields)
         setProduct(result.data)
       }
     })
@@ -20,13 +17,7 @@ function ImportProductPage() {
 
   const dataImportHander = () => {
     if (!products) return;
-    axios.post("/api/inventory/bulk", { products: products }).then((response) => {
-      if (response.data) {
-        toast.success("csv imported successfully")
-      }
-    }).catch((err) => {
-      toast.error("There is some isusue please try again")
-    })
+    api.post("/inventory/bulk", { products: products })
   }
   return (
     <>
