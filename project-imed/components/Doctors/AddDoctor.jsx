@@ -3,8 +3,7 @@ import React from 'react';
 import Breadcrumb from '../Breadcrumbs/Breadcrumb';
 import { Formik, Field, Form, ErrorMessage, useFormikContext, useField } from 'formik';
 import * as Yup from 'yup';
-import axios from 'axios';
-import toast from 'react-hot-toast';
+import api from '@/http';
 
 const validationSchema = Yup.object().shape({
   username: Yup.string().matches(/^\S*$/, "This field cannot contain white space.").required('Username is required.'),
@@ -16,7 +15,7 @@ const validationSchema = Yup.object().shape({
   profilePhoto: Yup.string(),
   gender: Yup.string().required('Please select user gender.'),
   phoneNumber: Yup.number().required('Phone number is required.'),
-  age: Yup.number().required('Age is required.'), 
+  age: Yup.number().required('Age is required.'),
   status: Yup.string().required('Please select status.'),
   speciality: Yup.string().required('Please select status.'),
   availableHours: Yup.string().required('Please select status.'),
@@ -45,16 +44,12 @@ const AddManager = () => {
     phoneNumber: '',
     age: '',
     status: '',
-    speciality : '',
-    availableHours : '',
+    speciality: '',
+    availableHours: '',
   }
   const onSubmit = (data) => {
     data.role = "DOCTOR"
-    axios.post("/api/users-admin",data).then(({response})=>{
-      toast.success(response.data.error.message);
-    }).catch(({response})=>{
-      toast.error(response.data.error.message);
-    })
+    api.post("/users-admin", data)
   };
 
   return (

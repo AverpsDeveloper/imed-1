@@ -1,50 +1,25 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import axios from 'axios';
-import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import api from '@/http';
 function CategoryList() {
   const [categories, setCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [error, setError] = useState(null); // New state for handling errors
   const router = useRouter()
 
-  const filteredCategories = categories.filter(categoryItem =>
-    categoryItem.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-  console.log("filteredCategories::",filteredCategories);
-// if(searchTerm){
-//   console.log("------");
-//   if(filteredCategories){
-//     setCategories(filteredCategories)
-//   }
-// }
-
   const deleteHandler = (id) => {
-    axios.delete('/api/categories', { data: { id } }).then((respocnse) => {
-      toast.success("deleted successfully");
-      setTimeout(() => { router.refresh() }, 1000);
-    }).catch(err => {
-      toast.error("Error deleting category")
-    });
+    api.delete('/categories', { data: { id } })
   };
   const editHandler = (deleteId) => {
     if (deleteId) router.push("/dashboard/inventory/categorys/add?id=" + deleteId)
   };
 
   useEffect(() => {
-    // Fetch categories data from the API route using Axios
-    axios.get('/api/categories')
+    api.get('/categories')
       .then((response) => {
         setCategories(response.data.result.data);
-        setError(null); // Clear any previous errors on successful fetch
       })
-      .catch((error) => {
-        setError('Error fetching data. Please try again later.'); // Set an error message
-        console.error('Error fetching data:', error);
-      });
-      
   }, []);
 
   return (
@@ -73,9 +48,7 @@ function CategoryList() {
             />
           </div>
 
-          {error ? ( // Display error message if there's an error
-            <p className="text-red-500">{error}</p>
-          ) : categories.length === 0 ? (
+          {!categories.length ? (
             <p>No categories found.</p>
           ) : (
             // <table className="w-full border border-collapse border-gray-300">
@@ -98,7 +71,7 @@ function CategoryList() {
               </thead>
               <tbody>
                 {categories.map((category, index) => (
-                 
+
                   <tr key={category._id}>
                     <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark pl-9 xl:pl-11">
                       <p className="text-black dark:text-white">
