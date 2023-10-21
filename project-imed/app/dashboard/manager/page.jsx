@@ -1,7 +1,8 @@
 "use client"
 
+import axios from 'axios';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaHistory, FaEnvelope, FaPhone } from 'react-icons/fa';
 
 const ManagerListingPage = () => {
@@ -9,34 +10,18 @@ const ManagerListingPage = () => {
   const [genderFilter, setGenderFilter] = useState('all');
   const [sortByMonth, setSortByMonth] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-
-  const managers = [
-    {
-      id: 1,
-      username: "jone",
-      firstName: "jone",
-      lastName: "singh",
-      email: "email@gmail.com",
-      gender: 'men',
-      age: 35,
-      description: 'Ultrasound in 3 days',
-      profilePic: '/images/patient/patient1.jpg',
-      date: new Date('2023-09-25'), // Date object for sorting
-    },
-    {
-      id: 2,
-      username: "jane",
-      firstName: "Jane",
-      lastName: "Smith",
-      email: "email@gmail.com",
-      gender: 'women',
-      age: 28,
-      description: 'Checkup scheduled',
-      profilePic: '/images/patient/patient2.jfif',
-      date: new Date('2023-09-20'), // Date object for sorting
-    },
-    // Add more patient objects here
-  ];
+  const [managers,setManagersData] = useState([])
+  useEffect(() => {
+    axios.get('/api/users-admin',{params:{role:"MANAGER"}})
+      .then((response) => {
+        console.log("response::",response);
+        setManagersData(response.data.result.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+      
+  }, []);
 
   const filteredPatients = managers.filter((managers) => {
     if (genderFilter === 'all') return true;
@@ -67,13 +52,7 @@ const ManagerListingPage = () => {
       <div className="flex justify-between mb-4 ">
         <h1 className="text-2xl font-bold">Managers List</h1>
         <div className="flex items-center space-x-2">
-          {/* <input
-            type="text"
-            className="border rounded px-2 py-1"
-            placeholder="Search"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          /> */}
+
           <div class="hidden sm:block shadow-md px-4 py-4 rounded ">
               <div class="relative">
                 <button class="absolute left-0 top-1/2 -translate-y-1/2" fdprocessedid="x8uxg">
@@ -123,7 +102,7 @@ const ManagerListingPage = () => {
             className="bg-white p-4 rounded-lg flex items-center border-stroke shadow-md space-x-4 bg-white dark:border-strokedark dark:bg-boxdark"
           >
             <img
-              src={manager.profilePic}
+              src={manager.profilePic || "/images/logo/logo-icon.svg"}
               alt={manager.username}
               className="w-10 h-10 rounded-lg"
             />
