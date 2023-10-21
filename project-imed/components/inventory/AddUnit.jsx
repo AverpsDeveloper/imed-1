@@ -59,7 +59,7 @@ if (loading){
 }  
   return (
     <div className="min-h-screen bg-gray-200 flex flex-col">
-      <div className="bg-white w-full h-full p-6">
+      <div className="w-full h-full p-6 rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-2xl font-bold">Add Types</h1>
           <Link href="/dashboard/inventory/units"

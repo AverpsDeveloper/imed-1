@@ -47,10 +47,10 @@ const AddManager = () => {
   const onSubmit = (data) => {
     console.log(data);
     data.role = "MANAGER"
-    axios.post("/api/users-admin",data).then((res)=>{
-      console.log(res);
-    }).catch((err)=>{
-      console.log(err);
+    axios.post("/api/users-admin",data).then(({response})=>{
+      toast.success(response.data.error.message);
+    }).catch(({response})=>{
+      toast.error(response.data.error.message);
     })
 
   };
@@ -126,7 +126,7 @@ const AddManager = () => {
                           <div className="mb-4">
                             <label className="block text-gray-600">Age<span className="text-meta-1">*</span></label>
                             <Field
-                              type="text"
+                              type="number"
                               name="age"
                               className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                               placeholder="Age"
@@ -178,7 +178,7 @@ const AddManager = () => {
                           <div className="mb-4">
                             <label className="block text-gray-600">Phone number<span className="text-meta-1">*</span></label>
                             <Field
-                              type="text"
+                              type="number"
                               name="phoneNumber"
                               className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                               placeholder="phone number"
@@ -228,7 +228,7 @@ const AddManager = () => {
                           <div className="mb-4">
                             <label className="block text-gray-600">Email address<span className="text-meta-1">*</span></label>
                             <Field
-                              type="text"
+                              type="email"
                               name="email"
                               className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                               placeholder="Email address"

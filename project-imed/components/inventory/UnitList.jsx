@@ -114,8 +114,8 @@ function CategoryList() {
 
   return (
     <>
-    <div className="p-4">
-      <div className="flex justify-between items-center mb-4">
+    <div className="p-4 rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+      <div className="flex justify-between items-center mb-4 ">
         <h1 className="text-2xl font-bold">Type List</h1>
         <Link href="/dashboard/inventory/units/add"
           className="inline-flex items-center justify-center gap-2.5 rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"

@@ -2,26 +2,30 @@
 import React, { useState } from "react"
 import Papa from "papaparse"
 import axios from "axios";
+import toast from "react-hot-toast";
 function ImportProductPage() {
   const [products, setProduct] = useState([]);
   const [fields, setFields] = useState([])
   const handleFile = (event) => {
     const { files } = event.target;
-    console.log("==============");
     Papa.parse(files[0], {
       header: true,
       skipEmptyLines: true,
       complete: function (result) {
-        console.log("products::", result);
         setFields(result.meta.fields)
         setProduct(result.data)
-        console.log("result::", result);
-        axios.post("/api/inventory/bulk", { products: result.data }).then((response) => {
-          console.log(response);
-        }).catch((err) => {
-          console.log(err);
-        })
       }
+    })
+  }
+
+  const dataImportHander = () => {
+    if (!products) return;
+    axios.post("/api/inventory/bulk", { products: products }).then((response) => {
+      if (response.data) {
+        toast.success("csv imported successfully")
+      }
+    }).catch((err) => {
+      toast.error("There is some isusue please try again")
     })
   }
   return (
@@ -73,92 +77,105 @@ function ImportProductPage() {
           <p>(Files)</p>
         </div>
       </div>
-      <div className="bg-white p-4 shadow-md rounded-md">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold">You CSV Data</h1>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full table-auto">
-            <thead>
-              <tr className="bg-gray-2 text-left dark:bg-meta-4">
-                <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                  Product Type
-                </th>
-                <th className="min-w-[140px] py-4 px-4 font-medium text-black dark:text-white">
-                  Name
-                </th>
-                <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
-                  Low
-                </th>
-                <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
-                  Exp
-                </th>
-                <th className="py-4 px-4 font-medium text-black dark:text-white">
-                  Category
-                </th>
-                <th className="py-4 px-4 font-medium text-black dark:text-white">
-                  FORM
-                </th>
-                <th className="py-4 px-4 font-medium text-black dark:text-white">
-                  Vendor
-                </th>
-                <th className="py-4 px-4 font-medium text-black dark:text-white">
-                  Active
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((product, index) => (
-                <tr key={index}>
-                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark pl-9 xl:pl-11">
-                    <p className="text-black dark:text-white">
-                      {product.Type}
-                    </p>
-                  </td>
-                  <td className="border-b border-[#eee] py-5 px-4  dark:border-strokedark ">
-                    <h5 className="font-medium text-black dark:text-white">
-                      {product.NAME}
-                    </h5>
-                  </td>
-                  <td className="border-b border-[#eee] py-5 px-4  dark:border-strokedark ">
-                    <h5 className="font-medium text-black dark:text-white">
-                      {product.Low}
-                    </h5>
-                  </td>
-                  <td className="border-b border-[#eee] py-5 px-4  dark:border-strokedark ">
-                    <h5 className="font-medium text-black dark:text-white">
-                      {product.Exp}
-                    </h5>
-                  </td>
-                  <td className="border-b border-[#eee] py-5 px-4  dark:border-strokedark ">
-                    <h5 className="font-medium text-black dark:text-white">
-                      {product.Category}
-                    </h5>
-                  </td>
-                  <td className="border-b border-[#eee] py-5 px-4  dark:border-strokedark ">
-                    <h5 className="font-medium text-black dark:text-white">
-                      {product.FORM}
-                    </h5>
-                  </td>
-                  <td className="border-b border-[#eee] py-5 px-4  dark:border-strokedark ">
-                    <h5 className="font-medium text-black dark:text-white">
-                      {product.Vendor}
-                    </h5>
-                  </td>
-                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                    <p
-                      className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${product.Status ? "text-success bg-success" : "text-danger bg-danger"
-                        }`}
-                    >
-                      {product.Status ? "Active" : "Deactive"}
-                    </p>
-                  </td>
+      {products.length > 1 ?
+        <div className="bg-white p-4 shadow-md rounded-md">
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-2xl font-bold">Verify you CSV Data</h1>
+            <button
+              className="inline-flex items-center justify-center gap-2.5 rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+              onClick={() => dataImportHander()}
+            >
+              <span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2v-6Z" /></svg>
+              </span>
+              Click To Import
+            </button>
+
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full table-auto">
+              <thead>
+                <tr className="bg-gray-2 text-left dark:bg-meta-4">
+                  <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                    Sr No.
+                  </th>
+                  <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                    Name
+                  </th>
+                  <th className="min-w-[140px] py-4 px-4 font-medium text-black dark:text-white">
+                    Product Type
+                  </th>
+                  <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+                    Forms
+                  </th>
+                  <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+                    STRENGTH
+                  </th>
+                  <th className="py-4 px-4 font-medium text-black dark:text-white">
+                    Category
+                  </th>
+                  <th className="py-4 px-4 font-medium text-black dark:text-white">
+                    repeat Consult
+                  </th>
+                  <th className="py-4 px-4 font-medium text-black dark:text-white">
+                    Status
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+              </thead>
+              <tbody>
+                {products.map((product, index) => (
+                  <tr key={index}>
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark pl-9 xl:pl-11">
+                      <p className="text-black dark:text-white">
+                        {index + 1}
+                      </p>
+                    </td>
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark pl-9 xl:pl-11">
+                      <p className="text-black dark:text-white">
+                        {product.NAME}
+                      </p>
+                    </td>
+                    <td className="border-b border-[#eee] py-5 px-4  dark:border-strokedark ">
+                      <h5 className="font-medium text-black dark:text-white">
+                        {product.Type}
+                      </h5>
+                    </td>
+                    <td className="border-b border-[#eee] py-5 px-4  dark:border-strokedark ">
+                      <h5 className="font-medium text-black dark:text-white">
+                        {product.FORM}
+                      </h5>
+                    </td>
+                    <td className="border-b border-[#eee] py-5 px-4  dark:border-strokedark ">
+                      <h5 className="font-medium text-black dark:text-white">
+                        {product.STRENGTH}
+                      </h5>
+                    </td>
+                    <td className="border-b border-[#eee] py-5 px-4  dark:border-strokedark ">
+                      <h5 className="font-medium text-black dark:text-white">
+                        {product.categories}
+                      </h5>
+                    </td>
+                    <td className="border-b border-[#eee] py-5 px-4  dark:border-strokedark ">
+                      <h5 className="font-medium text-black dark:text-white">
+                        {product.repeatConsult}
+                      </h5>
+                    </td>
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      <p
+                        className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${product.Status ? "text-success bg-success" : "text-danger bg-danger"
+                          }`}
+                      >
+                        {product.Status ? "Active" : "Deactive"}
+                      </p>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div >
+        : ''
+      }
     </>
   )
 }

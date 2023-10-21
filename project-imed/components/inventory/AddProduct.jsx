@@ -206,7 +206,7 @@ if (Loading){
 
   return (
     <div className="min-h-screen bg-gray-200 flex ">
-      <div className="bg-white w-full h-full p-6">
+      <div className="w-full h-full p-6 rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-2xl font-bold">Add new product</h1>
           <Link href="/dashboard/inventory/products">
@@ -226,28 +226,30 @@ if (Loading){
             return (
             <Form >
               <div className="mb-4">
-                <label className="block text-gray-600">Product name</label>
+                <label className="mb-3 block text-black dark:text-white">Product name</label>
                 <Field
                   type="text"
                   name="name"
-                  className="border rounded w-full px-3 py-2 mt-1"
+                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   placeholder="Product name"
                 />
                 <ErrMessage name="name" />
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-600">Item type</label>
+                <label className="mb-3 block text-black dark:text-white">Item type</label>
                 <Field
                   name="type"
                   component={SelectField} // Custom component for react-select
                   options={itemTypes}
+                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+
                 />
                 <ErrMessage name="type" />
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-600">Select categories</label>
+                <label className="mb-3 block text-black dark:text-white">Select categories</label>
                 <Field
                   name="categories"
                   component={SelectField} // Custom component for react-select
@@ -257,7 +259,7 @@ if (Loading){
                 <ErrMessage name="categories" />
               </div>
               <div className="mb-4">
-                <label className="block text-gray-600">Health conditions</label>
+                <label className="mb-3 block text-black dark:text-white">Health conditions</label>
                 <Field
                   name="healthConditions"
                   component={SelectField} // Custom component for react-select
@@ -267,7 +269,7 @@ if (Loading){
                 <ErrMessage name="healthConditions" />
               </div>
               <div className="mb-4">
-                <label className="block text-gray-600">Select tags</label>
+                <label className="mb-3 block text-black dark:text-white">Select tags</label>
                 <Field
                   name="tags"
                   component={SelectField} // Custom component for react-select
@@ -278,22 +280,22 @@ if (Loading){
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-600">Item Code</label>
+                <label className="mb-3 block text-black dark:text-white">Item Code</label>
                 <Field
                   type="text"
                   name="codeName"
-                  className="border rounded w-full px-3 py-2 mt-1"
+                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   placeholder="Item code"
                 />
                 <ErrMessage name="codeName" />
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-600">Select product Status</label>
+                <label className="mb-3 block text-black dark:text-white">Select product Status</label>
                 <Field
                   name="isActive"
                   as="select"
-                  className="border rounded w-full px-3 py-2 mt-1"
+                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                 >
                   <option value='1'>Active</option>
                   <option value="0">Inactive</option>
@@ -302,75 +304,77 @@ if (Loading){
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-600">Form type</label>
+                <label className="mb-3 block text-black dark:text-white">Form type</label>
                 <Field
                   name="form"
                   component={SelectField}
                   options={formOptions}
+                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                 />
                 <ErrMessage name="form" />
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-600">Dispensed Form type</label>
+                <label className="mb-3 block text-black dark:text-white">Dispensed Form type</label>
                 <Field
                   name="dispanseForm"
                   component={SelectField}
                   options={formOptions}
+                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                 />
                 <ErrMessage name="dispanseForm" />
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-600">Strength</label>
+                <label className="mb-3 block text-black dark:text-white">Strength</label>
                 <Field
                   type="text"
                   name="strength"
-                  className="border rounded w-full px-3 py-2 mt-1"
+                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   placeholder="Strength"
                 />
                 <ErrMessage name="strength" />
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-600">Preferred quantity 1</label>
+                <label className="mb-3 block text-black dark:text-white">Preferred quantity 1</label>
                 <Field
                   type="text"
                   name="prefQtyOne"
-                  className="border rounded w-full px-3 py-2 mt-1"
+                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   placeholder="Preferred quantity 1"
                 />
                 <ErrMessage name="prefQtyOne" />
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-600">Preferred quantity 2</label>
+                <label className="mb-3 block text-black dark:text-white">Preferred quantity 2</label>
                 <Field
                   type="text"
                   name="prefQtyTwo"
-                  className="border rounded w-full px-3 py-2 mt-1"
+                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   placeholder="Preferred quantity 2"
                 />
                 <ErrMessage name="prefQtyTwo" />
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-600">Preferred quantity 3</label>
+                <label className="mb-3 block text-black dark:text-white">Preferred quantity 3</label>
                 <Field
                   type="text"
                   name="prefQtyThree"
-                  className="border rounded w-full px-3 py-2 mt-1"
+                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   placeholder="Preferred quantity 3"
                 />
                 <ErrMessage name="prefQtyThree" />
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-600">Repeat consultation within 1 year</label>
+                <label className="mb-3 block text-black dark:text-white">Repeat consultation within 1 year</label>
                 <Field
                   as="select"
                   name="repeatConsult"
-                  className="border rounded w-full px-3 py-2 mt-1"
+                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                 >
                   <option value="1">Yes</option>
                   <option value="0">No</option>
@@ -379,44 +383,44 @@ if (Loading){
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-600">Limit per year</label>
+                <label className="mb-3 block text-black dark:text-white">Limit per year</label>
                 <Field
                   type="number"
                   name="yearLimit"
-                  className="border rounded w-full px-3 py-2 mt-1"
+                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   placeholder="Limit per year"
                 />
                 <ErrMessage name="yearLimit" />
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-600">Manufacturing price per unit</label>
+                <label className="mb-3 block text-black dark:text-white">Manufacturing price per unit</label>
                 <Field
                   type="number"
                   name="buildCostPrUnit"
-                  className="border rounded w-full px-3 py-2 mt-1"
+                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   placeholder="Manufacturing price per unit"
                 />
                 <ErrMessage name="buildCostPrUnit" />
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-600">Quantity per month supply</label>
+                <label className="mb-3 block text-black dark:text-white">Quantity per month supply</label>
                 <Field
                   type="number"
                   name="prefQtyFixed"
-                  className="border rounded w-full px-3 py-2 mt-1"
+                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   placeholder="Quantity per month supply"
                 />
                 <ErrMessage name="prefQtyFixed" />
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-600">Retail price</label>
+                <label className="mb-3 block text-black dark:text-white">Retail price</label>
                 <Field
                  type="number"
                  name="retailPrice"
-                 className="border rounded w-full px-3 py-2 mt-1"
+                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                  placeholder="Retail price"
                 />
                 <ErrMessage name="retailPrice" />

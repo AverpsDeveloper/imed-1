@@ -48,8 +48,8 @@ function CategoryList() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-200 flex flex-col">
-      <div className="bg-white w-full h-full p-6">
+    <div className="min-h-screen flex flex-col">
+      <div className="w-full h-full p-6 rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="p-4">
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-2xl font-bold">Category List</h1>
@@ -81,7 +81,7 @@ function CategoryList() {
             // <table className="w-full border border-collapse border-gray-300">
             <table className="w-full table-auto">
               <thead>
-                <tr className="bg-gray-2 text-left dark:bg-meta-4">
+                <tr className="text-left dark:bg-meta-4">
                   <th className="min-w-[60px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
                     Serial No
                   </th>

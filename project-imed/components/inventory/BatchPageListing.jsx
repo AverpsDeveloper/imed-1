@@ -64,7 +64,7 @@ function BatchPageListing() {
   }
 
   return (
-    <div className="bg-white p-4 shadow-md rounded-md">
+    <div className="p-4 shadow-md rounded-md w-full h-full p-6 rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Batch Listing</h1>
         <Link href="/dashboard/inventory/batch/add"

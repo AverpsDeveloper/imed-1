@@ -4,6 +4,7 @@ import Breadcrumb from '../Breadcrumbs/Breadcrumb';
 import { Formik, Field, Form, ErrorMessage, useFormikContext, useField } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const validationSchema = Yup.object().shape({
   username: Yup.string().matches(/^\S*$/, "This field cannot contain white space.").required('Username is required.'),
@@ -49,10 +50,10 @@ const AddManager = () => {
   }
   const onSubmit = (data) => {
     data.role = "DOCTOR"
-    axios.post("/api/users-admin",data).then((res)=>{
-      console.log(res);
-    }).catch((err)=>{
-      console.log(err);
+    axios.post("/api/users-admin",data).then(({response})=>{
+      toast.success(response.data.error.message);
+    }).catch(({response})=>{
+      toast.error(response.data.error.message);
     })
   };
 
@@ -127,7 +128,7 @@ const AddManager = () => {
                           <div className="mb-4">
                             <label className="block text-gray-600">Age<span className="text-meta-1">*</span></label>
                             <Field
-                              type="text"
+                              type="number"
                               name="age"
                               className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                               placeholder="Age"
@@ -179,7 +180,7 @@ const AddManager = () => {
                           <div className="mb-4">
                             <label className="block text-gray-600">Phone number<span className="text-meta-1">*</span></label>
                             <Field
-                              type="text"
+                              type="number"
                               name="phoneNumber"
                               className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                               placeholder="phone number"
@@ -258,7 +259,7 @@ const AddManager = () => {
                           <div className="mb-4">
                             <label className="block text-gray-600">Email address<span className="text-meta-1">*</span></label>
                             <Field
-                              type="text"
+                              type="email"
                               name="email"
                               className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                               placeholder="Email address"
