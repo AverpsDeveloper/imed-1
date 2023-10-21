@@ -32,7 +32,7 @@ function ImportProductPage() {
     <>
       <div
         id="FileUpload"
-        className="relative mb-5.5 block w-full cursor-pointer appearance-none rounded border-2 border-dashed border-primary bg-gray py-4 px-4 dark:bg-meta-4 sm:py-7.5"
+        className="relative mb-5.5 block w-full cursor-pointer appearance-none rounded border-2 border-dashed border-primary py-4 px-4 sm:py-7.5 rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark"
       >
         <input
           type="file"
@@ -40,7 +40,7 @@ function ImportProductPage() {
           className="absolute inset-0 z-50 m-0 h-full w-full cursor-pointer p-0 opacity-0 outline-none"
           onChange={handleFile}
         />
-        <div className="flex flex-col items-center justify-center space-y-3">
+        <div className="flex flex-col items-center justify-center space-y-3 ">
           <span className="flex h-10 w-10 items-center justify-center rounded-full border border-stroke bg-white dark:border-strokedark dark:bg-boxdark">
             <svg
               width="16"
@@ -73,12 +73,12 @@ function ImportProductPage() {
             <span className="text-primary">Click to upload</span> or
             drag and drop
           </p>
-          <p className="mt-1.5">.CSV</p>
-          <p>(Files)</p>
+          <p className="mt-1.5">CSV Only</p>
+          <p>(Select File)</p>
         </div>
       </div>
       {products.length > 1 ?
-        <div className="bg-white p-4 shadow-md rounded-md">
+        <div className="p-4 shadow-md rounded-md rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-2xl font-bold">Verify you CSV Data</h1>
             <button
@@ -95,29 +95,29 @@ function ImportProductPage() {
           <div className="overflow-x-auto">
             <table className="w-full table-auto">
               <thead>
-                <tr className="bg-gray-2 text-left dark:bg-meta-4">
-                  <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                <tr className="bg-gray-2 text-left dark:bg-meta-4 bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+                  <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
                     Sr No.
                   </th>
-                  <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                  <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
                     Name
                   </th>
-                  <th className="min-w-[140px] py-4 px-4 font-medium text-black dark:text-white">
+                  <th className="min-w-[140px] py-4 px-4 font-medium text-black dark:text-black">
                     Product Type
                   </th>
-                  <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+                  <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black">
                     Forms
                   </th>
-                  <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+                  <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black">
                     STRENGTH
                   </th>
-                  <th className="py-4 px-4 font-medium text-black dark:text-white">
+                  <th className="py-4 px-4 font-medium text-black dark:text-black">
                     Category
                   </th>
-                  <th className="py-4 px-4 font-medium text-black dark:text-white">
+                  <th className="py-4 px-4 font-medium text-black dark:text-black">
                     repeat Consult
                   </th>
-                  <th className="py-4 px-4 font-medium text-black dark:text-white">
+                  <th className="py-4 px-4 font-medium text-black dark:text-black">
                     Status
                   </th>
                 </tr>

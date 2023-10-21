@@ -118,22 +118,22 @@ function ProductList() {
           <thead>
 
             <tr className="bg-gray-2 text-left dark:bg-meta-4">
-            <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+            <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
                 SR. No.
               </th>
-              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
                 Product Name
               </th>
-              <th className="min-w-[140px] py-4 px-4 font-medium text-black dark:text-white">
+              <th className="min-w-[140px] py-4 px-4 font-medium text-black dark:text-black">
                 Item Type
               </th>
-              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black">
                 Category
               </th>
-              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black">
                 Status
               </th>
-              <th className="py-4 px-4 font-medium text-black dark:text-white">
+              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black">
                 Actions
               </th>
             </tr>
