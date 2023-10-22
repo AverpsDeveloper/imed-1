@@ -6,8 +6,10 @@ import { Types } from "mongoose";
 
 export const GET = tcWrap(async (req, res) => {
     const { search, role, page, limit } = req.query;
+    console.log(" req.query::",req.query);
+    
     const paginat = {
-        page: +page <= 0 ? 0 : parseInt(page, 10) - 1,
+        page: + page <= 0 ? 0 : parseInt(page, 10) - 1,
         limit: parseInt(limit, 10) || 10
     }
     let filter: any = [{ isBlocked: false }];
