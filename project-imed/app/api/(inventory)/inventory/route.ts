@@ -6,9 +6,11 @@ import adminConfModel from "@/libs/models/adminConfModel";
 
 export const GET = tcWrap(async (req, res) => {
   const { search, categories, type, price, page, limit } = req.query;
+  const parsePage = parseInt(page, 10);
+  const parseLimit = parseInt(limit, 10);
   const paginat = {
-    page: !page || (parseInt(page, 10) <= 0) ? 0 : (parseInt(page, 10) - 1),
-    limit: !limit || (parseInt(limit, 10) <= 0) ? 10 : parseInt(limit, 10)
+    page: isNaN(parsePage) || (parsePage <= 0) ? 0 : (parsePage - 1),
+    limit: isNaN(parseLimit) || (parseLimit <= 0) ? 10 : parseLimit
   }
   let filter: any = [{ deletedAt: { $exists: false } }];
   if (search) {
