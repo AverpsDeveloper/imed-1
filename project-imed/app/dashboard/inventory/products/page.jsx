@@ -3,21 +3,23 @@ import React, { useState, useEffect } from 'react';
 import api from '@/http';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import Papa from "papaparse";
 import { MdSaveAlt } from 'react-icons/md';
 import Pagination from '@/iComponents/Pagination';
+import { debounce } from '@/helper';
 
 function ProductList() {
   const [products, setProducts] = useState([]);
   const [meta, setMeta] = useState({ page: 1, limit: 10, total: 10 });
-  const [search, setSearch] = useState('');
   const [price, setPrice] = useState(0);
   const [categories, setCategories] = useState([]);
   const router = useRouter();
+  const pathname = usePathname()
   const searchParams = useSearchParams();
   const page = searchParams.get('page') || 1
-  const limit = searchParams.get('limit') || 2
+  const limit = searchParams.get('limit') || 10
+  const search = searchParams.get('search') || "";
 
   const getDate = () => {
     api.get("/inventory", {
@@ -36,7 +38,7 @@ function ProductList() {
   useEffect(() => {
     getDate();
     // Fetch product data using
-  }, [page]);
+  }, [page, limit, search]);
 
 
   function productDeleteHandler(id) {
@@ -73,6 +75,14 @@ function ProductList() {
   }
 
 
+  const handleSearch = debounce(async (search) => {
+    const params = new URLSearchParams(searchParams);
+    search ? params.set("search", (search).toString())
+      : params.delete("search")
+    router.push(`${pathname}?${params.toString()}`);
+  }, 500);
+
+
   return (
     <div className="p-4 shadow-md drounded-m rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
       <div className="flex justify-between items-center mb-4 ">
@@ -85,6 +95,16 @@ function ProductList() {
           </span>
           Add Product
         </Link>
+
+      </div>
+      <div className="flex gap-5 mb-4">
+        <input
+          type="text"
+          className=" rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+          placeholder="Search Product"
+          defaultValue={search}
+          onChange={e => handleSearch(e.target.value)}
+        />
         <button
           onClick={() => dataExprotHandler()}
           className="inline-flex items-center justify-center gap-2.5 rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
@@ -94,7 +114,6 @@ function ProductList() {
         </button>
       </div>
       <div className="overflow-x-auto">
-        <Pagination meta={meta} />
         <table className="w-full table-auto">
           <thead>
             <tr className="bg-gray-2 text-left dark:bg-meta-4">
@@ -200,6 +219,7 @@ function ProductList() {
             ))}
           </tbody>
         </table>
+        <Pagination meta={meta} />
       </div>
     </div>
   );
