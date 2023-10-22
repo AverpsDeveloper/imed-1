@@ -5,9 +5,7 @@ import { Types } from "mongoose";
 
 
 export const GET = tcWrap(async (req, res) => {
-    const { search, role, page, limit } = req.query;
-    console.log(" req.query::",req.query);
-    
+    const { search, role, page, limit } = req.query;    
     const paginat = {
         page: + page <= 0 ? 0 : parseInt(page, 10) - 1,
         limit: parseInt(limit, 10) || 10
@@ -62,7 +60,6 @@ export const PUT = tcWrap(async (req, res) => {
     console.log("put");
     const body = await req.json();
     const id = body.id;
-    console.log("id", id);
     if (!id) {
         throw new Error("field id required");
     }

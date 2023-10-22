@@ -1,27 +1,42 @@
 "use client"
 
-import axios from 'axios';
-import Image from 'next/image';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { FaHistory, FaEnvelope, FaPhone } from 'react-icons/fa';
 
-const ManagerListingPage = () => {
+const DoctorsListingPage = () => {
 
   const [genderFilter, setGenderFilter] = useState('all');
   const [sortByMonth, setSortByMonth] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [managers, setManagersData] = useState([])
-  useEffect(() => {
-    axios.get('/api/users-admin', { params: { role: "MANAGER" } })
-      .then((response) => {
-        setManagersData(response.data.result.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
 
-  }, []);
+  const managers = [
+    {
+      id: 1,
+      username: "jone",
+      firstName: "jone",
+      lastName: "singh",
+      email: "email@gmail.com",
+      gender: 'men',
+      age: 35,
+      description: 'Ultrasound in 3 days',
+      profilePic: '/images/patient/patient1.jpg',
+      date: new Date('2023-09-25'), // Date object for sorting
+    },
+    {
+      id: 2,
+      username: "jane",
+      firstName: "Jane",
+      lastName: "Smith",
+      email: "email@gmail.com",
+      gender: 'women',
+      age: 28,
+      description: 'Checkup scheduled',
+      profilePic: '/images/patient/patient2.jfif',
+      date: new Date('2023-09-20'), // Date object for sorting
+    },
+    // Add more patient objects here
+  ];
 
   const filteredPatients = managers.filter((managers) => {
     if (genderFilter === 'all') return true;
@@ -50,9 +65,8 @@ const ManagerListingPage = () => {
   return (
     <div className="p-4">
       <div className="flex justify-between mb-4 ">
-        <h1 className="text-2xl font-bold"></h1>
+        <h1 className="text-2xl font-bold">Doctor List</h1>
         <div className="flex items-center space-x-2">
-
           <div class="hidden sm:block shadow-md px-4 py-4 rounded ">
             <div class="relative">
               <button class="absolute left-0 top-1/2 -translate-y-1/2" fdprocessedid="x8uxg">
@@ -94,84 +108,8 @@ const ManagerListingPage = () => {
           </button>
         </div>
       </div>
-      <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-        <div className="py-6 px-4 md:px-6 xl:px-7.5">
-          <h4 className="text-xl font-semibold text-black dark:text-white">
-          Managers List
-          </h4>
-        </div>
 
-        <div className="grid grid-cols-6 border-t border-stroke py-4.5 px-4 dark:border-strokedark sm:grid-cols-8 md:px-6 2xl:px-7.5">
-          <div className="col-span-2 flex items-center">
-            <p className="font-medium">Profile</p>
-          </div>
-          <div className="col-span-2 hidden items-center sm:flex">
-            <p className="font-medium">Username</p>
-          </div>
-          <div className="col-span-1 flex items-center">
-            <p className="font-medium">Gender</p>
-          </div>
-          <div className="col-span-1 flex items-center">
-            <p className="font-medium">Age</p>
-          </div>
-          <div className="col-span-2 flex items-center">
-            <p className="font-medium">Contact</p>
-          </div>
-        </div>
-
-        {sortedManager.map((manager, key) => (
-          <div
-            className="grid grid-cols-6 border-t border-stroke py-4.5 px-4 dark:border-strokedark sm:grid-cols-8 md:px-6 2xl:px-7.5"
-            key={key}
-          >
-            <div className="col-span-2 flex items-center">
-            <Link href={`/dashboard/manager/${manager.username}`}> 
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                <div className="h-12.5 w-15 rounded-md">
-                  <Image
-                    src={manager.profilePic || "/images/logo/logo-icon.svg"}
-                    width={60}
-                    height={50}
-                    alt="manager"
-                  />
-                </div>
-                <p className="text-sm text-black dark:text-white">
-                  {manager.firstName + " " + manager.lastName}
-                </p>
-              </div>
-              </Link>
-            </div>
-            <div className="col-span-2 hidden items-center sm:flex">
-            <Link href={`/dashboard/manager/${manager.username}`}> 
-              <p className="text-sm text-black dark:text-white">
-                {manager.username}
-              </p>
-            </Link>
-            </div>
-            <div className="col-span-1 flex items-center">
-              <p className="text-sm text-black dark:text-white">
-                {manager.gender}
-              </p>
-            </div>
-            <div className="col-span-1 flex items-center">
-            <p className="text-sm text-black dark:text-white">
-                {manager.age}
-              </p>
-            </div>
-            <div className="col-span-2 gap-5 flex items-center">
-              
-              <button className="text-blue-500">
-              <a href={`mailto:${manager.email}`}><FaEnvelope title={`${manager.email}`}/></a>
-                
-              </button>
-              <button className="text-blue-500">
-              <a href={`tel:${manager.phoneNumber}`}><FaPhone title={`${manager.phoneNumber}`}/></a>
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-      {/* <div className="grid gap-4 p-6 rounded-sm border border-stroke bg-white shadow-md  dark:border-strokedark dark:bg-boxdark">
+      <div className="grid gap-4 p-6 rounded-sm border border-stroke bg-white shadow-md  dark:border-strokedark dark:bg-boxdark">
         {sortedManager.map((manager) => (
           <div
             key={manager.id}
@@ -183,7 +121,7 @@ const ManagerListingPage = () => {
               className="w-10 h-10 rounded-lg"
             />
             <div>
-              <Link href={`/dashboard/manager/${manager.username}`}>
+              <Link href={`/dashboard/doctor/${manager.username}`}>
                 <p className="font-bold">({manager.username})</p>
                 <p className="font-bold">{manager.firstName + " " + manager.lastName}</p>
                 <p className="text-sm font-semibold text-gray-500">{` ${manager.age} years`}</p>
@@ -205,10 +143,10 @@ const ManagerListingPage = () => {
             </div>
           </div>
         ))}
-      </div> */}
+      </div>
     </div>
 
   )
 }
 
-export default ManagerListingPage;
+export default DoctorsListingPage;

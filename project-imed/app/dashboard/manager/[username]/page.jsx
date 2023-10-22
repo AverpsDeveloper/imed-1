@@ -4,7 +4,8 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Formik, Field, StyledTextArea, Form, ErrorMessage, useFormikContext, useField } from 'formik';
 import * as Yup from 'yup';
-import axios from 'axios';
+import api from "@/http"
+
 import { useParams } from 'next/navigation';
 
 
@@ -21,9 +22,8 @@ const validationSchemaInfo = Yup.object().shape({
 });
 
 const validationSchemaActivities = Yup.object().shape({
-    lastActive: Yup.string().matches(/^\S*$/, "This field cannot contain white space.")
-        .required('Username is required.'),
-    status: Yup.boolean().required('First name is required.'),
+    lastActive: Yup.string().required('Last Active.'),
+    status: Yup.boolean().required('Update User Active Status.'),
 })
 
 function ErrMessage({ name }) {
@@ -37,40 +37,48 @@ function ErrMessage({ name }) {
     );
 }
 const onSubmitInfo = (data) => {
+    console.log(data);
 }
 const ManagerDetailsPage = () => {
 
     const [initialValuesActivities, setInitialValuesActivities] = useState({
         lastActive: '12:00',
-        status: true,
+        isActive: true,
     })
 
     const [initialValuesInfo, setInitialValuesInfo] = useState({
-        username: 'user1',
-        firstName: 'user',
-        lastName: '1',
+        _id : "",
+        username: 'username',
+        firstName: 'First name',
+        lastName: 'Last name',
         age: 23,
         gender: "male",
-        email: 'user1@gmail.com',
-        phoneNumber: '123456',
+        email: 'user@gmail.com',
+        phoneNumber: '123456789',
         bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     })
-
-
     const { username } = useParams();
-
     useEffect(() => {
-        axios.get(`/api/users-admin/username/${username}`)
+        api.get(`/users-admin/username/${username}`)
             .then((response) => {
-                console.log("response::", response);
                 setInitialValuesInfo(response.data.result.data);
             })
+        api.get(`/users-admin/username/${username}`)
+            .then((response) => {
+                setInitialValuesActivities(response.data.result.data);
+            })
     }, []);
-    console.log("initialValuesInfo::", initialValuesInfo);
+    const updateUserStatusHandler = (values) => {
+        console.log("==========",values);
+        delete values.lastActive
+        values.id = initialValuesInfo._id;
+        console.log("values::",values);
+        api.put("/users-admin",values)
+    }
     return (
         <>
             <div className="mx-auto max-w-270">
-                <Breadcrumb pageName="Settings" />
+                <Breadcrumb pageName="Manager Information" />
                 <div className="grid grid-cols-5 gap-8">
                     <div className="col-span-5 xl:col-span-3">
                         <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -421,7 +429,7 @@ const ManagerDetailsPage = () => {
                                 <Formik
                                     initialValues={initialValuesActivities}
                                     validationSchema={validationSchemaActivities}
-                                    onSubmit={() => { }}
+                                    onSubmit={updateUserStatusHandler}
                                     enableReinitialize={true}
                                 >
                                     {({ errors, touched }) => {
@@ -432,6 +440,7 @@ const ManagerDetailsPage = () => {
                                                     <Field
                                                         type="text"
                                                         name="lastActive"
+                                                        //disabled={true}
                                                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                                                         placeholder="LastActive"
                                                     />
@@ -443,7 +452,7 @@ const ManagerDetailsPage = () => {
                                                     <div className="mb-4">
                                                         <label className="block text-black dark:text-white">Status<span className="text-meta-1">*</span></label>
                                                         <div className="relative z-20 bg-transparent dark:bg-form-input">
-                                                            <Field as="select" name="status"
+                                                            <Field as="select" name="isActive"
                                                                 className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                                                             >
                                                                 <option >Select Status</option>
@@ -470,8 +479,16 @@ const ManagerDetailsPage = () => {
                                                                 </svg>
                                                             </span>
                                                         </div>
-                                                        <ErrMessage name="status" />
+                                                        <ErrMessage name="isActive" />
                                                     </div>
+                                                </div>
+                                                <div className="flex justify-end gap-4.5">
+                                                    <button
+                                                        className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-95"
+                                                        type="submit"
+                                                    >
+                                                        Save
+                                                    </button>
                                                 </div>
                                             </Form>
                                         )
@@ -483,7 +500,7 @@ const ManagerDetailsPage = () => {
 
                     </div>
                 </div>
-                <div className="grid grid-cols-5 gap-8 mt-8">
+                {/* <div className="grid grid-cols-5 gap-8 mt-8">
                     <div className="col-span-5 xl:col-span-3">
                         <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
                             <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
@@ -575,7 +592,7 @@ const ManagerDetailsPage = () => {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
             </div>
         </>
     );

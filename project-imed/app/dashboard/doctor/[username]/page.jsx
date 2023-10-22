@@ -1,10 +1,12 @@
 "use client"
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Formik, Field, StyledTextArea, Form, ErrorMessage, useFormikContext, useField } from 'formik';
 import * as Yup from 'yup';
-import axios from 'axios';
+import api from "@/http"
+
+import { useParams } from 'next/navigation';
 
 
 const validationSchemaInfo = Yup.object().shape({
@@ -19,6 +21,11 @@ const validationSchemaInfo = Yup.object().shape({
     bio: Yup.string().required('Address is required.'),
 });
 
+const validationSchemaActivities = Yup.object().shape({
+    lastActive: Yup.string().required('Last Active.'),
+    status: Yup.boolean().required('Update User Active Status.'),
+})
+
 function ErrMessage({ name }) {
     return (
         <ErrorMessage
@@ -30,25 +37,48 @@ function ErrMessage({ name }) {
     );
 }
 const onSubmitInfo = (data) => {
+    console.log(data);
 }
-const ManagerDetailsPage = () => {
+const DoctorDetailsPage = () => {
 
-    const [initialValuesInfo, setInitialValuesInfo] = useState({
-        username: 'user1',
-        firstName: 'user',
-        lastName: '1',
-        age: 23,
-        gender: "male",
-        email: 'user1@gmail.com',
-        phoneNumber: '123456',
-        bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    const [initialValuesActivities, setInitialValuesActivities] = useState({
+        lastActive: '12:00',
+        isActive: true,
     })
 
-
+    const [initialValuesInfo, setInitialValuesInfo] = useState({
+        _id : "",
+        username: 'username',
+        firstName: 'First name',
+        lastName: 'Last name',
+        age: 23,
+        gender: "male",
+        email: 'user@gmail.com',
+        phoneNumber: '123456789',
+        bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    })
+    const { username } = useParams();
+    useEffect(() => {
+        api.get(`/users-admin/username/${username}`)
+            .then((response) => {
+                setInitialValuesInfo(response.data.result.data);
+            })
+        api.get(`/users-admin/username/${username}`)
+            .then((response) => {
+                setInitialValuesActivities(response.data.result.data);
+            })
+    }, []);
+    const updateUserStatusHandler = (values) => {
+        console.log("==========",values);
+        delete values.lastActive
+        values.id = initialValuesInfo._id;
+        console.log("values::",values);
+        api.put("/users-admin",values)
+    }
     return (
         <>
             <div className="mx-auto max-w-270">
-                <Breadcrumb pageName="Settings" />
+                <Breadcrumb pageName="Doctor Information" />
                 <div className="grid grid-cols-5 gap-8">
                     <div className="col-span-5 xl:col-span-3">
                         <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -160,7 +190,7 @@ const ManagerDetailsPage = () => {
                                                             </svg>
                                                         </span>
                                                         <Field
-                                                            type="text"
+                                                            type="email"
                                                             name="email"
                                                             className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark -4 dark:text-white dark:focus:border-primary"
                                                             placeholder="Email"
@@ -172,13 +202,13 @@ const ManagerDetailsPage = () => {
                                                     <div className="w-full sm:w-1/2 ">
                                                         <label
                                                             className="mb-3 block text-sm font-medium text-black dark:text-white"
-                                                            htmlFor="fullName"
+                                                            htmlFor="Age"
                                                         >
                                                             Age
                                                         </label>
 
                                                         <Field
-                                                            type="text"
+                                                            type="number"
                                                             name="age"
                                                             className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark dark:text-white dark:focus:border-primary"
                                                             placeholder="Age"
@@ -397,31 +427,32 @@ const ManagerDetailsPage = () => {
                             </div>
                             <div className="p-7 font-medium text-black dark:text-white">
                                 <Formik
-                                    initialValues={initialValuesInfo}
-                                    validationSchema={(validationSchemaInfo)}
-                                    onSubmit={() => { }}
+                                    initialValues={initialValuesActivities}
+                                    validationSchema={validationSchemaActivities}
+                                    onSubmit={updateUserStatusHandler}
                                     enableReinitialize={true}
                                 >
                                     {({ errors, touched }) => {
                                         return (
                                             <Form >
                                                 <div className="mb-4.5">
-                                                        <label className="block text-gray-600">LastActive</label>
-                                                        <Field
-                                                            type="text"
-                                                            name="LastActive"
-                                                            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                                                            placeholder="LastActive"
-                                                        />
-                                                        <ErrMessage name="LastActive" />
-                                                  
+                                                    <label className="block text-gray-600">LastActive</label>
+                                                    <Field
+                                                        type="text"
+                                                        name="lastActive"
+                                                        //disabled={true}
+                                                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                                                        placeholder="LastActive"
+                                                    />
+                                                    <ErrMessage name="lastActive" />
+
                                                 </div>
 
                                                 <div className="mb-4.5">
                                                     <div className="mb-4">
                                                         <label className="block text-black dark:text-white">Status<span className="text-meta-1">*</span></label>
                                                         <div className="relative z-20 bg-transparent dark:bg-form-input">
-                                                            <Field as="select" name="status"
+                                                            <Field as="select" name="isActive"
                                                                 className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                                                             >
                                                                 <option >Select Status</option>
@@ -448,60 +479,17 @@ const ManagerDetailsPage = () => {
                                                                 </svg>
                                                             </span>
                                                         </div>
-                                                        <ErrMessage name="status" />
+                                                        <ErrMessage name="isActive" />
                                                     </div>
                                                 </div>
-
-
-                                                {/* <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                                                    <div className="w-full xl:w-1/2">
-                                                        <div className="mb-4">
-                                                            <label className="block text-gray-600">LastActive<span className="text-meta-1">*</span></label>
-                                                            <Field
-                                                                type="number"
-                                                                name="phoneNumber"
-                                                                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                                                                placeholder="phone number"
-                                                            />
-                                                            <ErrMessage name="phoneNumber" />
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="w-full xl:w-1/2">
-                                                        <div className="mb-4">
-                                                            <label className="block text-black dark:text-white">Status<span className="text-meta-1">*</span></label>
-                                                            <div className="relative z-20 bg-transparent dark:bg-form-input">
-                                                                <Field as="select" name="status"
-                                                                    className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                                                                >
-                                                                    <option >Select Status</option>
-                                                                    <option value="true">Online</option>
-                                                                    <option value="false">Ofline</option>
-                                                                </Field>
-                                                                <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2">
-                                                                    <svg
-                                                                        className="fill-current"
-                                                                        width="24"
-                                                                        height="24"
-                                                                        viewBox="0 0 24 24"
-                                                                        fill="none"
-                                                                        xmlns="http://www.w3.org/2000/svg"
-                                                                    >
-                                                                        <g opacity="0.8">
-                                                                            <path
-                                                                                fillRule="evenodd"
-                                                                                clipRule="evenodd"
-                                                                                d="M5.29289 8.29289C5.68342 7.90237 6.31658 7.90237 6.70711 8.29289L12 13.5858L17.2929 8.29289C17.6834 7.90237 18.3166 7.90237 18.7071 8.29289C19.0976 8.68342 19.0976 9.31658 18.7071 9.70711L12.7071 15.7071C12.3166 16.0976 11.6834 16.0976 11.2929 15.7071L5.29289 9.70711C4.90237 9.31658 4.90237 8.68342 5.29289 8.29289Z"
-                                                                                fill=""
-                                                                            ></path>
-                                                                        </g>
-                                                                    </svg>
-                                                                </span>
-                                                            </div>
-                                                            <ErrMessage name="status" />
-                                                        </div>
-                                                    </div>
-                                                </div> */}
+                                                <div className="flex justify-end gap-4.5">
+                                                    <button
+                                                        className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-95"
+                                                        type="submit"
+                                                    >
+                                                        Save
+                                                    </button>
+                                                </div>
                                             </Form>
                                         )
                                     }}
@@ -512,7 +500,7 @@ const ManagerDetailsPage = () => {
 
                     </div>
                 </div>
-                <div className="grid grid-cols-5 gap-8 mt-8">
+                {/* <div className="grid grid-cols-5 gap-8 mt-8">
                     <div className="col-span-5 xl:col-span-3">
                         <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
                             <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
@@ -604,10 +592,10 @@ const ManagerDetailsPage = () => {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
             </div>
         </>
     );
 };
 
-export default ManagerDetailsPage;
+export default DoctorDetailsPage;

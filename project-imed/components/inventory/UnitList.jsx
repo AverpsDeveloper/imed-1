@@ -42,15 +42,19 @@ function CategoryList() {
     setFilterType(type)
   }
   function deleteHandler(name) {
-    api.delete(`/types/${filterType}`, { data: { name } })
+    api.delete(`/types/${filterType}`, { data: { name } }).then(()=>{
+      getInitData();
+    })
   }
   useEffect(() => {
+    getInitData();
+  }, [filterType])
+  function getInitData() {
     api.get(`/types/${filterType}`)
       .then(({ data }) => {
         setTypesData(data.result.data);
       })
-  }, [])
-
+  }
   function editHander(name, type) {
     setOldType(name)
     setInitialValues({ name: name, type: type })
