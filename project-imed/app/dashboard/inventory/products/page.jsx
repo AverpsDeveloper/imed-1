@@ -3,21 +3,40 @@ import React, { useState, useEffect } from 'react';
 import api from '@/http';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Papa from "papaparse";
 import { MdSaveAlt } from 'react-icons/md';
+import Pagination from '@/iComponents/Pagination';
 
 function ProductList() {
   const [products, setProducts] = useState([]);
+  const [meta, setMeta] = useState({ page: 1, limit: 10, total: 10 });
+  const [search, setSearch] = useState('');
+  const [price, setPrice] = useState(0);
+  const [categories, setCategories] = useState([]);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const page = searchParams.get('page') || 1
+  const limit = searchParams.get('limit') || 2
 
+  const getDate = () => {
+    api.get("/inventory", {
+      params: {
+        page,
+        limit,
+        search,
+        price,
+        categories
+      }
+    }).then((response) => {
+      setProducts(response.data.result.data);
+      setMeta(response.data.result.meta);
+    })
+  }
   useEffect(() => {
+    getDate();
     // Fetch product data using
-    api.get("/inventory")
-      .then((response) => {
-        setProducts(response.data.result.data);
-      })
-  }, []);
+  }, [page]);
 
 
   function productDeleteHandler(id) {
@@ -75,9 +94,9 @@ function ProductList() {
         </button>
       </div>
       <div className="overflow-x-auto">
+        <Pagination meta={meta} />
         <table className="w-full table-auto">
           <thead>
-
             <tr className="bg-gray-2 text-left dark:bg-meta-4">
               <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
                 SR. No.
