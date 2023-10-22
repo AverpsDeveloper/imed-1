@@ -51,9 +51,7 @@ function ListTagsPage() {
             />
           </div>
 
-          {error ? ( // Display error message if there's an error
-            <p className="text-red-500">{error}</p>
-          ) : health.length === 0 ? (
+          {health.length === 0 ? (
             <p>No categories found.</p>
           ) : (
             // <table className="w-full border border-collapse border-gray-300">

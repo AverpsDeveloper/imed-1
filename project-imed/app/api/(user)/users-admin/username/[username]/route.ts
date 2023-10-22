@@ -18,7 +18,7 @@ export const GET = tcWrap(async (req, res) => {
   if (!inventroy) throw new Error("Data Not found");
   return res.json({
     result: {
-      message: "inventry",
+      message: "User Details",
       data: inventroy,
     }
   });
