@@ -77,20 +77,20 @@ const ManagerListingPage = () => {
             All
           </button>
           <button
-            className={`px-4 py-2 rounded ${genderFilter === 'men' ? 'bg-blue-500 text-white' : 'bg-gray-200'
+            className={`px-4 py-2 rounded ${genderFilter === 'male' ? 'bg-blue-500 text-white' : 'bg-gray-200'
               }`}
-            onClick={() => setGenderFilter('men')}
+            onClick={() => setGenderFilter('male')}
           >
-            Men
+            Male
           </button>
           <button
-            className={`px-4 py-2 rounded ${genderFilter === 'women'
+            className={`px-4 py-2 rounded ${genderFilter === 'female'
               ? 'bg-blue-500 text-white'
               : 'bg-gray-200'
               }`}
-            onClick={() => setGenderFilter('women')}
+            onClick={() => setGenderFilter('female')}
           >
-            Women
+            Female
           </button>
         </div>
       </div>
