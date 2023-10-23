@@ -1,5 +1,7 @@
 import { connect, connection } from "mongoose";
 import appConfigModel from "../models/appConfigModel";
+import itemModel from "@/libs/models/itemModel";
+import itemBatchModel from "@/libs/models/itemBatchModel";
 
 const {
   // Attempts to connect to MongoDB and then tries to connect locally:)
@@ -9,7 +11,6 @@ const {
 
 const options: any = {
   useUnifiedTopology: true,
-
   useNewUrlParser: true,
 };
 
@@ -24,6 +25,8 @@ const dbInit = async (isReaload?: boolean) => {
       console.log("DB connected...");
       try {
         conf = await appConfigModel.findOne();
+       await itemModel.count();
+       await itemBatchModel.count();
         console.log("apppConfig", conf);
       } catch (error) {
         console.log(error);
