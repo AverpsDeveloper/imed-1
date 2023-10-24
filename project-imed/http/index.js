@@ -3,7 +3,7 @@ import toast from 'react-hot-toast'
 
 const api = axios.create({
     withCredentials: true,
-    baseURL: process.env.REACT_APP_BASE_URL || "http://localhost:3000/api",
+    baseURL: process.env.NEXT_APP_BASE_URL || "/api",
 });
 
 api.interceptors.request.use(function (config) {
