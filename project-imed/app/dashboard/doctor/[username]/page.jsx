@@ -53,6 +53,8 @@ const DoctorDetailsPage = () => {
         gender: "male",
         email: 'user@gmail.com',
         phoneNumber: '123456789',
+        speciality: '',
+        availableHours:"",
         address: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     })
     const { username } = useParams();
@@ -241,6 +243,44 @@ const DoctorDetailsPage = () => {
                                                     </div>
                                                 </div>
 
+                                                <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
+                                                    <div className="w-full sm:w-1/2 ">
+                                                        <label
+                                                            className="mb-3 block text-sm font-medium text-black dark:text-white"
+                                                            htmlFor="Age"
+                                                        >
+                                                            Speciality
+                                                        </label>
+
+                                                        <Field
+                                                            type="text"
+                                                            name="speciality"
+                                                            className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark dark:text-white dark:focus:border-primary"
+                                                            placeholder="Doctor speciality"
+                                                        />
+                                                        <ErrMessage name="speciality" />
+
+
+                                                    </div>
+
+                                                    <div className="w-full sm:w-1/2">
+                                                        <label
+                                                            className="mb-3 block text-sm font-medium text-black dark:text-white"
+                                                            htmlFor="Gender"
+                                                        >
+                                                            availableHours
+                                                        </label>
+
+                                                        <Field
+                                                            type="text"
+                                                            name="availableHours"
+                                                            className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark dark:text-white dark:focus:border-primary"
+                                                            placeholder="Doctor availablity Hours"
+                                                        />
+                                                        <ErrMessage name="availableHours" />
+                                                    </div>
+                                                </div>
+
                                                 <div className="mb-5.5">
                                                     <label
                                                         className="mb-3 block text-sm font-medium text-black dark:text-white"
@@ -261,7 +301,7 @@ const DoctorDetailsPage = () => {
                                                         className="mb-3 block text-sm font-medium text-black dark:text-white"
                                                         htmlFor="Username"
                                                     >
-                                                        BIO
+                                                        Address
                                                     </label>
                                                     <div className="relative">
                                                         <span className="absolute left-4.5 top-4">
@@ -453,7 +493,7 @@ const DoctorDetailsPage = () => {
 
                                                 <div className="mb-4.5">
                                                     <div className="mb-4">
-                                                        <label className="block text-black dark:text-white">Status<span className="text-meta-1">*</span></label>
+                                                        <label className="block text-black dark:text-white">is Active<span className="text-meta-1">*</span></label>
                                                         <div className="relative z-20 bg-transparent dark:bg-form-input">
                                                             <Field as="select" name="isActive"
                                                                 className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"

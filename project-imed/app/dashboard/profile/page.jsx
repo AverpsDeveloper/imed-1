@@ -7,6 +7,7 @@ import * as Yup from 'yup';
 import api from "@/http"
 
 import { useParams } from 'next/navigation';
+import { useSession } from "next-auth/react";
 
 
 const validationSchemaInfo = Yup.object().shape({
@@ -19,7 +20,6 @@ const validationSchemaInfo = Yup.object().shape({
     gender: Yup.string().required('Gender is required.'),
     phoneNumber: Yup.number().required('Phone number is required.'),
     address: Yup.string().required('Address is required.'),
-    
 });
 
 const validationSchemaActivities = Yup.object().shape({
@@ -38,53 +38,67 @@ function ErrMessage({ name }) {
     );
 }
 
-const ManagerDetailsPage = () => {
+const DoctorDetailsPage = () => {
 
     const [initialValuesActivities, setInitialValuesActivities] = useState({
-        lastActive: '',
-        isActive: false,
+        lastActive: '12:00',
+        isActive: true,
     })
 
+    const { data: { user } = { user: {} } } = useSession();
+
     const [initialValuesInfo, setInitialValuesInfo] = useState({
-        _id : "",
+        _id: "",
         username: 'username',
         firstName: 'First name',
         lastName: 'Last name',
         age: 23,
         gender: "male",
         email: 'user@gmail.com',
-        phoneNumber: '1234567890',
+        phoneNumber: '123456789',
+        speciality: "",
+        availableHours: "",
         address: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     })
-    const { username } = useParams();
-    useEffect(() => {
-        api.get(`/users-admin/username/${username}`)
-            .then((response) => {
-                setInitialValuesInfo(response.data.result.data);
-                setInitialValuesActivities({lastActive : response.data.result.data.lastActive,isActive : response.data.result.data.isActive});
-            })
-    }, []);
 
+
+
+    useEffect(() => {
+        if (user) {
+            setInitialValuesInfo(user);
+        }
+
+        // api.get(`/users-admin/username/${username}`)
+        //     .then((response) => {
+        //         setInitialValuesInfo(response.data.result.data);
+        //     })
+        // api.get(`/users-admin/username/${username}`)
+        //     .then((response) => {
+        //         setInitialValuesActivities(response.data.result.data);
+        //     })
+    }, [user]);
+
+    console.log("initialValuesInfo::", initialValuesInfo);
     const onSubmitInfo = (values) => {
         values.id = initialValuesInfo._id;
-        delete values.username;
-        api.put("/users-admin",values)
+        api.put("/users-admin", values)
     }
+
     const updateUserStatusHandler = (values) => {
         delete values.lastActive
         values.id = initialValuesInfo._id;
-        api.put("/users-admin",values)
+        api.put("/users-admin", values)
     }
     return (
         <>
             <div className="mx-auto max-w-270">
-                <Breadcrumb pageName="Manager Information" />
+                <Breadcrumb pageName="Profile" />
                 <div className="grid grid-cols-5 gap-8">
                     <div className="col-span-5 xl:col-span-3">
                         <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
                             <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
                                 <h3 className="font-medium text-black dark:text-white">
-                                    Personal Information
+                                    Profile Info
                                 </h3>
                             </div>
                             <div className="p-7">
@@ -95,7 +109,6 @@ const ManagerDetailsPage = () => {
                                     enableReinitialize={true}
                                 >
                                     {({ errors, touched }) => {
-                                        console.log(errors);
                                         return (
                                             <Form >
                                                 <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
@@ -238,7 +251,45 @@ const ManagerDetailsPage = () => {
                                                         <ErrMessage name="gender" />
                                                     </div>
                                                 </div>
+                                                {user.role == "DOCTOR" &&
+                                                    <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
+                                                        <div className="w-full sm:w-1/2 ">
+                                                            <label
+                                                                className="mb-3 block text-sm font-medium text-black dark:text-white"
+                                                                htmlFor="Age"
+                                                            >
+                                                                Speciality
+                                                            </label>
 
+                                                            <Field
+                                                                type="text"
+                                                                name="speciality"
+                                                                className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark dark:text-white dark:focus:border-primary"
+                                                                placeholder="Doctor speciality"
+                                                            />
+                                                            <ErrMessage name="speciality" />
+
+
+                                                        </div>
+
+                                                        <div className="w-full sm:w-1/2">
+                                                            <label
+                                                                className="mb-3 block text-sm font-medium text-black dark:text-white"
+                                                                htmlFor="Gender"
+                                                            >
+                                                                availableHours
+                                                            </label>
+
+                                                            <Field
+                                                                type="text"
+                                                                name="availableHours"
+                                                                className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark dark:text-white dark:focus:border-primary"
+                                                                placeholder="Doctor availablity Hours"
+                                                            />
+                                                            <ErrMessage name="availableHours" />
+                                                        </div>
+                                                    </div>                                             
+                                                }
                                                 <div className="mb-5.5">
                                                     <label
                                                         className="mb-3 block text-sm font-medium text-black dark:text-white"
@@ -249,7 +300,6 @@ const ManagerDetailsPage = () => {
                                                     <Field
                                                         type="text"
                                                         name="username"
-                                                        disabled={true}
                                                         className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark -4 dark:text-white dark:focus:border-primary"
                                                         placeholder="Username"
                                                     />
@@ -421,7 +471,7 @@ const ManagerDetailsPage = () => {
                             </div>
                         </div>
 
-                        <div className="rounded-sm md:mt-10 border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+                        {/* <div className="rounded-sm md:mt-10 border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
                             <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
                                 <h3 className="font-medium text-black dark:text-white">
                                     User Activities
@@ -442,7 +492,7 @@ const ManagerDetailsPage = () => {
                                                     <Field
                                                         type="text"
                                                         name="lastActive"
-                                                        disabled={true}
+                                                        //disabled={true}
                                                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                                                         placeholder="LastActive"
                                                     />
@@ -497,7 +547,7 @@ const ManagerDetailsPage = () => {
                                     }}
                                 </Formik>
                             </div>
-                        </div>
+                        </div> */}
 
 
                     </div>
@@ -600,4 +650,4 @@ const ManagerDetailsPage = () => {
     );
 };
 
-export default ManagerDetailsPage;
+export default DoctorDetailsPage;

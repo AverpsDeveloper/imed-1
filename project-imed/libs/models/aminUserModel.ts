@@ -52,10 +52,11 @@ const adminUserSchema = new Schema(
             type: Boolean,
             default: false
         },
-        lastActive: { 
-            type: Date, 
-            default: Date.now 
+        lastActive: {
+            type: Date,
+            default: Date.now
         },
+        availableHours: { type: String },
         isTfa: {
             type: Boolean,
             default: false
