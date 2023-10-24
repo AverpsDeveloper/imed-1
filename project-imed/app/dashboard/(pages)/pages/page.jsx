@@ -4,7 +4,7 @@ const PagesListing = () => {
             <div className="p-4 shadow-md drounded-m rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
               <div className="flex justify-between items-center mb-4 ">
                 <h1 className="text-2xl font-bold">Public Pages</h1>
-                <Link href="/dashboard/inventory/products/add"
+                <Link href="/dashboard/pages/add"
                   className="inline-flex items-center justify-center gap-2.5 rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
                 >
                   <span>
