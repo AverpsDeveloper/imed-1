@@ -18,12 +18,12 @@ const validationSchemaInfo = Yup.object().shape({
     age: Yup.number().required('Age is required.'),
     gender: Yup.string().required('Gender is required.'),
     phoneNumber: Yup.number().required('Phone number is required.'),
-    bio: Yup.string().required('Address is required.'),
+    address: Yup.string().required('Address is required.'),
 });
 
 const validationSchemaActivities = Yup.object().shape({
     lastActive: Yup.string().required('Last Active.'),
-    status: Yup.boolean().required('Update User Active Status.'),
+    isActive: Yup.boolean().required('Update User Active Status.'),
 })
 
 function ErrMessage({ name }) {
@@ -36,9 +36,7 @@ function ErrMessage({ name }) {
         />
     );
 }
-const onSubmitInfo = (data) => {
-    console.log(data);
-}
+
 const DoctorDetailsPage = () => {
 
     const [initialValuesActivities, setInitialValuesActivities] = useState({
@@ -55,7 +53,7 @@ const DoctorDetailsPage = () => {
         gender: "male",
         email: 'user@gmail.com',
         phoneNumber: '123456789',
-        bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+        address: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     })
     const { username } = useParams();
     useEffect(() => {
@@ -68,11 +66,16 @@ const DoctorDetailsPage = () => {
                 setInitialValuesActivities(response.data.result.data);
             })
     }, []);
+
+    
+    const onSubmitInfo = (values) => {
+        values.id = initialValuesInfo._id;
+        api.put("/users-admin",values)
+    }
+    
     const updateUserStatusHandler = (values) => {
-        console.log("==========",values);
         delete values.lastActive
         values.id = initialValuesInfo._id;
-        console.log("values::",values);
         api.put("/users-admin",values)
     }
     return (
@@ -294,11 +297,11 @@ const DoctorDetailsPage = () => {
                                                         <Field
                                                             rows={3}
                                                             as="textarea"
-                                                            name="bio"
+                                                            name="address"
                                                             className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark -4 dark:text-white dark:focus:border-primary"
-                                                            placeholder="bio"
+                                                            placeholder="Address"
                                                         />
-                                                        <ErrMessage name="bio" />
+                                                        <ErrMessage name="address" />
                                                     </div>
                                                 </div>
 

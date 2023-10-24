@@ -1,6 +1,6 @@
 "use client"
 
-import axios from 'axios';
+import api from "@/http"
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
@@ -13,7 +13,7 @@ const DoctorListingPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [doctors, setDoctorsData] = useState([])
   useEffect(() => {
-    axios.get('/api/users-admin', { params: { role: "DOCTOR" } })
+    api.get('/users-admin', { params: { role: "DOCTOR" } })
       .then((response) => {
         setDoctorsData(response.data.result.data);
       })

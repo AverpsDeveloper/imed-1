@@ -619,7 +619,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                 "text-white"
                               }`}
                             >
-                             Add Doctors
+                             Add Manager
                             </Link>
                           </li>
                         </ul>

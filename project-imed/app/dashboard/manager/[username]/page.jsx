@@ -18,12 +18,12 @@ const validationSchemaInfo = Yup.object().shape({
     age: Yup.number().required('Age is required.'),
     gender: Yup.string().required('Gender is required.'),
     phoneNumber: Yup.number().required('Phone number is required.'),
-    bio: Yup.string().required('Address is required.'),
+    address: Yup.string().required('Address is required.'),
 });
 
 const validationSchemaActivities = Yup.object().shape({
     lastActive: Yup.string().required('Last Active.'),
-    status: Yup.boolean().required('Update User Active Status.'),
+    isActive: Yup.boolean().required('Update User Active Status.'),
 })
 
 function ErrMessage({ name }) {
@@ -36,14 +36,12 @@ function ErrMessage({ name }) {
         />
     );
 }
-const onSubmitInfo = (data) => {
-    console.log(data);
-}
+
 const ManagerDetailsPage = () => {
 
     const [initialValuesActivities, setInitialValuesActivities] = useState({
-        lastActive: '12:00',
-        isActive: true,
+        lastActive: '',
+        isActive: false,
     })
 
     const [initialValuesInfo, setInitialValuesInfo] = useState({
@@ -55,24 +53,28 @@ const ManagerDetailsPage = () => {
         gender: "male",
         email: 'user@gmail.com',
         phoneNumber: '123456789',
-        bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+        address: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     })
     const { username } = useParams();
     useEffect(() => {
         api.get(`/users-admin/username/${username}`)
             .then((response) => {
                 setInitialValuesInfo(response.data.result.data);
+                setInitialValuesActivities({lastActive : response.data.result.data.lastActive,isActive : response.data.result.data.isActive});
             })
-        api.get(`/users-admin/username/${username}`)
-            .then((response) => {
-                setInitialValuesActivities(response.data.result.data);
-            })
+        // api.get(`/users-admin/username/${username}`)
+        //     .then((response) => {
+                
+        //     })
     }, []);
+
+    const onSubmitInfo = (values) => {
+        values.id = initialValuesInfo._id;
+        api.put("/users-admin",values)
+    }
     const updateUserStatusHandler = (values) => {
-        console.log("==========",values);
         delete values.lastActive
         values.id = initialValuesInfo._id;
-        console.log("values::",values);
         api.put("/users-admin",values)
     }
     return (
@@ -95,6 +97,7 @@ const ManagerDetailsPage = () => {
                                     enableReinitialize={true}
                                 >
                                     {({ errors, touched }) => {
+                                        console.log(errors);
                                         return (
                                             <Form >
                                                 <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
@@ -294,11 +297,11 @@ const ManagerDetailsPage = () => {
                                                         <Field
                                                             rows={3}
                                                             as="textarea"
-                                                            name="bio"
+                                                            name="address"
                                                             className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark -4 dark:text-white dark:focus:border-primary"
-                                                            placeholder="bio"
+                                                            placeholder="Address"
                                                         />
-                                                        <ErrMessage name="bio" />
+                                                        <ErrMessage name="address" />
                                                     </div>
                                                 </div>
 
@@ -440,7 +443,7 @@ const ManagerDetailsPage = () => {
                                                     <Field
                                                         type="text"
                                                         name="lastActive"
-                                                        //disabled={true}
+                                                        disabled={true}
                                                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                                                         placeholder="LastActive"
                                                     />

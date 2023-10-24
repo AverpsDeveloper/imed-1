@@ -1,8 +1,8 @@
 "use client"
 
-import axios from 'axios';
 import Image from 'next/image';
 import Link from 'next/link';
+import api from "@/http"
 import React, { useEffect, useState } from 'react';
 import { FaHistory, FaEnvelope, FaPhone } from 'react-icons/fa';
 
@@ -13,13 +13,10 @@ const ManagerListingPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [managers, setManagersData] = useState([])
   useEffect(() => {
-    axios.get('/api/users-admin', { params: { role: "MANAGER" } })
+    api.get('/users-admin', { params: { role: "MANAGER" } })
       .then((response) => {
         setManagersData(response.data.result.data);
       })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
 
   }, []);
 

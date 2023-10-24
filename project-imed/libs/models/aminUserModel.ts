@@ -12,7 +12,7 @@ const adminUserSchema = new Schema(
     {
         username: {
             type: String,
-            unique:true,
+            unique: true,
         },
         firstName: {
             type: String,
@@ -51,6 +51,10 @@ const adminUserSchema = new Schema(
         isActive: {
             type: Boolean,
             default: false
+        },
+        lastActive: { 
+            type: Date, 
+            default: Date.now 
         },
         isTfa: {
             type: Boolean,
