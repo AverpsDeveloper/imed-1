@@ -1,5 +1,5 @@
-import mongoose, { Document, model, Model, Schema } from "mongoose";
-import itemModel from "./itemModel";
+import mongoose, { Document, model, Model,Schema, } from "mongoose";
+import paginationPlugin from "../utils/paginationPlugin";
 
 export interface IPropsType extends Document {
     name?: string;
@@ -40,5 +40,7 @@ const itemBatchSchema = new Schema(
     }
 );
 
+itemBatchSchema.plugin(paginationPlugin);
+
 export default (mongoose.models.ItemBatch ||
-    model("ItemBatch", itemBatchSchema)) as Model<IPropsType>;
+    model<any, any>("ItemBatch", itemBatchSchema)) ;

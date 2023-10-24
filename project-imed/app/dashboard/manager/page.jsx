@@ -94,7 +94,7 @@ const ManagerListingPage = () => {
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="py-6 px-4 md:px-6 xl:px-7.5">
           <h4 className="text-xl font-semibold text-black dark:text-white">
-          Managers List
+            Managers List
           </h4>
         </div>
 
@@ -111,8 +111,11 @@ const ManagerListingPage = () => {
           <div className="col-span-1 flex items-center">
             <p className="font-medium">Age</p>
           </div>
-          <div className="col-span-2 flex items-center">
+          <div className="col-span-1 flex items-center">
             <p className="font-medium">Contact</p>
+          </div>
+          <div className="col-span-1 flex items-center">
+            <p className="font-medium">Action</p>
           </div>
         </div>
 
@@ -122,28 +125,28 @@ const ManagerListingPage = () => {
             key={key}
           >
             <div className="col-span-2 flex items-center">
-            <Link href={`/dashboard/manager/${manager.username}`}> 
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                <div className="h-12.5 w-15 rounded-md">
-                  <Image
-                    src={manager.profilePic || "/images/logo/logo-icon.svg"}
-                    width={60}
-                    height={50}
-                    alt="manager"
-                  />
+              <Link href={`/dashboard/manager/${manager.username}`}>
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                  <div className="h-12.5 w-15 rounded-md">
+                    <Image
+                      src={manager.profilePic || "/images/logo/logo-icon.svg"}
+                      width={60}
+                      height={50}
+                      alt="manager"
+                    />
+                  </div>
+                  <p className="text-sm text-black dark:text-white ">
+                    {manager.firstName + " " + manager.lastName}
+                  </p>
                 </div>
-                <p className="text-sm text-black dark:text-white">
-                  {manager.firstName + " " + manager.lastName}
-                </p>
-              </div>
               </Link>
             </div>
-            <div className="col-span-2 hidden items-center sm:flex">
-            <Link href={`/dashboard/manager/${manager.username}`}> 
-              <p className="text-sm text-black dark:text-white">
-                {manager.username}
-              </p>
-            </Link>
+            <div className="col-span-2 hidden items-center  sm:flex hover:font-bold hover:bg-opacity-90 lg:px-8 xl:px-10">
+              <Link href={`/dashboard/manager/${manager.username}`}>
+                <p className="text-sm text-black dark:text-white">
+                  {manager.username}
+                </p>
+              </Link>
             </div>
             <div className="col-span-1 flex items-center">
               <p className="text-sm text-black dark:text-white">
@@ -151,19 +154,26 @@ const ManagerListingPage = () => {
               </p>
             </div>
             <div className="col-span-1 flex items-center">
-            <p className="text-sm text-black dark:text-white">
+              <p className="text-sm text-black dark:text-white">
                 {manager.age}
               </p>
             </div>
-            <div className="col-span-2 gap-5 flex items-center">
-              
+            <div className="col-span-1 gap-5 flex items-center">
+
               <button className="text-blue-500">
-              <a href={`mailto:${manager.email}`}><FaEnvelope title={`${manager.email}`}/></a>
-                
+                <a href={`mailto:${manager.email}`}><FaEnvelope title={`${manager.email}`} /></a>
+
               </button>
               <button className="text-blue-500">
-              <a href={`tel:${manager.phoneNumber}`}><FaPhone title={`${manager.phoneNumber}`}/></a>
+                <a href={`tel:${manager.phoneNumber}`}><FaPhone title={`${manager.phoneNumber}`} /></a>
               </button>
+            </div>
+            <div className="col-span-1 gap-5 flex items-center ">
+            <Link href={`/dashboard/manager/${manager.username}`}>
+                <p className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
+                  Detail
+                </p>
+              </Link>
             </div>
           </div>
         ))}

@@ -41,6 +41,12 @@ const adminUserSchema = new Schema(
         gender: {
             type: String
         },
+        avatar: {
+            type: String
+        },
+        senior: {
+            type: Schema.Types.ObjectId
+        },
         // address: [{
         //     ref: "UserAddress",
         //     type: Schema.Types.ObjectId,
@@ -52,10 +58,11 @@ const adminUserSchema = new Schema(
             type: Boolean,
             default: false
         },
-        lastActive: { 
-            type: Date, 
-            default: Date.now 
+        lastActive: {
+            type: Date,
+            default: Date.now
         },
+        availableHours: { type: String },
         isTfa: {
             type: Boolean,
             default: false

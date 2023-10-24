@@ -1,5 +1,5 @@
-import { connect, connection } from "mongoose";
-import appConfigModel from "../models/appConfigModel";
+import  { connect, connection } from "mongoose";
+import appConfigModel from "@/libs/models/appConfigModel";
 import itemModel from "@/libs/models/itemModel";
 import itemBatchModel from "@/libs/models/itemBatchModel";
 
