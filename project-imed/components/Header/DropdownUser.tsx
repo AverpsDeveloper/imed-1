@@ -3,17 +3,17 @@ import Link from "next/link";
 import Image from "next/image";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from 'next/navigation';
-import {FaUserDoctor} from "react-icons/fa6"
+import { FaUserDoctor } from "react-icons/fa6"
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const { data: { user } = { user: {} } }: any = useSession();
+  const session: any = useSession();
   const router = useRouter()
 
-  
+
   const trigger = useRef<any>(null);
   const dropdown = useRef<any>(null);
 
-  console.log("seesinol", user);
+  console.log("seesinol", session?.data?.user);
 
   const logoutClickHandler = async () => {
 
@@ -57,9 +57,9 @@ const DropdownUser = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            {user?.username}
+            {session?.data?.user?.username}
           </span>
-          <span className="block text-xs">{user?.role}</span>
+          <span className="block text-xs">{session?.data?.user?.role}</span>
         </span>
 
         {/* <span className="h-12 w-12 rounded-full">
@@ -71,9 +71,9 @@ const DropdownUser = () => {
           />
         </span> */}
 
-      <span className="h-10 w-10 rounded-full">
-      <FaUserDoctor className="h-10 w-10 rounded-full" size={18}/>
-      </span>
+        <span className="h-10 w-10 rounded-full">
+          <FaUserDoctor className="h-10 w-10 rounded-full" size={18} />
+        </span>
         <svg
           className="hidden fill-current sm:block"
           width="12"
