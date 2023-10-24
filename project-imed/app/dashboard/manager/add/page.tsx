@@ -1,5 +1,5 @@
-import React from 'react'
 import AddManager from '@/components/manager/AddManager';
+import React from 'react'
 
 const AddManagerPage = () => {
 

@@ -5,10 +5,12 @@ import { Types } from "mongoose";
 import adminConfModel from "@/libs/models/adminConfModel";
 
 export const GET = tcWrap(async (req, res) => {
-  const { search, category, type, price, page, limit } = req.query;
+  const { search, categories, type, price, page, limit } = req.query;
+  const parsePage = parseInt(page, 10);
+  const parseLimit = parseInt(limit, 10);
   const paginat = {
-    page: +page <= 0 ? 0 : parseInt(page, 10) - 1,
-    limit: parseInt(limit, 10) || 10
+    page: isNaN(parsePage) || (parsePage <= 0) ? 0 : (parsePage - 1),
+    limit: isNaN(parseLimit) || (parseLimit <= 0) ? 10 : parseLimit
   }
   let filter: any = [{ deletedAt: { $exists: false } }];
   if (search) {
@@ -31,13 +33,10 @@ export const GET = tcWrap(async (req, res) => {
       retailPrice: { $gte: +gt, ...(lt && { $lte: +lt }) },
     });
   }
-  if (category) {
-    console.log("category", category);
-    if (Types.ObjectId.isValid(category)) {
-      filter.push({
-        categories: { $in: [category] },
-      });
-    }
+  if (categories && Array.isArray(categories) && categories.length) {
+    filter.push({
+      categories: { $in: categories },
+    });
   }
   const [inventroy, total]: any = await Promise.all([
     itemModel.find({ $and: filter }, '',
@@ -54,7 +53,8 @@ export const GET = tcWrap(async (req, res) => {
       data: inventroy,
       meta: {
         total,
-        page: paginat.page + 1,
+        page: (paginat.page * paginat.limit) > total
+          ? Math.ceil(total / paginat.limit) : paginat.page + 1,
         limit: paginat.limit
       }
     }

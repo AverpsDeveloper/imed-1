@@ -6,8 +6,7 @@ import { useQuill } from "react-quilljs";
 import "quill/dist/quill.snow.css";
 
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import axios from "axios";
-import toast from "react-hot-toast";
+import api from "@/http";
 
 const AddNewPage = () => {
   const {
@@ -29,15 +28,7 @@ const AddNewPage = () => {
 
   const onSubmit = (data: any) => {
     data.description = value;
-    axios
-      .post("/api/pages", data)
-      .then(() => {
-        toast.success("New Page Added Successfully");
-      })
-      .catch((error) => {
-        console.error(error);
-        toast.success("There was an error. Please try again");
-      });
+    api.post("/pages", data)
   };
 
   return (

@@ -1,56 +1,33 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import axios from 'axios';
-import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
-import Loader from "@/components/common/Loader";
-
+import api from '@/http';
 
 function ListTagsPage() {
   const [tags, setTags] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  const [error, setError] = useState(null); // New state for handling errors
   const router = useRouter()
 
   const deleteHandler = (id) => {
-    setLoading(true);
-    axios.delete('/api/tags', { data: { id } }).then((respocnse) => {
-      setLoading(false);
-      toast.success("deleted successfully");
-      // setTimeout(() => { router.refresh() }, 1000);
-    }).catch(err => {
-      setLoading(false);
-      toast.error("Error deleting category")
-    });
+    api.delete('/tags', { data: { id } })
   };
   const editHandler = (editable) => {
     if (editable) router.push("/dashboard/inventory/tags/add?id=" + editable)
   };
 
   useEffect(() => {
-    // Fetch categories data from the API route using Axios
-    axios.get('/api/tags')
+    api.get('/tags')
       .then((response) => {
         setTags(response.data.result.data);
-        setLoading(false);
-        setError(null); // Clear any previous errors on successful fetch
+        // Clear any previous errors on successful fetch
       })
-      .catch((error) => {
-        setLoading(false);
-        setError('Error fetching data. Please try again later.'); // Set an error message
-        console.error('Error fetching data:', error);
-      });
-  }, [loading]);
 
-  if (loading) {
-    return  <Loader/>;
-  }
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-200 flex flex-col">
-      <div className="bg-white w-full h-full p-6">
+      <div className="w-full h-full p-6 rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="p-4">
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-2xl font-bold">Tags List</h1>
@@ -74,9 +51,7 @@ function ListTagsPage() {
             />
           </div>
 
-          {error ? ( // Display error message if there's an error
-            <p className="text-red-500">{error}</p>
-          ) : tags.length === 0 ? (
+          {tags.length === 0 ? (
             <p>No categories found.</p>
           ) : (
             // <table className="w-full border border-collapse border-gray-300">
@@ -99,7 +74,7 @@ function ListTagsPage() {
               </thead>
               <tbody>
                 {tags.map((tag, index) => (
-                 
+
                   <tr key={tag._id}>
                     <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark pl-9 xl:pl-11">
                       <p className="text-black dark:text-white">

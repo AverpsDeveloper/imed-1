@@ -63,7 +63,7 @@ export const GET = tcWrap(async (req, res) => {
 
 export const POST = tcWrap(async (req, res) => {
     const body = await req.json();
-    console.log("body::", body);
+    // console.log("body::", body);
     if (!body.products) {
         throw new Error("field products required");
     }
@@ -72,16 +72,55 @@ export const POST = tcWrap(async (req, res) => {
     }
 
     const admin: any = await adminConfModel.findOne();
-    const bulkdata = body.products?.map((product: any) => ({
-        ...product, prefQtyFixed: convertPrefQty(product, product.prefQtyFixed, admin.charge),
-        prefQtyOne: convertPrefQty(product, product.prefQtyOne, admin.charge),
-        prefQtyTwo: convertPrefQty(product, product.prefQtyTwo, admin.charge),
-        prefQtyThree: convertPrefQty(product, product.prefQtyThree, admin.charge),
-    }))
+    const booleanKey:any = {
+        "active" : true,
+        "yes" : true,
+        "no" : false,
+        "deactive" : false,
+        "inactive":false
+    }
+    const keyMap: any = {
+        "type": "type",
+        "name": "name",
+        "alternativename": "altName",
+        "form": "form",
+        "dispenseform": "dispanseForm",
+        "categories": "categories",
+        "itemcode": "codeName",
+        "manufactureprice": "buildCostPrUnit",
+        "preferredquantityfixed": "prefQtyFixed",
+        "preferredquantityone": "prefQtyOne",
+        "preferredquantitytwo": "prefQtyTwo",
+        "preferredquantitythree": "prefQtyThree",
+        "retailprice": "retailPrice",
+        "strength": "strength",
+        "yearlimit": "yearLimit",
+        "measureunit": "measureUnit",
+        "description": "discription",
+        "repeatconsult": "repeatConsult",
+        "status": "isActive",
+        "images": "images"
+    }
 
+
+    const bulkdata = body.products?.map((product: any) => {
+        const modifiedProduct: any = {};
+        let dyKey;
+        for (let d in product) {
+            dyKey  = keyMap[d.trim().replace(/\s/g, '').toLowerCase()];
+            modifiedProduct[dyKey] = booleanKey[product[d].toLowerCase()] && typeof booleanKey[product[d].toLowerCase()] == "boolean" ? booleanKey[product[d].toLowerCase()] : product[d];
+        }
+        return ({
+            ...modifiedProduct,
+            prefQtyFixed: convertPrefQty(modifiedProduct, modifiedProduct.prefQtyFixed, admin.charge),
+            prefQtyOne: convertPrefQty(modifiedProduct, modifiedProduct.prefQtyOne, admin.charge),
+            prefQtyTwo: convertPrefQty(modifiedProduct, modifiedProduct.prefQtyTwo, admin.charge),
+            prefQtyThree: convertPrefQty(modifiedProduct, modifiedProduct.prefQtyThree, admin.charge),
+        })
+    })
     const item = await itemModel.create(bulkdata);
-    console.log("reqbody", body);
-    return res.json({ result: { message: "item added to inventory", item } });
+    
+    return res.json({ result: { message: "item added to inventory",item } });
 });
 
 

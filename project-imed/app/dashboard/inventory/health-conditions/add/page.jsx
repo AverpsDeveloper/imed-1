@@ -4,10 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import Link from 'next/link';
-import axios from 'axios';
-import toast from 'react-hot-toast';
+import api from "@/http"
 import { useRouter, useSearchParams } from 'next/navigation';
-import Loader from "@/components/common/Loader";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('Health condition name is required'),
@@ -30,41 +28,33 @@ function AddHealthConditionPage() {
   const rotuer = useRouter();
   const params = useSearchParams();
   const paramsId = params.get("id")
-  const [loading, setLoading] = useState(false);
-  const [initialValues, setInitialValues] = useState({  
+  const [initialValues, setInitialValues] = useState({
     name: '',
-    description:'',
-    status: 'active',})
+    description: '',
+    status: 'active',
+  })
 
   const onSubmit = (values, { resetForm }) => {
     // Handle the form submission here
     if (paramsId) {
       values.id = paramsId;
-      axios.put('/api/health-conditions', values)
+      api.put('/health-conditions', values)
         .then(({ data }) => {
-          toast.success(data.result.message);
           rotuer.push("/dashboard/inventory/health-conditions")
-        }).catch(({ error }) => {
-          toast.error(error.message);
         })
     } else {
-      axios.post('/api/health-conditions', values)
+      api.post('/health-conditions', values)
         .then(({ data }) => {
-          toast.success('New health conditions added successfully');
           resetForm(); // Reset the form after successful submission
           // rotuer.push("/dashboard/inventory/categorys")
         })
-        .catch(({ response }) => {
-          console.log("error::",);
-          toast.error(response.data?.error?.error);
-        });
     }
 
   };
 
   return (
     <div className="min-h-screen bg-gray-200 flex flex-col">
-      <div className="bg-white w-full h-full p-6">
+      <div className="w-full h-full p-6 rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-2xl font-bold">Add new Tag</h1>
           <Link href="/dashboard/inventory/health-conditions"
@@ -91,7 +81,6 @@ function AddHealthConditionPage() {
               />
               <ErrMassage name="name" />
             </div>
-            
             <div className="mb-4">
               <label className="mb-3 block text-black dark:text-white">Description</label>
               <Field

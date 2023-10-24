@@ -3,8 +3,7 @@ import React from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import Link from 'next/link';
-import axios from 'axios';
-import toast from 'react-hot-toast';
+import api from '@/http';
 
 const validationSchema = Yup.object().shape({
   medicinesUnitsName: Yup.string().required('Item Type Name is required'),
@@ -30,19 +29,10 @@ function AddItemTypeForm() {
 
   const onSubmit = (values, { resetForm }) => {
     // Handle the form submission here
-    axios.post('/api/new-inventory-units', values)
+    api.post('/new-inventory-units', values)
       .then(({ data }) => {
-        if (data.success) {
-          toast.success('New Item Type added successfully');
-          resetForm(); // Reset the form after successful submission
-        } else {
-          toast.error(data.message);
-        }
+        resetForm(); // Reset the form after successful submission
       })
-      .catch((error) => {
-        console.error(error);
-        toast.error('There was an error. Please try again');
-      });
   };
 
   return (

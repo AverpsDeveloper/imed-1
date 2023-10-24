@@ -14,6 +14,7 @@ const adminConfigSchema = new Schema(
         },
         payment: {
 
+            
         },
         aws: {
 

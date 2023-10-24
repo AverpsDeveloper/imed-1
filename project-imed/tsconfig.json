@@ -23,6 +23,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "iComponents/**/*.tsx","app/page.jsx", "components/inventory/AddProduct.jsx", "app/dashboard/inventory/products/page.jsx", "components/inventory/Modal.jsx", "app/dashboard/inventory/tags/page.jsx", "app/dashboard/inventory/tags/add/page.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "iComponents/**/*.tsx","app/page.jsx", "components/inventory/AddProduct.jsx", "app/dashboard/inventory/products/page.jsx", "components/inventory/Modal.jsx", "app/dashboard/inventory/tags/page.jsx", "app/dashboard/inventory/tags/add/page.jsx", "components/manager/AddManager.jsx", "components/Doctors/AddDoctor.jsx", "app/dashboard/manager/page.jsx", "app/dashboard/doctor/page.jsx", "app/dashboard/settings/page.jsx"],
   "exclude": ["node_modules"]
 }

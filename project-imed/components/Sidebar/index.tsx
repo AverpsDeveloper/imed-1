@@ -619,7 +619,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                 "text-white"
                               }`}
                             >
-                             Add Doctors
+                             Add Manager
                             </Link>
                           </li>
                         </ul>
@@ -1024,6 +1024,19 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                Products
                             </Link>
                           </li>
+
+                          <li>
+                            <Link
+                              href="/dashboard/inventory/import"
+                              className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${
+                                pathname === "/inventory/import" && "text-white"
+                              }`}
+                            >
+                               Import Data
+                            </Link>
+                          </li>
+
+
                           {/* <li>
                             <Link
                               href="/dashboard/inventory/categorys/add"

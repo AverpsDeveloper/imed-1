@@ -3,11 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import Link from 'next/link';
-import axios from 'axios';
-import toast from 'react-hot-toast';
+import api from '@/http'
 import { useRouter, useSearchParams } from 'next/navigation';
 import AsyncSelect from 'react-select/async';
-import Loader from "@/components/common/Loader";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('Batch name is required'),
@@ -35,51 +33,37 @@ function AddNewBatch() {
   const params = useSearchParams();
   const [itemOptions, setItemOptions] = useState([]);
   const paramsId = params.get("id");
-  const [loading, setLoading] = useState(false);
 
-  const [initialValues,setinitialValues] = useState({
-          name: '',
-          isActive: 'isActive',
-          description: '',
-          // location: "",
-          arriveAt: Date.now(),
-          // batchCost: "",
-          // sellingPrice: "",
-        });
-  
+  const [initialValues, setinitialValues] = useState({
+    name: '',
+    isActive: 'isActive',
+    description: '',
+    // location: "",
+    arriveAt: Date.now(),
+    // batchCost: "",
+    // sellingPrice: "",
+  });
+
   const onSubmit = (values, { resetForm }) => {
     // Handle the form submission here
-    setLoading(true)
     if (paramsId) {
       values.id = paramsId;
-      axios.put('/api/item-batch', values)
+      api.put('/item-batch', values)
         .then(({ data }) => {
-          setLoading(false)
-          toast.success(data.result.message);
           rotuer.push("/dashboard/inventory/batch")
-        }).catch(({ error }) => {
-          setLoading(false)
-          toast.error(error.message);
         })
     } else {
-      axios.post('/api/item-batch', values)
+      api.post('/item-batch', values)
         .then(({ data }) => {
-          setLoading(false)
-          toast.success('New Batch added successfully');
           resetForm(); // Reset the form after successful submission
           // rotuer.push("/dashboard/inventory/batch")
         })
-        .catch((data) => {
-          setLoading(false)
-          toast.error("There was an error");
-        });
     }
-
   };
 
   const loadOptionsHandler = async (search) => {
     try {
-      const { data } = await axios.get('/api/inventory', { params: { search } })
+      const { data } = await api.get('/inventory', { params: { search } })
       const d = data.result.data.map(d => ({ value: d.name, label: d.name, id: d._id }))
       setItemOptions(d);
       return d;
@@ -88,30 +72,19 @@ function AddNewBatch() {
     }
   }
 
-  useEffect(()=>{
-    if(paramsId){
-      setLoading(true)
-      axios.get(`/api/item-batch/${paramsId}`)
-      .then((response) => {  
-        setItemOptions([{ value: response.data.result.data.item.name, label: response.data.result.data.item.name, id: response.data.result.data.item._id }]);
-        setinitialValues(response.data.result.data);
-        console.log("response::",response);      
-        setLoading(false)
-      })
-      .catch((err) => {
-        setLoading(false);
-        setError(err);
-      });
+  useEffect(() => {
+    if (paramsId) {
+      api.get(`/item-batch/${paramsId}`)
+        .then((response) => {
+          setItemOptions([{ value: response.data.result.data.item.name, label: response.data.result.data.item.name, id: response.data.result.data.item._id }]);
+          setinitialValues(response.data.result.data);
+        })
     }
-  },[])
-
-  if(loading){
-    return <Loader />
-  }
+  }, [])
 
   return (
     <div className="min-h-screen bg-gray-200 flex flex-col">
-      <div className="bg-white w-full h-full p-6">
+      <div className="w-full h-full p-6 rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-2xl font-bold">Add new batch</h1>
           <Link href="/dashboard/inventory/batch"
@@ -125,7 +98,7 @@ function AddNewBatch() {
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={onSubmit}
-          enableReinitialize = {true}
+          enableReinitialize={true}
         >
           <Form>
             <div className="mb-4">

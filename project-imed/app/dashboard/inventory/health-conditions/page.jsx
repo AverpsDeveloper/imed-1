@@ -1,56 +1,33 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import axios from 'axios';
-import toast from 'react-hot-toast';
+import api from '@/http'
 import { useRouter } from 'next/navigation';
-import Loader from "@/components/common/Loader";
 
 
 function ListTagsPage() {
   const [health, sethealth] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  const [error, setError] = useState(null); // New state for handling errors
   const router = useRouter()
 
   const deleteHandler = (id) => {
-    setLoading(true);
-    axios.delete('/api/health-conditions', { data: { id } }).then((respocnse) => {
-      setLoading(false);
-      toast.success("deleted successfully");
-      // setTimeout(() => { router.refresh() }, 1000);
-    }).catch(err => {
-      setLoading(false);
-      toast.error("Error deleting category")
-    });
+    api.delete('/health-conditions', { data: { id } })
   };
   const editHandler = (editable) => {
     if (editable) router.push("/dashboard/inventory/health-conditions/add?id=" + editable)
   };
 
   useEffect(() => {
-    // Fetch item data from the API route using Axios
-    axios.get('/api/health-conditions')
+    // Fetch item data from the API route using api
+    api.get('/health-conditions')
       .then((response) => {
         sethealth(response.data.result.data);
-        setLoading(false);
-        setError(null); // Clear any previous errors on successful fetch
+        // Clear any previous errors on successful fetch
       })
-      .catch((error) => {
-        setLoading(false);
-        setError('Error fetching data. Please try again later.'); // Set an error message
-        console.error('Error fetching data:', error);
-      });
-  }, [loading]);
-
-  if (loading) {
-    return  <Loader/>;
-  }
+  }, []);
   return (
     <div className="min-h-screen bg-gray-200 flex flex-col">
-      <div className="bg-white w-full h-full p-6">
+      <div className="w-full h-full p-6 rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="p-4">
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-2xl font-bold">Health Condition List</h1>
@@ -60,7 +37,7 @@ function ListTagsPage() {
               <span>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2v-6Z" /></svg>
               </span>
-              Add new 
+              Add new
             </Link>
           </div>
 
@@ -74,9 +51,7 @@ function ListTagsPage() {
             />
           </div>
 
-          {error ? ( // Display error message if there's an error
-            <p className="text-red-500">{error}</p>
-          ) : health.length === 0 ? (
+          {health.length === 0 ? (
             <p>No categories found.</p>
           ) : (
             // <table className="w-full border border-collapse border-gray-300">
@@ -87,10 +62,10 @@ function ListTagsPage() {
                     Serial No
                   </th>
                   <th className="min-w-[240px] py-4 px-4 font-medium text-black dark:text-white">
-                  Health Condition Name
+                    Health Condition Name
                   </th>
                   <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
-                  Status
+                    Status
                   </th>
                   <th className="py-4 px-4 font-medium text-black dark:text-white">
                     Actions
@@ -99,7 +74,7 @@ function ListTagsPage() {
               </thead>
               <tbody>
                 {health.map((item, index) => (
-                 
+
                   <tr key={item._id}>
                     <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark pl-9 xl:pl-11">
                       <p className="text-black dark:text-white">

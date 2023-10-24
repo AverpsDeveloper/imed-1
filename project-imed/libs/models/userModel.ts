@@ -14,6 +14,10 @@ const userSchema = new Schema(
             type: String,
             required: [true, "Please Enter Name"],
         },
+        role: {
+            type: String,
+            required: [true, "Please Enter Role"]
+        },
         email: {
             unique: true,
             type: String,
@@ -28,7 +32,13 @@ const userSchema = new Schema(
             type: Boolean,
             default: false
         },
-
+        isBlocked: {
+            type: Boolean,
+            default: false
+        },
+        bio: {
+            type: String,
+        }
     },
     {
         timestamps: true,
