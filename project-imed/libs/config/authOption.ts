@@ -124,17 +124,25 @@ export const authOptions: NextAuthOptions = {
     signIn: "/auth/signin",
   },
   callbacks: {
-    session: ({ session, token }) => {
+    session: async ({ session, trigger, token, newSession }) => {
       // console.log("Session Callback", { session, token });
       return {
         ...session,
         user: {
-          ...token
+          ...token,
+          ...newSession
         },
       };
     },
-    jwt: ({ token, user }) => {
+    jwt: async ({ token, user, trigger }) => {
       // console.log("JWT Callback", { token, user });
+      if (trigger === "update") {
+        try {
+          const user = await aminUserModel.findById(token._id);
+          token = { ...token, ...user };
+        } catch (error) {
+        }
+      }
       if (user) {
         const u = user as unknown as any;
         return {
