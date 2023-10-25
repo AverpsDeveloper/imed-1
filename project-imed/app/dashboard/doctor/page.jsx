@@ -172,7 +172,7 @@ const DoctorListingPage = () => {
               </button>
             </div>
             <div className="col-span-1 flex items-center">
-            <Link href={`/dashboard/manager/${doctor.username}`}>
+            <Link href={`/dashboard/doctor/${doctor.username}`}>
                 <p className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
                   Detail
                 </p>
