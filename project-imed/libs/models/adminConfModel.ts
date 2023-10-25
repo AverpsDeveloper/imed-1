@@ -12,6 +12,12 @@ const adminConfigSchema = new Schema(
             serviceCharge: Number,
             serviceRate: Number,
         },
+        smtp: { 
+            google : {
+                email: String,
+                password: String,
+            }
+        },
         payment: {
 
             

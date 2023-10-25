@@ -3,6 +3,7 @@ import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import { signIn, useSession } from "next-auth/react";
 import { useSearchParams, useRouter } from "next/navigation";
+import Loader from "@/components/common/Loader";
 
 const page = () => {
     const [email, setEmail] = useState<string>("");
@@ -11,8 +12,8 @@ const page = () => {
     const [authError, setAuthError] = useState<string>("");
     const router = useRouter()
     const searchParams = useSearchParams();
-    const { data: session }: any = useSession();
-    console.log("sessionlogin", session);
+    const { data: session, status }: any = useSession();
+    console.log("sessionlogin", session);   
     const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
 
     useEffect(() => {
@@ -55,6 +56,10 @@ const page = () => {
         if (!data.ok) {
             setAuthError("OTP invalid or expired")
         }
+    }
+
+    if(status === "loading"){
+        return <Loader/>
     }
     return (
         <div className='overflow-hidden bg-[#0E1E3A] h-[100vh] max-h-screen relative'>

@@ -52,6 +52,9 @@ function BatchPageListing() {
                 batch Name
               </th>
               <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                Product Name
+              </th>
+              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
                 Date
               </th>
               {/* <th className="min-w-[140px] py-4 px-4 font-medium text-black dark:text-white">
@@ -77,6 +80,13 @@ function BatchPageListing() {
                   <p className="text-black dark:text-white">
                     {batch.name}
                   </p>
+                </td>
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark pl-9 xl:pl-11">
+                   <Link href={`/dashboard/inventory/products/add?id=${batch?.item?._id}`}>
+                   <p className="text-black dark:text-white">
+                    {batch?.item?.name}
+                  </p>
+                   </Link>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4  dark:border-strokedark ">
                   <h5 className="font-medium text-black dark:text-white">
