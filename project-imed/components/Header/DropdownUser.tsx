@@ -1,15 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useRouter } from 'next/navigation';
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const { data: { user } = { user: {} } }: any = useSession();
   const router = useRouter()
 
   const trigger = useRef<any>(null);
   const dropdown = useRef<any>(null);
+
+  console.log("seesinol", user);
 
   const logoutClickHandler = async () => {
 
@@ -53,9 +56,9 @@ const DropdownUser = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            Thomas tan
+            {user?.username}
           </span>
-          <span className="block text-xs">Manager</span>
+          <span className="block text-xs">{user?.role}</span>
         </span>
 
         <span className="h-12 w-12 rounded-full">

@@ -38,7 +38,7 @@ export const authOptions: NextAuthOptions = {
               const expires = Date.now() + ttl;
               const data = `${user.email}.${otp}.${expires}`;
               const tfaHash = `${hashOtp(data)}.${expires}`;
-              await aminUserModel.findByIdAndUpdate(user._id, { tfaHash })
+              await aminUserModel.findByIdAndUpdate(user._id, { tfaHash, lastActive: new Date() });
             }
             return user;
           }
