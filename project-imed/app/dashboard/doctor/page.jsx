@@ -5,6 +5,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { FaHistory, FaEnvelope, FaPhone } from 'react-icons/fa';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import Pagination from '@/iComponents/Pagination';
+import { debounce } from '@/helper';
 
 const DoctorListingPage = () => {
 
@@ -12,16 +15,31 @@ const DoctorListingPage = () => {
   const [sortByMonth, setSortByMonth] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [doctors, setDoctorsData] = useState([])
+  const router = useRouter()
+  const pathname = usePathname()
+
+  const [meta, setMeta] = useState({ page: 1, limit: 10, total: 10 });
+
+  const searchParams = useSearchParams();
+  const page = searchParams.get('page') || 1
+  const limit = searchParams.get('limit') || 10
+  const search = searchParams.get('search') || "";
+
+
   useEffect(() => {
-    api.get('/users-admin', { params: { role: "DOCTOR" } })
+    api.get('/users-admin', {
+      params: {
+        role: "DOCTOR", page,
+        limit,
+        search,
+      }
+    })
       .then((response) => {
         setDoctorsData(response.data.result.data);
+        setMeta(response.data.result.meta);
       })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
 
-  }, []);
+  },  [page,limit,search]);
 
   const filteredPatients = doctors.filter((doctors) => {
     if (genderFilter === 'all') return true;
@@ -97,7 +115,7 @@ const DoctorListingPage = () => {
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="py-6 px-4 md:px-6 xl:px-7.5">
           <h4 className="text-xl font-semibold text-black dark:text-white">
-          Doctors List
+            Doctors List
           </h4>
         </div>
 
@@ -128,28 +146,28 @@ const DoctorListingPage = () => {
             key={key}
           >
             <div className="col-span-2 flex items-center">
-            <Link href={`/dashboard/doctor/${doctor.username}`}> 
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                <div className="h-12.5 w-15 rounded-md">
-                  <Image
-                    src={doctor.profilePic || "/images/logo/logo-icon.svg"}
-                    width={60}
-                    height={50}
-                    alt="doctor"
-                  />
+              <Link href={`/dashboard/doctor/${doctor.username}`}>
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                  <div className="h-12.5 w-15 rounded-md">
+                    <Image
+                      src={doctor.profilePic || "/images/logo/logo-icon.svg"}
+                      width={60}
+                      height={50}
+                      alt="doctor"
+                    />
+                  </div>
+                  <p className="text-sm text-black dark:text-white">
+                    {doctor.firstName + " " + doctor.lastName}
+                  </p>
                 </div>
-                <p className="text-sm text-black dark:text-white">
-                  {doctor.firstName + " " + doctor.lastName}
-                </p>
-              </div>
               </Link>
             </div>
             <div className="col-span-2 hidden items-center sm:flex hover:font-bold hover:bg-opacity-90 lg:px-8 xl:px-10">
-            <Link href={`/dashboard/doctor/${doctor.username}`}> 
-              <p className="text-sm text-black dark:text-white">
-                {doctor.username}
-              </p>
-            </Link>
+              <Link href={`/dashboard/doctor/${doctor.username}`}>
+                <p className="text-sm text-black dark:text-white">
+                  {doctor.username}
+                </p>
+              </Link>
             </div>
             <div className="col-span-1 flex items-center">
               <p className="text-sm text-black dark:text-white">
@@ -157,22 +175,22 @@ const DoctorListingPage = () => {
               </p>
             </div>
             <div className="col-span-1 flex items-center">
-            <p className="text-sm text-black dark:text-white">
+              <p className="text-sm text-black dark:text-white">
                 {doctor.age}
               </p>
             </div>
             <div className="col-span-1 gap-5 flex items-center">
-              
+
               <button className="text-blue-500">
-              <a href={`mailto:${doctor.email}`}><FaEnvelope title={`${doctor.email}`}/></a>
-                
+                <a href={`mailto:${doctor.email}`}><FaEnvelope title={`${doctor.email}`} /></a>
+
               </button>
               <button className="text-blue-500">
-              <a href={`tel:${doctor.phoneNumber}`}><FaPhone title={`${doctor.phoneNumber}`}/></a>
+                <a href={`tel:${doctor.phoneNumber}`}><FaPhone title={`${doctor.phoneNumber}`} /></a>
               </button>
             </div>
             <div className="col-span-1 flex items-center">
-            <Link href={`/dashboard/doctor/${doctor.username}`}>
+              <Link href={`/dashboard/doctor/${doctor.username}`}>
                 <p className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
                   Detail
                 </p>
@@ -180,6 +198,7 @@ const DoctorListingPage = () => {
             </div>
           </div>
         ))}
+        <Pagination meta={meta} />
       </div>
       {/* <div className="grid gap-4 p-6 rounded-sm border border-stroke bg-white shadow-md  dark:border-strokedark dark:bg-boxdark">
         {sortedDoctor.map((doctor) => (

@@ -5,6 +5,9 @@ import Link from 'next/link';
 import api from "@/http"
 import React, { useEffect, useState } from 'react';
 import { FaHistory, FaEnvelope, FaPhone } from 'react-icons/fa';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import Pagination from '@/iComponents/Pagination';
+import { debounce } from '@/helper';
 
 const ManagerListingPage = () => {
 
@@ -12,13 +15,32 @@ const ManagerListingPage = () => {
   const [sortByMonth, setSortByMonth] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [managers, setManagersData] = useState([])
+  const router = useRouter()
+  const pathname = usePathname()
+
+  const [meta, setMeta] = useState({ page: 1, limit: 10, total: 10 });
+
+  const searchParams = useSearchParams();
+  const page = searchParams.get('page') || 1
+  const limit = searchParams.get('limit') || 10
+  const search = searchParams.get('search') || "";
+
+
   useEffect(() => {
-    api.get('/users-admin', { params: { role: "MANAGER" } })
+    api.get('/users-admin', {
+      params: {
+        role: "MANAGER", 
+        page,
+        limit,
+        search,
+      }
+    })
       .then((response) => {
         setManagersData(response.data.result.data);
+        setMeta(response.data.result.meta);
       })
 
-  }, []);
+  }, [page,limit,search]);
 
   const filteredPatients = managers.filter((managers) => {
     if (genderFilter === 'all') return true;
@@ -27,21 +49,13 @@ const ManagerListingPage = () => {
 
   let sortedManager = [...filteredPatients];
 
-  if (sortByMonth) {
-    sortedManager.sort((a, b) => {
-      // Assuming 'date' is the property to sort by
-      return a.date - b.date;
-    });
-  } else {
-    // Default sorting by some other criteria
-    // sortedPatients.sort((a, b) => { ... });
-  }
+  const handleSearch = debounce(async (search) => {
+    const params = new URLSearchParams(searchParams);
+    search ? params.set("search", (search).toString())
+      : params.delete("search")
+    router.push(`${pathname}?${params.toString()}`);
+  }, 500);
 
-  if (searchTerm) {
-    sortedManager = sortedManager.filter((managers) =>
-      managers.username.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }
 
 
   return (
@@ -61,8 +75,8 @@ const ManagerListingPage = () => {
                 </svg>
               </button>
               <input
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                  defaultValue={search}
+                  onChange={e => handleSearch(e.target.value)}
                 placeholder="Search by username..." class="w-full bg-transparent pl-9 pr-4 font-medium focus:outline-none xl:w-125" type="text" fdprocessedid="ai7g3k" />
             </div>
           </div>
@@ -169,7 +183,7 @@ const ManagerListingPage = () => {
               </button>
             </div>
             <div className="col-span-1 gap-5 flex items-center ">
-            <Link href={`/dashboard/manager/${manager.username}`}>
+              <Link href={`/dashboard/manager/${manager.username}`}>
                 <p className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
                   Detail
                 </p>
@@ -177,6 +191,7 @@ const ManagerListingPage = () => {
             </div>
           </div>
         ))}
+        <Pagination meta={meta} />
       </div>
       {/* <div className="grid gap-4 p-6 rounded-sm border border-stroke bg-white shadow-md  dark:border-strokedark dark:bg-boxdark">
         {sortedManager.map((manager) => (
