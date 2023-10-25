@@ -24,7 +24,7 @@ export const GET = tcWrap(async (req, res) => {
     }
 
     const {data, meta} = await aminUserModel.find({ $and: filter }).paginate({ page, limit })
-    console.log("data:::::",data);
+
     return res.json({
         result: {
             message: "admin users",
