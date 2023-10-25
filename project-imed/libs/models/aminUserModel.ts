@@ -62,6 +62,7 @@ const adminUserSchema = new Schema(
             type: Date,
             default: Date.now
         },
+        availableHours: { type: String },
         isTfa: {
             type: Boolean,
             default: false

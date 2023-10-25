@@ -528,7 +528,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                 "text-white"
                               }`}
                             >
-                              See All Doctors
+                              All Doctors
                             </Link>
                           </li>
                           <li>
@@ -608,7 +608,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                 "text-white"
                               }`}
                             >
-                              See All Manages
+                              All Manages
                             </Link>
                           </li>
                           <li>

@@ -114,8 +114,11 @@ const DoctorListingPage = () => {
           <div className="col-span-1 flex items-center">
             <p className="font-medium">Age</p>
           </div>
-          <div className="col-span-2 flex items-center">
+          <div className="col-span-1 flex items-center">
             <p className="font-medium">Contact</p>
+          </div>
+          <div className="col-span-1 flex items-center">
+            <p className="font-medium">Action</p>
           </div>
         </div>
 
@@ -141,7 +144,7 @@ const DoctorListingPage = () => {
               </div>
               </Link>
             </div>
-            <div className="col-span-2 hidden items-center sm:flex">
+            <div className="col-span-2 hidden items-center sm:flex hover:font-bold hover:bg-opacity-90 lg:px-8 xl:px-10">
             <Link href={`/dashboard/doctor/${doctor.username}`}> 
               <p className="text-sm text-black dark:text-white">
                 {doctor.username}
@@ -158,7 +161,7 @@ const DoctorListingPage = () => {
                 {doctor.age}
               </p>
             </div>
-            <div className="col-span-2 gap-5 flex items-center">
+            <div className="col-span-1 gap-5 flex items-center">
               
               <button className="text-blue-500">
               <a href={`mailto:${doctor.email}`}><FaEnvelope title={`${doctor.email}`}/></a>
@@ -167,6 +170,13 @@ const DoctorListingPage = () => {
               <button className="text-blue-500">
               <a href={`tel:${doctor.phoneNumber}`}><FaPhone title={`${doctor.phoneNumber}`}/></a>
               </button>
+            </div>
+            <div className="col-span-1 flex items-center">
+            <Link href={`/dashboard/manager/${doctor.username}`}>
+                <p className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
+                  Detail
+                </p>
+              </Link>
             </div>
           </div>
         ))}
