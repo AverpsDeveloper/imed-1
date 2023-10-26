@@ -3,23 +3,17 @@ import React, { useState, useEffect } from 'react';
 import api from '@/http';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import Papa from "papaparse";
 import { MdSaveAlt } from 'react-icons/md';
 import Pagination from '@/iComponents/Pagination';
-import { debounce } from '@/helper';
+import usePaginate from '@/hooks/usePaginate';
 
 function ProductList() {
   const [products, setProducts] = useState([]);
   const [meta, setMeta] = useState({ page: 1, limit: 10, total: 10 });
   const [price, setPrice] = useState(0);
   const [categories, setCategories] = useState([]);
-  const router = useRouter();
-  const pathname = usePathname()
-  const searchParams = useSearchParams();
-  const page = searchParams.get('page') || 1
-  const limit = searchParams.get('limit') || 10
-  const search = searchParams.get('search') || "";
+  const { page, limit, search, searchHandler } = usePaginate();
 
   const getDate = () => {
     api.get("/inventory", {
@@ -48,12 +42,6 @@ function ProductList() {
       })
   }
 
-  function productEditHandler(id) {
-    if (id) {
-      router.push(`/dashboard/inventory/products/add?id=${id}`)
-    }
-  }
-
   const downloadCSV = (data, filename) => {
     const csvData = Papa.unparse(data);
 
@@ -73,15 +61,6 @@ function ProductList() {
   function dataExprotHandler() {
     downloadCSV(products, "products.csv");
   }
-
-
-  const handleSearch = debounce(async (search) => {
-    const params = new URLSearchParams(searchParams);
-    search ? params.set("search", (search).toString())
-      : params.delete("search")
-    router.push(`${pathname}?${params.toString()}`);
-  }, 500);
-
 
   return (
     <div className="p-4 shadow-md drounded-m rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -103,7 +82,7 @@ function ProductList() {
           className=" rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
           placeholder="Search Product"
           defaultValue={search}
-          onChange={e => handleSearch(e.target.value)}
+          onChange={e => searchHandler(e.target.value)}
         />
         <button
           onClick={() => dataExprotHandler()}
@@ -171,15 +150,14 @@ function ProductList() {
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <div className="flex items-center space-x-3.5">
-                    <button
-                      onClick={() => productEditHandler(product._id)}
+                    <Link href={`/dashboard/inventory/products/add?id=${product._id}`}
                       className="inline-flex items-center justify-center gap-1 rounded-full bg-opacity-50 text-white bg-primary py-1.5 px-4 text-center font-medium hover:bg-opacity-90 lg:px-8 xl:px-4 hover:text-white"
                     >
                       <span>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M19.045 7.401c.378-.378.586-.88.586-1.414s-.208-1.036-.586-1.414l-1.586-1.586c-.378-.378-.88-.586-1.414-.586s-1.036.208-1.413.585L4 13.585V18h4.413L19.045 7.401zm-3-3l1.587 1.585l-1.59 1.584l-1.586-1.585l1.589-1.584zM6 16v-1.585l7.04-7.018l1.586 1.586L7.587 16H6zm-2 4h16v2H4z" /></svg>
                       </span>
                       Edit
-                    </button>
+                    </Link>
                     <button
                       onClick={() => productDeleteHandler(product._id)}
                       className="inline-flex items-center justify-center gap-1 rounded-full bg-opacity-30 text-danger bg-danger py-1.5 px-4 text-center font-medium hover:bg-opacity-90 lg:px-8 xl:px-4 hover:text-white"

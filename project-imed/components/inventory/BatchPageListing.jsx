@@ -8,13 +8,15 @@ import { useRouter } from 'next/navigation';
 
 function BatchPageListing() {
   const [batchs, setBatch] = useState([]);
+  const { page, limit, search, searchHandler } = usePaginate();
+
 
   useEffect(() => {
     api.get('item-batch')
       .then((response) => {
         setBatch(response.data.result.data);
       })
-  }, []);
+  }, [page, limit, search]);
 
   function batchDeleteHandler(id) {
     api.delete("/item-batch", { data: { id } })

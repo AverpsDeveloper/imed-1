@@ -61,7 +61,6 @@ const DoctorsListingPage = () => {
     );
   }
 
-
   return (
     <div className="p-4">
       <div className="flex justify-between mb-4 ">
