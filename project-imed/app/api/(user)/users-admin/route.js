@@ -6,15 +6,13 @@ import { Types } from "mongoose";
 
 export const GET = tcWrap(async (req, res) => {
     const { search, role, page, limit } = req.query;    
-    const paginat = {
-        page: + page <= 0 ? 0 : parseInt(page, 10) - 1,
-        limit: parseInt(limit, 10) || 10
-    }
-    let filter: any = [{ isBlocked: false }];
+
+    let filter = [{ isBlocked: false }];
     if (search) {
         filter.push({
             $or: [
-                { name: { $regex: search, $options: "i" } },
+                { username: { $regex: search, $options: "i" } },
+                { firstName: { $regex: search, $options: "i" } },
                 { email: { $regex: search, $options: "i" } },
                 { bio: { $regex: search, $options: "i" } },
             ],
@@ -25,24 +23,13 @@ export const GET = tcWrap(async (req, res) => {
         filter.push({ role });
     }
 
-    const [data, total]: any = await Promise.all([
-        aminUserModel.find({ $and: filter }, '',
-            {
-                skip: paginat.page * paginat.limit,
-                limit: paginat.limit
-            }),
-        aminUserModel.count({ $and: filter })
-    ]);
+    const {data, meta} = await aminUserModel.find({ $and: filter }).paginate({ page, limit })
 
     return res.json({
         result: {
             message: "admin users",
             data: data,
-            meta: {
-                total,
-                page: paginat.page + 1,
-                limit: paginat.limit
-            }
+            meta,
         }
     });
 });

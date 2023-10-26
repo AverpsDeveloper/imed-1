@@ -1,4 +1,5 @@
 import mongoose, { Document, model, Model, Schema } from "mongoose";
+import paginationPlugin from "../utils/paginationPlugin";
 
 export interface IPropsType extends Document {
     username?: string;
@@ -79,6 +80,10 @@ const adminUserSchema = new Schema(
         timestamps: true,
     }
 );
+
+
+adminUserSchema.plugin(paginationPlugin);
+
 
 export default (mongoose.models.AdminUser ||
     model("AdminUser", adminUserSchema)) as Model<IPropsType>;
