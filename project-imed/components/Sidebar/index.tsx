@@ -8,6 +8,8 @@ import { BiMessage } from 'react-icons/bi'
 import { AiOutlineStar } from 'react-icons/ai'
 import { BiWallet } from 'react-icons/bi'
 import { MdPeopleOutline, MdOutlineInventory } from 'react-icons/md'
+import { useSession } from "next-auth/react";
+import Loader from "../common/Loader";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -15,10 +17,15 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
+
   const pathname = usePathname();
 
   const trigger = useRef<any>(null);
   const sidebar = useRef<any>(null);
+  const { data: session, status }: any = useSession();
+  const isAdmin = session?.user?.role == "ADMIN";
+  const isDoctor = session?.user?.role === "DOCTOR";
+  const isManager = session?.user?.role === "MANAGER";
 
   let storedSidebarExpanded = "true";
   const [sidebarExpanded, setSidebarExpanded] = useState(
@@ -59,6 +66,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
       document.querySelector("body")?.classList.remove("sidebar-expanded");
     }
   }, [sidebarExpanded]);
+  console.log("authStatus", status);
+  console.log("isAdmin", session);
+
+  if (status === "loading") {
+    return (<Loader />);
+  }
 
   return (
     <aside
@@ -274,83 +287,85 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Settings --> */}
 
               {/* Doctor Sidebar Menu */}
-
-              <SidebarLinkGroup
-                activeCondition={
-                  pathname === "/dashboard/doctor" || pathname.includes("doctor")
-                }
-              >
-                {(handleClick, open) => {
-                  return (
-                    <React.Fragment>
-                      <Link
-                        href="#"
-                        className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${(pathname === "/doctor" ||
-                          pathname.includes("doctor")) &&
-                          "bg-graydark dark:bg-meta-4"
-                          }`}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          sidebarExpanded
-                            ? handleClick()
-                            : setSidebarExpanded(true);
-                        }}
-                      >
-                        <PiStethoscope />
-                        Doctors
-                        <svg
-                          className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${open && "rotate-180"
+              {
+                (isAdmin || isManager) && <SidebarLinkGroup
+                  activeCondition={
+                    pathname === "/dashboard/doctor" || pathname.includes("doctor")
+                  }
+                >
+                  {(handleClick, open) => {
+                    return (
+                      <React.Fragment>
+                        <Link
+                          href="#"
+                          className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${(pathname === "/doctor" ||
+                            pathname.includes("doctor")) &&
+                            "bg-graydark dark:bg-meta-4"
                             }`}
-                          width="20"
-                          height="20"
-                          viewBox="0 0 20 20"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            sidebarExpanded
+                              ? handleClick()
+                              : setSidebarExpanded(true);
+                          }}
                         >
-                          <path
-                            fillRule="evenodd"
-                            clipRule="evenodd"
-                            d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
-                            fill=""
-                          />
-                        </svg>
-                      </Link>
-                      {/* <!-- Dropdown Menu Start --> */}
-                      <div
-                        className={`translate transform overflow-hidden ${!open && "hidden"
-                          }`}
-                      >
-                        <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
+                          <PiStethoscope />
+                          Doctors
+                          <svg
+                            className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${open && "rotate-180"
+                              }`}
+                            width="20"
+                            height="20"
+                            viewBox="0 0 20 20"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              clipRule="evenodd"
+                              d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
+                              fill=""
+                            />
+                          </svg>
+                        </Link>
+                        {/* <!-- Dropdown Menu Start --> */}
+                        <div
+                          className={`translate transform overflow-hidden ${!open && "hidden"
+                            }`}
+                        >
+                          <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
 
-                          <li>
-                            <Link
-                              href="/dashboard/doctor"
-                              className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${pathname === "/doctor" &&
-                                "text-white"
-                                }`}
-                            >
-                              All Doctors
-                            </Link>
-                          </li>
-                          <li>
-                            <Link
-                              href="/dashboard/doctor/add"
-                              className={`first-letter:group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${pathname === "/doctor/add" &&
-                                "text-white"
-                                }`}
-                            >
-                              Add Doctors
-                            </Link>
-                          </li>
-                        </ul>
-                      </div>
-                      {/* <!-- Dropdown Menu End --> */}
-                    </React.Fragment>
-                  );
-                }}
-              </SidebarLinkGroup>
+                            <li>
+                              <Link
+                                href="/dashboard/doctor"
+                                className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${pathname === "/doctor" &&
+                                  "text-white"
+                                  }`}
+                              >
+                                All Doctors
+                              </Link>
+                            </li>
 
-              <SidebarLinkGroup
+                            <li>
+                              <Link
+                                href="/dashboard/doctor/add"
+                                className={`first-letter:group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${pathname === "/doctor/add" &&
+                                  "text-white"
+                                  }`}
+                              >
+                                Add Doctors
+                              </Link>
+                            </li>
+                          </ul>
+                        </div>
+                        {/* <!-- Dropdown Menu End --> */}
+                      </React.Fragment>
+                    );
+                  }}
+                </SidebarLinkGroup>
+              }
+
+              {isAdmin && <SidebarLinkGroup
                 activeCondition={
                   pathname === "/dashboard/doctor" || pathname.includes("doctor")
                 }
@@ -423,7 +438,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     </React.Fragment>
                   );
                 }}
-              </SidebarLinkGroup>
+              </SidebarLinkGroup>}
+
+
 
               {/* Doctor Sidebar Menu */}
 
@@ -459,8 +476,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* Review Sidebar Menu */}
 
               {/* Finances Sidebar Menu */}
-
-              <li>
+              {(isAdmin) && <li>
                 <Link
                   href="/dashboard/finances"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes("finances") &&
@@ -470,12 +486,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   <BiWallet />
                   Finances
                 </Link>
-              </li>
+              </li>}
+
               {/* Finances Sidebar Menu */}
 
               {/*Patients Sidebar Menu */}
-
-              <li>
+              {isDoctor && <li>
                 <Link
                   href="/dashboard/patients"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes("patients") &&
@@ -485,10 +501,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   <MdPeopleOutline />
                   Patients
                 </Link>
-              </li>
+              </li>}
+
 
               {/* <!-- Menu Item Inventory Pages --> */}
-              <SidebarLinkGroup
+              {isAdmin && <SidebarLinkGroup
                 activeCondition={
                   pathname === "/inventory" || pathname.includes("inventory")
                 }
@@ -653,12 +670,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     </React.Fragment>
                   );
                 }}
-              </SidebarLinkGroup>
+              </SidebarLinkGroup>}
+
               {/* <!-- Menu Item Inventory Pages --> */}
 
 
               {/* Patients Sidebar Menu */}
-              <SidebarLinkGroup
+              {isAdmin && <SidebarLinkGroup
                 activeCondition={
                   pathname === "/dashboard/forms" || pathname.includes("forms")
                 }
@@ -735,8 +753,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                           <li>
                             <Link
                               href="/dashboard/pages"
-                              className={`first-letter:group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${
-                                pathname === "/dashboard/pages" &&
+                              className={`first-letter:group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${pathname === "/dashboard/pages" &&
                                 "text-white"
                                 }`}
                             >
@@ -746,8 +763,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                           <li>
                             <Link
                               href="/dashboard/pages/add"
-                              className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${
-                                pathname === "/dashboard/pages/add" &&
+                              className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${pathname === "/dashboard/pages/add" &&
                                 "text-red-500"
                                 }`}
                             >
@@ -761,6 +777,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   );
                 }}
               </SidebarLinkGroup>
+              }
+
             </ul>
 
 
@@ -768,13 +786,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
           {/* <!-- Others Group --> */}
           {/* <div> */}
-            {/* <h3 className="mb-4 ml-4 text-sm font-semibold text-bodydark2">
+          {/* <h3 className="mb-4 ml-4 text-sm font-semibold text-bodydark2">
               OTHERS
             </h3>
 
             <ul className="mb-6 flex flex-col gap-1.5"> */}
-              {/* <!-- Menu Item Chart --> */}
-              {/* <li>
+          {/* <!-- Menu Item Chart --> */}
+          {/* <li>
                 <Link
                   href="/dashboard/chart"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes("chart") && "bg-graydark dark:bg-meta-4"
@@ -812,10 +830,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   Chart
                 </Link>
               </li> */}
-              {/* <!-- Menu Item Chart --> */}
+          {/* <!-- Menu Item Chart --> */}
 
-              {/* <!-- Menu Item Tables --> */}
-              {/* <li>
+          {/* <!-- Menu Item Tables --> */}
+          {/* <li>
                 <Link
                   href="/dashboard/tables"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes("tables") && "bg-graydark dark:bg-meta-4"
@@ -849,20 +867,20 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   Tables
                 </Link>
               </li> */}
-              {/* <!-- Menu Item Tables --> */}
+          {/* <!-- Menu Item Tables --> */}
 
-              {/* <!-- Menu Item Forms --> */}
-             
-              {/* <!-- Menu Item Forms --> */}
+          {/* <!-- Menu Item Forms --> */}
 
-              {/* <!-- Menu Item Ui Elements --> */}
-          
-              {/* <!-- Menu Item Ui Elements --> */}
+          {/* <!-- Menu Item Forms --> */}
 
-              {/* <!-- Menu Item Auth Pages --> */}
+          {/* <!-- Menu Item Ui Elements --> */}
 
-              {/* <!-- Menu Item Auth Pages --> */}
-            {/* </ul> */}
+          {/* <!-- Menu Item Ui Elements --> */}
+
+          {/* <!-- Menu Item Auth Pages --> */}
+
+          {/* <!-- Menu Item Auth Pages --> */}
+          {/* </ul> */}
           {/* </div> */}
         </nav>
         {/* <!-- Sidebar Menu --> */}
