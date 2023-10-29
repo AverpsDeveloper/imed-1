@@ -35,7 +35,7 @@ const DoctorListingPage = () => {
     if (genderFilter === 'all') return true;
     return doctors.gender === genderFilter;
   });
-
+  
   let sortedDoctor = [...filteredPatients];
 
   // if (sortByMonth) {
@@ -87,18 +87,21 @@ const DoctorListingPage = () => {
             </div>
           </div>
           <button
+          onClick={()=>setGenderFilter("all")}
             className={`px-4 py-2 rounded ${genderFilter === 'all' ? 'bg-blue-500 text-white' : 'bg-gray-200'
               }`}
           >
             All
           </button>
           <button
+          onClick={()=>setGenderFilter("male")}
             className={`px-4 py-2 rounded ${genderFilter === 'male' ? 'bg-blue-500 text-white' : 'bg-gray-200'
               }`}
           >
             Male
           </button>
           <button
+          onClick={()=>setGenderFilter("female")}
             className={`px-4 py-2 rounded ${genderFilter === 'female'
               ? 'bg-blue-500 text-white'
               : 'bg-gray-200'
