@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { FaHistory, FaEnvelope, FaPhone } from 'react-icons/fa';
 import Pagination from '@/iComponents/Pagination';
 import usePaginate from "@/hooks/usePaginate";
+import { debounce } from "@/helper";
 
 const DoctorListingPage = () => {
   const [genderFilter, setGenderFilter] = useState('all');
@@ -27,7 +28,41 @@ const DoctorListingPage = () => {
         setDoctors(response.data.result.data);
         setMeta(response.data.result.meta);
       })
-  }, [page, limit, search]);
+
+  },  [page,limit,search]);
+
+  const filteredPatients = doctors.filter((doctors) => {
+    if (genderFilter === 'all') return true;
+    return doctors.gender === genderFilter;
+  });
+
+  let sortedDoctor = [...filteredPatients];
+
+  // if (sortByMonth) {
+  //   sortedDoctor.sort((a, b) => {
+  //     // Assuming 'date' is the property to sort by
+  //     return a.date - b.date;
+  //   });
+  // } else {
+  //   // Default sorting by some other criteria
+  //   // sortedPatients.sort((a, b) => { ... });
+  // }
+
+  // if (searchTerm) {
+  //   sortedDoctor = sortedDoctor.filter((doctors) =>
+  //     doctors.username.toLowerCase().includes(searchTerm.toLowerCase())
+  //   );
+  // }
+
+  const handleSearch = debounce(async (search) => {
+    const params = new URLSearchParams(searchParams);
+    search ? params.set("search", (search).toString())
+      : params.delete("search")
+    router.push(`${pathname}?${params.toString()}`);
+  }, 500);
+
+
+
 
   return (
     <div className="p-4">
@@ -47,7 +82,7 @@ const DoctorListingPage = () => {
               </button>
               <input
                 defaultValue={search}
-                onChange={(e) => searchHandler(e.target.value)}
+                onChange={e => handleSearch(e.target.value)}
                 placeholder="Search by username..." class="w-full bg-transparent pl-9 pr-4 font-medium focus:outline-none xl:w-125" type="text" fdprocessedid="ai7g3k" />
             </div>
           </div>
@@ -99,6 +134,9 @@ const DoctorListingPage = () => {
                 Age
               </th>
               <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black">
+                Email
+              </th>
+              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black">
                 Actions
               </th>
             </tr>
@@ -118,7 +156,7 @@ const DoctorListingPage = () => {
                         />
                       </div>
                       <h5 className="font-medium text-black dark:text-white">
-                        {doctor.firstName + " " + doctor.lastName}
+                        
                       </h5>
                     </div>
                   </Link>
@@ -126,23 +164,28 @@ const DoctorListingPage = () => {
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark pl-9 xl:pl-11">
                   <Link href={`/dashboard/doctor/${doctor.username}`}>
                     <h5 className="font-medium text-black dark:text-white">
-                      {doctor.username}
+                    {doctor.firstName + " " + doctor.lastName}
                     </h5>
                   </Link>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4  dark:border-strokedark ">
                   <h5 className="font-medium text-black dark:text-white">
-                    {doctor.gender}
+                  {doctor.username}
                   </h5>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4  dark:border-strokedark ">
                   <h5 className="font-medium text-black dark:text-white">
-                    {doctor.age}
+                  {doctor.gender}
                   </h5>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <h5 className="font-medium text-black dark:text-white">
-                    <Link href={`mailto:${doctor.email}`}><FaEnvelope title={`${doctor.email}`} />{doctor.email}</Link>
+                  {doctor.age}
+                  </h5>
+                </td>
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                  <h5 className="font-medium text-black dark:text-white">
+                  <Link href={`mailto:${doctor.email}`}><FaEnvelope title={`${doctor.email}`} />{doctor.email}</Link>
                   </h5>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
