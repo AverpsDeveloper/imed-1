@@ -107,13 +107,13 @@ const page = () => {
                                                 <label className="block mb-2 text-sm font-bold text-white" htmlFor="username">
                                                     Email
                                                 </label>
-                                                <input onChange={(e) => setEmail(e.target.value)} className="w-full px-3 py-2 text-sm leading-tight text-white border rounded shadow appearance-none focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Email Address" />
+                                                <input onChange={(e) => setEmail(e.target.value)} className="w-full px-3 py-2 text-sm leading-tight text-black border rounded shadow appearance-none focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Email Address" />
                                             </div>
                                             <div className="mb-4">
                                                 <label className="block mb-2 text-sm font-bold text-white" htmlFor="password">
                                                     Password
                                                 </label>
-                                                <input onChange={(e) => setPassword(e.target.value)} className="w-full px-3 py-2 mb-3 text-sm leading-tight text-gray-700 border border-red-500 rounded shadow appearance-none focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="Password" />
+                                                <input onChange={(e) => setPassword(e.target.value)} className="w-full px-3 py-2 mb-3 text-sm leading-tight  text-black border border-red-500 rounded shadow appearance-none focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="Password" />
                                                 <p className="text-xs italic text-white">Please choose a password.</p>
                                             </div>
                                         </>
