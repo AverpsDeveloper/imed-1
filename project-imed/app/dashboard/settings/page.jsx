@@ -5,6 +5,9 @@ import { useEffect, useState } from "react";
 import { Formik, Field, StyledTextArea, Form, ErrorMessage, useFormikContext, useField } from 'formik';
 import * as Yup from 'yup';
 import api from "@/http"
+import SettingCharger from "./comp/settingCharges"
+import SettingSmtp from "./comp/settingSmtp"
+import SettingSite from "./comp/settingSite"
 
 
 const validationSchemaInfo = Yup.object().shape({
@@ -43,206 +46,30 @@ const SettingPages = () => {
     adminEmail: 'admin@imed.com',
     supportEmail: 'support@imed.com',
   })
-  
+  const [editToggle, setEditToggle] = useState("");
+  const [viewToggle, setViewToggle] = useState("");
+
+  const showWithStars = (data, toggle) =>
+    toggle === viewToggle ? data
+      : (data).toString().replace(/./g, '*');
+
+
+
+
 
   const onSubmitWebInfo = (values) => {
-    console.log("Data",values);
+    console.log("Data", values);
   }
 
   const updateSMTPSetup = (values) => {
-    console.log("Data",values);
+    console.log("Data", values);
   }
   return (
     <>
       <div className="mx-auto max-w-270">
         <Breadcrumb pageName="Setting" />
         <div className="grid grid-cols-5 gap-8">
-          <div className="col-span-5 xl:col-span-3">
-            <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-              <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
-                <h3 className="font-medium text-black dark:text-white">
-                  Configuration and Settings
-                </h3>
-              </div>
-              <div className="p-7">
-                <Formik
-                  initialValues={initialValuesInfo}
-                  validationSchema={validationSchemaInfo}
-                  onSubmit={onSubmitWebInfo}
-                  enableReinitialize={true}
-                >
-                  {({ errors, touched }) => {
-                    return (
-                      <Form >
-                        <div className="mb-5.5">
-                          <label
-                            className="mb-3 block text-sm font-medium text-black dark:text-white"
-                            htmlFor="siteName"
-                          >
-                            Site Name
-                          </label>
-                          <div className="relative">
-                            <span className="absolute left-4.5 top-4">
-                              <svg
-                                className="fill-current"
-                                width="20"
-                                height="20"
-                                viewBox="0 0 20 20"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <g opacity="0.8">
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M3.33301 4.16667C2.87658 4.16667 2.49967 4.54357 2.49967 5V15C2.49967 15.4564 2.87658 15.8333 3.33301 15.8333H16.6663C17.1228 15.8333 17.4997 15.4564 17.4997 15V5C17.4997 4.54357 17.1228 4.16667 16.6663 4.16667H3.33301ZM0.833008 5C0.833008 3.6231 1.9561 2.5 3.33301 2.5H16.6663C18.0432 2.5 19.1663 3.6231 19.1663 5V15C19.1663 16.3769 18.0432 17.5 16.6663 17.5H3.33301C1.9561 17.5 0.833008 16.3769 0.833008 15V5Z"
-                                    fill=""
-                                  />
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M0.983719 4.52215C1.24765 4.1451 1.76726 4.05341 2.1443 4.31734L9.99975 9.81615L17.8552 4.31734C18.2322 4.05341 18.7518 4.1451 19.0158 4.52215C19.2797 4.89919 19.188 5.4188 18.811 5.68272L10.4776 11.5161C10.1907 11.7169 9.80879 11.7169 9.52186 11.5161L1.18853 5.68272C0.811486 5.4188 0.719791 4.89919 0.983719 4.52215Z"
-                                    fill=""
-                                  />
-                                </g>
-                              </svg>
-                            </span>
-                            <Field
-                              type="text"
-                              name="siteName"
-                              className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark -4 dark:text-white dark:focus:border-primary"
-                              placeholder="Site name."
-                            />
-                            <ErrMessage name="siteName" />
-                          </div>
-                        </div>
-                        <div className="mb-5.5">
-                          <label
-                            className="mb-3 block text-sm font-medium text-black dark:text-white"
-                            htmlFor="portalUrl"
-                          >
-                            Portal URL
-                          </label>
-                          <div className="relative">
-                            <Field
-                              type="text"
-                              name="portalUrl"
-                              className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark -4 dark:text-white dark:focus:border-primary"
-                              placeholder="Portal url"
-                            />
-                            <ErrMessage name="portalUrl" />
-                          </div>
-                        </div>
-
-                        <div className="mb-5.5">
-                          <label
-                            className="mb-3 block text-sm font-medium text-black dark:text-white"
-                            htmlFor="adminEmail"
-                          >
-                            Admin Email
-                          </label>
-                          <div className="relative">
-                            <span className="absolute left-4.5 top-4">
-                              <svg
-                                className="fill-current"
-                                width="20"
-                                height="20"
-                                viewBox="0 0 20 20"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <g opacity="0.8">
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M3.33301 4.16667C2.87658 4.16667 2.49967 4.54357 2.49967 5V15C2.49967 15.4564 2.87658 15.8333 3.33301 15.8333H16.6663C17.1228 15.8333 17.4997 15.4564 17.4997 15V5C17.4997 4.54357 17.1228 4.16667 16.6663 4.16667H3.33301ZM0.833008 5C0.833008 3.6231 1.9561 2.5 3.33301 2.5H16.6663C18.0432 2.5 19.1663 3.6231 19.1663 5V15C19.1663 16.3769 18.0432 17.5 16.6663 17.5H3.33301C1.9561 17.5 0.833008 16.3769 0.833008 15V5Z"
-                                    fill=""
-                                  />
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M0.983719 4.52215C1.24765 4.1451 1.76726 4.05341 2.1443 4.31734L9.99975 9.81615L17.8552 4.31734C18.2322 4.05341 18.7518 4.1451 19.0158 4.52215C19.2797 4.89919 19.188 5.4188 18.811 5.68272L10.4776 11.5161C10.1907 11.7169 9.80879 11.7169 9.52186 11.5161L1.18853 5.68272C0.811486 5.4188 0.719791 4.89919 0.983719 4.52215Z"
-                                    fill=""
-                                  />
-                                </g>
-                              </svg>
-                            </span>
-                            <Field
-                              type="email"
-                              name="adminEmail"
-                              className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark -4 dark:text-white dark:focus:border-primary"
-                              placeholder="Admin Email"
-                            />
-                            <ErrMessage name="adminEmail" />
-                          </div>
-                        </div>
-
-                        <div className="mb-5.5">
-                          <label
-                            className="mb-3 block text-sm font-medium text-black dark:text-white"
-                            htmlFor="supportEmail"
-                          >
-                            Support Email
-                          </label>
-                          <div className="relative">
-                            <span className="absolute left-4.5 top-4">
-                              <svg
-                                className="fill-current"
-                                width="20"
-                                height="20"
-                                viewBox="0 0 20 20"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <g opacity="0.8">
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M3.33301 4.16667C2.87658 4.16667 2.49967 4.54357 2.49967 5V15C2.49967 15.4564 2.87658 15.8333 3.33301 15.8333H16.6663C17.1228 15.8333 17.4997 15.4564 17.4997 15V5C17.4997 4.54357 17.1228 4.16667 16.6663 4.16667H3.33301ZM0.833008 5C0.833008 3.6231 1.9561 2.5 3.33301 2.5H16.6663C18.0432 2.5 19.1663 3.6231 19.1663 5V15C19.1663 16.3769 18.0432 17.5 16.6663 17.5H3.33301C1.9561 17.5 0.833008 16.3769 0.833008 15V5Z"
-                                    fill=""
-                                  />
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M0.983719 4.52215C1.24765 4.1451 1.76726 4.05341 2.1443 4.31734L9.99975 9.81615L17.8552 4.31734C18.2322 4.05341 18.7518 4.1451 19.0158 4.52215C19.2797 4.89919 19.188 5.4188 18.811 5.68272L10.4776 11.5161C10.1907 11.7169 9.80879 11.7169 9.52186 11.5161L1.18853 5.68272C0.811486 5.4188 0.719791 4.89919 0.983719 4.52215Z"
-                                    fill=""
-                                  />
-                                </g>
-                              </svg>
-                            </span>
-                            <Field
-                              type="email"
-                              name="supportEmail"
-                              className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark -4 dark:text-white dark:focus:border-primary"
-                              placeholder="Support email"
-                            />
-                            <ErrMessage name="supportEmail" />
-                          </div>
-                        </div>
-
-
-                        <div className="flex justify-end gap-4.5">
-                          <button
-                            className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
-                            type="submit"
-                          >
-                            Cancel
-                          </button>
-                          <button
-                            className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-95"
-                            type="submit"
-                          >
-                            Save
-                          </button>
-                        </div>
-                      </Form>
-
-                    )
-                  }}
-                </Formik>
-              </div>
-            </div>
-          </div>
+          <SettingSite/>
           <div className="col-span-5 xl:col-span-2">
             <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
               <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
@@ -339,131 +166,8 @@ const SettingPages = () => {
               </div>
             </div>
           </div>
-          <div className="col-span-5 xl:col-span-3">
-            <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-              <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
-                <h3 className="font-medium text-black dark:text-white">
-                 Google SMTP Configuration Setup
-                </h3>
-              </div>
-              <div className="p-7">
-                <Formik
-                  initialValues={initialValuesForSMTP}
-                  validationSchema={smtpSetup}
-                  onSubmit={updateSMTPSetup}
-                  enableReinitialize={true}
-                >
-                  {({ errors, touched }) => {
-                    return (
-                      <Form >
-                        <div className="mb-5.5">
-                          <label
-                            className="mb-3 block text-sm font-medium text-black dark:text-white"
-                            htmlFor="email"
-                          >
-                            Email Address
-                          </label>
-                          <div className="relative">
-                            <span className="absolute left-4.5 top-4">
-                              <svg
-                                className="fill-current"
-                                width="20"
-                                height="20"
-                                viewBox="0 0 20 20"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <g opacity="0.8">
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M3.33301 4.16667C2.87658 4.16667 2.49967 4.54357 2.49967 5V15C2.49967 15.4564 2.87658 15.8333 3.33301 15.8333H16.6663C17.1228 15.8333 17.4997 15.4564 17.4997 15V5C17.4997 4.54357 17.1228 4.16667 16.6663 4.16667H3.33301ZM0.833008 5C0.833008 3.6231 1.9561 2.5 3.33301 2.5H16.6663C18.0432 2.5 19.1663 3.6231 19.1663 5V15C19.1663 16.3769 18.0432 17.5 16.6663 17.5H3.33301C1.9561 17.5 0.833008 16.3769 0.833008 15V5Z"
-                                    fill=""
-                                  />
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M0.983719 4.52215C1.24765 4.1451 1.76726 4.05341 2.1443 4.31734L9.99975 9.81615L17.8552 4.31734C18.2322 4.05341 18.7518 4.1451 19.0158 4.52215C19.2797 4.89919 19.188 5.4188 18.811 5.68272L10.4776 11.5161C10.1907 11.7169 9.80879 11.7169 9.52186 11.5161L1.18853 5.68272C0.811486 5.4188 0.719791 4.89919 0.983719 4.52215Z"
-                                    fill=""
-                                  />
-                                </g>
-                              </svg>
-                            </span>
-                            <Field
-                              type="email"
-                              name="email"
-                              className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark -4 dark:text-white dark:focus:border-primary"
-                              placeholder="Email"
-                            />
-                            <ErrMessage name="email" />
-                          </div>
-                        </div>
-                        <div className="mb-5.5">
-                          <label
-                            className="mb-3 block text-sm font-medium text-black dark:text-white"
-                            htmlFor="emailAddress"
-                          >
-                           SMTP Password
-                          </label>
-                          <div className="relative">
-                            <span className="absolute left-4.5 top-4">
-                              <svg
-                                className="fill-current"
-                                width="20"
-                                height="20"
-                                viewBox="0 0 20 20"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <g opacity="0.8">
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M3.33301 4.16667C2.87658 4.16667 2.49967 4.54357 2.49967 5V15C2.49967 15.4564 2.87658 15.8333 3.33301 15.8333H16.6663C17.1228 15.8333 17.4997 15.4564 17.4997 15V5C17.4997 4.54357 17.1228 4.16667 16.6663 4.16667H3.33301ZM0.833008 5C0.833008 3.6231 1.9561 2.5 3.33301 2.5H16.6663C18.0432 2.5 19.1663 3.6231 19.1663 5V15C19.1663 16.3769 18.0432 17.5 16.6663 17.5H3.33301C1.9561 17.5 0.833008 16.3769 0.833008 15V5Z"
-                                    fill=""
-                                  />
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M0.983719 4.52215C1.24765 4.1451 1.76726 4.05341 2.1443 4.31734L9.99975 9.81615L17.8552 4.31734C18.2322 4.05341 18.7518 4.1451 19.0158 4.52215C19.2797 4.89919 19.188 5.4188 18.811 5.68272L10.4776 11.5161C10.1907 11.7169 9.80879 11.7169 9.52186 11.5161L1.18853 5.68272C0.811486 5.4188 0.719791 4.89919 0.983719 4.52215Z"
-                                    fill=""
-                                  />
-                                </g>
-                              </svg>
-                            </span>
-                            <Field
-                              type="password"
-                              name="password"
-                              className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark -4 dark:text-white dark:focus:border-primary"
-                              placeholder="Password"
-                            />
-                            <ErrMessage name="password" />
-                          </div>
-                        </div>
-
-
-                        <div className="flex justify-end gap-4.5">
-                          <button
-                            className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
-                            type="submit"
-                          >
-                            Cancel
-                          </button>
-                          <button
-                            className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-95"
-                            type="submit"
-                          >
-                            Save
-                          </button>
-                        </div>
-                      </Form>
-
-                    )
-                  }}
-                </Formik>
-              </div>
-            </div>
-          </div>
+          <SettingSmtp/>
+          <SettingCharger />
         </div>
       </div>
     </>

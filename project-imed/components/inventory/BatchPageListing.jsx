@@ -4,17 +4,20 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import api from "@/http"
 import { useRouter } from 'next/navigation';
+import usePaginate from '@/hooks/usePaginate';
 
 
 function BatchPageListing() {
   const [batchs, setBatch] = useState([]);
+  const { page, limit, search, searchHandler } = usePaginate();
+
 
   useEffect(() => {
     api.get('item-batch')
       .then((response) => {
         setBatch(response.data.result.data);
       })
-  }, []);
+  }, [page, limit, search]);
 
   function batchDeleteHandler(id) {
     api.delete("/item-batch", { data: { id } })
@@ -44,12 +47,23 @@ function BatchPageListing() {
         </Link>
       </div>
       <div className="overflow-x-auto">
+        <input
+          type="text"
+          className=" rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+          placeholder="Search Product"
+          defaultValue={search}
+          onChange={e => searchHandler(e.target.value)}
+        />
+        
         <table className="w-full table-auto">
           <thead>
 
             <tr className="bg-gray-2 text-left dark:bg-meta-4">
               <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
                 batch Name
+              </th>
+              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                Product Name
               </th>
               <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
                 Date
@@ -77,6 +91,13 @@ function BatchPageListing() {
                   <p className="text-black dark:text-white">
                     {batch.name}
                   </p>
+                </td>
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark pl-9 xl:pl-11">
+                  <Link href={`/dashboard/inventory/products/add?id=${batch?.item?._id}`}>
+                    <p className="text-black dark:text-white">
+                      {batch?.item?.name}
+                    </p>
+                  </Link>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4  dark:border-strokedark ">
                   <h5 className="font-medium text-black dark:text-white">

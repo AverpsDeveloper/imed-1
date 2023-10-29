@@ -38,7 +38,7 @@ function ErrMessage({ name }) {
     );
 }
 
-const DoctorDetailsPage = () => {
+const RolesProfilePage = () => {
 
     const [initialValuesActivities, setInitialValuesActivities] = useState({
         lastActive: '12:00',
@@ -552,7 +552,7 @@ const DoctorDetailsPage = () => {
 
                     </div>
                 </div>
-                {/* <div className="grid grid-cols-5 gap-8 mt-8">
+                <div className="grid grid-cols-5 gap-8 mt-8">
                     <div className="col-span-5 xl:col-span-3">
                         <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
                             <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
@@ -644,10 +644,10 @@ const DoctorDetailsPage = () => {
                             </div>
                         </div>
                     </div>
-                </div> */}
+                </div>
             </div>
         </>
     );
 };
 
-export default DoctorDetailsPage;
+export default RolesProfilePage;

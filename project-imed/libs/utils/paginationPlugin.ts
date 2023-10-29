@@ -19,7 +19,7 @@ export default (schema: InferSchemaType<any>) => {
                 this.model.countDocuments(this.getQuery())
             ]);
             meta.total = total;
-            meta.page = skip > total ? Math.ceil(total / meta.limit) : meta.page;
+            meta.page = skip > total ? Math.ceil(total / meta.limit) : meta.page;            
 
             return { data, meta }
         } catch (error) {

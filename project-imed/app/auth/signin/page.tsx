@@ -3,6 +3,7 @@ import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import { signIn, useSession } from "next-auth/react";
 import { useSearchParams, useRouter } from "next/navigation";
+import Loader from "@/components/common/Loader";
 
 const page = () => {
     const [email, setEmail] = useState<string>("");
@@ -11,8 +12,8 @@ const page = () => {
     const [authError, setAuthError] = useState<string>("");
     const router = useRouter()
     const searchParams = useSearchParams();
-    const { data: session }: any = useSession();
-    console.log("sessionlogin", session);
+    const { data: session, status }: any = useSession();
+    console.log("sessionlogin", session);   
     const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
 
     useEffect(() => {
@@ -55,6 +56,10 @@ const page = () => {
         if (!data.ok) {
             setAuthError("OTP invalid or expired")
         }
+    }
+
+    if(status === "loading"){
+        return <Loader/>
     }
     return (
         <div className='overflow-hidden bg-[#0E1E3A] h-[100vh] max-h-screen relative'>
@@ -102,13 +107,13 @@ const page = () => {
                                                 <label className="block mb-2 text-sm font-bold text-white" htmlFor="username">
                                                     Email
                                                 </label>
-                                                <input onChange={(e) => setEmail(e.target.value)} className="w-full px-3 py-2 text-sm leading-tight text-white border rounded shadow appearance-none focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Email Address" />
+                                                <input onChange={(e) => setEmail(e.target.value)} className="w-full px-3 py-2 text-sm leading-tight text-black border rounded shadow appearance-none focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Email Address" />
                                             </div>
                                             <div className="mb-4">
                                                 <label className="block mb-2 text-sm font-bold text-white" htmlFor="password">
                                                     Password
                                                 </label>
-                                                <input onChange={(e) => setPassword(e.target.value)} className="w-full px-3 py-2 mb-3 text-sm leading-tight text-gray-700 border border-red-500 rounded shadow appearance-none focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="Password" />
+                                                <input onChange={(e) => setPassword(e.target.value)} className="w-full px-3 py-2 mb-3 text-sm leading-tight  text-black border border-red-500 rounded shadow appearance-none focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="Password" />
                                                 <p className="text-xs italic text-white">Please choose a password.</p>
                                             </div>
                                         </>

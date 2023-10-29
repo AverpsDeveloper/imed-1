@@ -5,46 +5,63 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { FaHistory, FaEnvelope, FaPhone } from 'react-icons/fa';
+import Pagination from '@/iComponents/Pagination';
+import usePaginate from "@/hooks/usePaginate";
+import { debounce } from "@/helper";
 
 const DoctorListingPage = () => {
-
   const [genderFilter, setGenderFilter] = useState('all');
-  const [sortByMonth, setSortByMonth] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [doctors, setDoctorsData] = useState([])
-  useEffect(() => {
-    api.get('/users-admin', { params: { role: "DOCTOR" } })
-      .then((response) => {
-        setDoctorsData(response.data.result.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
+  const [doctors, setDoctors] = useState([])
+  const { page, limit, search, searchHandler } = usePaginate();
+  const [meta, setMeta] = useState({ page: 1, limit: 10, total: 10 });
 
-  }, []);
+  useEffect(() => {
+    api.get('/users-admin', {
+      params: {
+        role: "DOCTOR",
+        page,
+        limit,
+        search,
+      }
+    })
+      .then((response) => {
+        setDoctors(response.data.result.data);
+        setMeta(response.data.result.meta);
+      })
+
+  },  [page,limit,search]);
 
   const filteredPatients = doctors.filter((doctors) => {
     if (genderFilter === 'all') return true;
     return doctors.gender === genderFilter;
   });
-
+  
   let sortedDoctor = [...filteredPatients];
 
-  if (sortByMonth) {
-    sortedDoctor.sort((a, b) => {
-      // Assuming 'date' is the property to sort by
-      return a.date - b.date;
-    });
-  } else {
-    // Default sorting by some other criteria
-    // sortedPatients.sort((a, b) => { ... });
-  }
+  // if (sortByMonth) {
+  //   sortedDoctor.sort((a, b) => {
+  //     // Assuming 'date' is the property to sort by
+  //     return a.date - b.date;
+  //   });
+  // } else {
+  //   // Default sorting by some other criteria
+  //   // sortedPatients.sort((a, b) => { ... });
+  // }
 
-  if (searchTerm) {
-    sortedDoctor = sortedDoctor.filter((doctors) =>
-      doctors.username.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }
+  // if (searchTerm) {
+  //   sortedDoctor = sortedDoctor.filter((doctors) =>
+  //     doctors.username.toLowerCase().includes(searchTerm.toLowerCase())
+  //   );
+  // }
+
+  const handleSearch = debounce(async (search) => {
+    const params = new URLSearchParams(searchParams);
+    search ? params.set("search", (search).toString())
+      : params.delete("search")
+    router.push(`${pathname}?${params.toString()}`);
+  }, 500);
+
+
 
 
   return (
@@ -64,31 +81,31 @@ const DoctorListingPage = () => {
                 </svg>
               </button>
               <input
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                defaultValue={search}
+                onChange={e => handleSearch(e.target.value)}
                 placeholder="Search by username..." class="w-full bg-transparent pl-9 pr-4 font-medium focus:outline-none xl:w-125" type="text" fdprocessedid="ai7g3k" />
             </div>
           </div>
           <button
+          onClick={()=>setGenderFilter("all")}
             className={`px-4 py-2 rounded ${genderFilter === 'all' ? 'bg-blue-500 text-white' : 'bg-gray-200'
               }`}
-            onClick={() => setGenderFilter('all')}
           >
             All
           </button>
           <button
+          onClick={()=>setGenderFilter("male")}
             className={`px-4 py-2 rounded ${genderFilter === 'male' ? 'bg-blue-500 text-white' : 'bg-gray-200'
               }`}
-            onClick={() => setGenderFilter('male')}
           >
             Male
           </button>
           <button
+          onClick={()=>setGenderFilter("female")}
             className={`px-4 py-2 rounded ${genderFilter === 'female'
               ? 'bg-blue-500 text-white'
               : 'bg-gray-200'
               }`}
-            onClick={() => setGenderFilter('female')}
           >
             Female
           </button>
@@ -97,125 +114,98 @@ const DoctorListingPage = () => {
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="py-6 px-4 md:px-6 xl:px-7.5">
           <h4 className="text-xl font-semibold text-black dark:text-white">
-          Doctors List
+            Doctors List
           </h4>
         </div>
 
-        <div className="grid grid-cols-6 border-t border-stroke py-4.5 px-4 dark:border-strokedark sm:grid-cols-8 md:px-6 2xl:px-7.5">
-          <div className="col-span-2 flex items-center">
-            <p className="font-medium">Profile</p>
-          </div>
-          <div className="col-span-2 hidden items-center sm:flex">
-            <p className="font-medium">Username</p>
-          </div>
-          <div className="col-span-1 flex items-center">
-            <p className="font-medium">Gender</p>
-          </div>
-          <div className="col-span-1 flex items-center">
-            <p className="font-medium">Age</p>
-          </div>
-          <div className="col-span-1 flex items-center">
-            <p className="font-medium">Contact</p>
-          </div>
-          <div className="col-span-1 flex items-center">
-            <p className="font-medium">Action</p>
-          </div>
-        </div>
-
-        {sortedDoctor.map((doctor, key) => (
-          <div
-            className="grid grid-cols-6 border-t border-stroke py-4.5 px-4 dark:border-strokedark sm:grid-cols-8 md:px-6 2xl:px-7.5"
-            key={key}
-          >
-            <div className="col-span-2 flex items-center">
-            <Link href={`/dashboard/doctor/${doctor.username}`}> 
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                <div className="h-12.5 w-15 rounded-md">
-                  <Image
-                    src={doctor.profilePic || "/images/logo/logo-icon.svg"}
-                    width={60}
-                    height={50}
-                    alt="doctor"
-                  />
-                </div>
-                <p className="text-sm text-black dark:text-white">
-                  {doctor.firstName + " " + doctor.lastName}
-                </p>
-              </div>
-              </Link>
-            </div>
-            <div className="col-span-2 hidden items-center sm:flex hover:font-bold hover:bg-opacity-90 lg:px-8 xl:px-10">
-            <Link href={`/dashboard/doctor/${doctor.username}`}> 
-              <p className="text-sm text-black dark:text-white">
-                {doctor.username}
-              </p>
-            </Link>
-            </div>
-            <div className="col-span-1 flex items-center">
-              <p className="text-sm text-black dark:text-white">
-                {doctor.gender}
-              </p>
-            </div>
-            <div className="col-span-1 flex items-center">
-            <p className="text-sm text-black dark:text-white">
-                {doctor.age}
-              </p>
-            </div>
-            <div className="col-span-1 gap-5 flex items-center">
-              
-              <button className="text-blue-500">
-              <a href={`mailto:${doctor.email}`}><FaEnvelope title={`${doctor.email}`}/></a>
-                
-              </button>
-              <button className="text-blue-500">
-              <a href={`tel:${doctor.phoneNumber}`}><FaPhone title={`${doctor.phoneNumber}`}/></a>
-              </button>
-            </div>
-            <div className="col-span-1 flex items-center">
-            <Link href={`/dashboard/manager/${doctor.username}`}>
-                <p className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
-                  Detail
-                </p>
-              </Link>
-            </div>
-          </div>
-        ))}
+        <table className="w-full table-auto">
+          <thead>
+            <tr className="bg-gray-2 text-left dark:bg-meta-4">
+              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
+                Profile
+              </th>
+              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
+                Full Name
+              </th>
+              <th className="min-w-[140px] py-4 px-4 font-medium text-black dark:text-black">
+                Username
+              </th>
+              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black">
+                Gender
+              </th>
+              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black">
+                Age
+              </th>
+              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black">
+                Email
+              </th>
+              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {doctors.map((doctor, index) => (
+              <tr key={doctor._id}>
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark pl-9 xl:pl-11">
+                  <Link href={`/dashboard/doctor/${doctor.username}`}>
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                      <div className="h-12.5 w-15 rounded-md">
+                        <Image
+                          src={doctor.profilePic || "/images/logo/logo-icon.svg"}
+                          width={60}
+                          height={50}
+                          alt="doctor"
+                        />
+                      </div>
+                      <h5 className="font-medium text-black dark:text-white">
+                        
+                      </h5>
+                    </div>
+                  </Link>
+                </td>
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark pl-9 xl:pl-11">
+                  <Link href={`/dashboard/doctor/${doctor.username}`}>
+                    <h5 className="font-medium text-black dark:text-white">
+                    {doctor.firstName + " " + doctor.lastName}
+                    </h5>
+                  </Link>
+                </td>
+                <td className="border-b border-[#eee] py-5 px-4  dark:border-strokedark ">
+                  <h5 className="font-medium text-black dark:text-white">
+                  {doctor.username}
+                  </h5>
+                </td>
+                <td className="border-b border-[#eee] py-5 px-4  dark:border-strokedark ">
+                  <h5 className="font-medium text-black dark:text-white">
+                  {doctor.gender}
+                  </h5>
+                </td>
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                  <h5 className="font-medium text-black dark:text-white">
+                  {doctor.age}
+                  </h5>
+                </td>
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                  <h5 className="font-medium text-black dark:text-white">
+                  <Link href={`mailto:${doctor.email}`}><FaEnvelope title={`${doctor.email}`} />{doctor.email}</Link>
+                  </h5>
+                </td>
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                  <div className="flex items-center space-x-3.5">
+                    <Link href={`/dashboard/doctor/${doctor.username}`}>
+                      <p className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
+                        Detail
+                      </p>
+                    </Link>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <Pagination meta={meta} />
       </div>
-      {/* <div className="grid gap-4 p-6 rounded-sm border border-stroke bg-white shadow-md  dark:border-strokedark dark:bg-boxdark">
-        {sortedDoctor.map((doctor) => (
-          <div
-            key={doctor.id}
-            className="bg-white p-4 rounded-lg flex items-center border-stroke shadow-md space-x-4 bg-white dark:border-strokedark dark:bg-boxdark"
-          >
-            <img
-              src={doctor.profilePic || "/images/logo/logo-icon.svg"}
-              alt={doctor.username}
-              className="w-10 h-10 rounded-lg"
-            />
-            <div>
-              <Link href={`/dashboard/doctor/${doctor.username}`}>
-                <p className="font-bold">({doctor.username})</p>
-                <p className="font-bold">{doctor.firstName + " " + doctor.lastName}</p>
-                <p className="text-sm font-semibold text-gray-500">{` ${doctor.age} years`}</p>
-              </Link>
-            </div>
-            <p className="flex-grow text-sm ">{doctor.description} </p>
-            <div className="flex items-center space-x-7">
-              <div />
-              <button className="text-blue-500">
-                <FaHistory />
-              </button>
-              <button className="text-blue-500">
-                <FaEnvelope />
-              </button>
-              <button className="text-blue-500">
-                <FaPhone />
-              </button>
-
-            </div>
-          </div>
-        ))}
-      </div> */}
     </div>
 
   )
