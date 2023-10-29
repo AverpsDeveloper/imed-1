@@ -1,36 +1,23 @@
 import { NextResponse } from "next/server";
 import { PagesModel } from "@/libs/models/publicPages";
-export async function GET(req: Request) {
-  let pageName = await PagesModel.find({ published: true }).select("page slug");
-  return NextResponse.json(
-    {
-      message: "Published Pages by Admin",
-      success:true,
-      pageName,
+import tcWrap from "@/libs/utils/tcWrap";
+import { Types } from "mongoose";
 
-    },
-    { status: 200 }
-  );
-}
+export const GET = tcWrap(async (req, res) => {
+  const data: any = await PagesModel.find().select("page title slug published createdAt updatedAt");;
+  return res.json({ result: { data} });
+});
+
 
 export async function POST(req: Request) {
   try {
-    
     const body = await req.json();
-    const {
-      pageName,
-      seoSlug,
-      title,
-      metaTitle,
-      metaDescription,
-      published,
-      description,
+    const { page, slug, title, metaTitle, metaDescription, published, description,
     } = body;
-    console.log(body);
-
+    
     let pages = await PagesModel.create({
-      page: pageName,
-      slug : seoSlug,
+      page: page,
+      slug : slug,
       title: title,
       metaTitle:metaTitle,
       metaDescription:metaDescription,
@@ -57,3 +44,40 @@ export async function POST(req: Request) {
       });
   }
 }
+
+export const PUT = tcWrap(async (req, res) => {
+  console.log("put");
+  const body = await req.json();
+  const id = body.id;
+
+  if (!id) {
+    throw new Error("field id required");
+  }
+  
+  if (!Types.ObjectId.isValid(id)) {
+    throw new Error("field `id` invalid");
+  }
+
+  const item = await PagesModel.findByIdAndUpdate(id, body, {
+    new: true, runValidators: true
+  });
+  
+  return res.json({ result: { message: "Page Updated", item } });
+});
+
+
+export const DELETE = tcWrap(async (req, res) => {
+  console.log("delete");
+  const body = await req.json();
+
+  if (!body.id) {
+    throw new Error("field `id` required");
+  }
+  if (!Types.ObjectId.isValid(body.id)) {
+    throw new Error("field `id` invalid");
+  }
+
+  const findItem: any = await PagesModel.findByIdAndDelete(body.id);
+ 
+  return res.json({ result: { message: "Page Deleted" } });
+});

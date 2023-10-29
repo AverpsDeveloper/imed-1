@@ -5,15 +5,17 @@ import { useQuill } from "react-quilljs";
 import "quill/dist/quill.snow.css";
 import { Formik, Field, StyledTextArea, Form, ErrorMessage, useFormikContext, useField } from 'formik';
 import * as Yup from 'yup';
+import api from "@/http";
+import { useSearchParams } from "next/navigation";
 
 const validationSchema = Yup.object().shape({
-  pageName: Yup.string().required('Page name is required.'),
-  seoSlug: Yup.string().required('Seo slug is required.'),
+  page: Yup.string().required('Page name is required.'),
+  slug: Yup.string().required('Seo slug is required.'),
   title: Yup.string().required('Title is required.'),
   metaTitle: Yup.string(),
   published: Yup.boolean().required('You want to publish this page.'),
   metaDescription: Yup.string(),
-  description: Yup.string().required('Page Description is required.'),
+  // description: Yup.string().required('Page Description is required.'),
 });
 
 function ErrMessage({ name }) {
@@ -29,21 +31,36 @@ function ErrMessage({ name }) {
 
 
 const AddNewPage = () => {
+  const params = useSearchParams();
+  const paramsId = params.get("id")
+  const [edit, setEdit] = useState(false); // page
+  const [isEdit, setIsEdit] = useState(true); // input
 
+  
   const [initialValues, setInitialValues] = useState({
-    pageName: "about-us",
-    seoSlug: 'about-us',
-    title: 'About Us',
-    metaTitle: 'About Us',
+    page: "",
+    slug: '',
+    title: '',
+    metaTitle: '',
     published: false,
-    metaDescription: 'About Us',
-    description: 'About Us',
+    metaDescription: '',
+    description: '',
   })
 
   const { quill, quillRef } = useQuill();
   const [value, setValue] = useState();
 
   useEffect(() => {
+    if (paramsId) {
+      setEdit(true)
+      api.get(`/pages/${paramsId}`).then((response) => {
+        setInitialValues(response.data.result.data)
+        console.log("response.data.result.data.description::", response.data.result.data.description
+        );
+        setIsEdit(false)
+        setValue(response.data.result.data.description)
+      })
+    }
     if (quill) {
       quill.on("text-change", () => {
         setValue(quillRef.current.firstChild.innerHTML);
@@ -51,30 +68,52 @@ const AddNewPage = () => {
     }
   }, [quill, quillRef]);
 
-  const onSubmit = (data) => {
-    data.description = value;
-    console.log(data);
+  const onSubmitHander = (data) => {
+    if(isEdit && paramsId){
+      data.id = paramsId
+      data.description = value;
+      api.put("/pages", data)
+    }else{
+      data.description = value;
+      api.post("/pages", data)
+    }
   };
 
+
+
   return (
-    <>
-      <Breadcrumb pageName="Add New Page" />
+    <> 
+      <Breadcrumb pageName={edit? 'Update' : 'Add New Page' } />
       <div className="grid grid-cols-1 gap-9 sm:grid-cols-3">
         <div className="flex flex-col gap-9 col-span-3">
           {/* <!-- Contact Form --> */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-              <h3 className="font-medium text-black dark:text-white">
-                New Page Form
-              </h3>
+            <div className="flex justify-between items-center border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+              <div className="">
+                <h3 className="font-medium text-black dark:text-white">
+                  {edit ? "Update Page" : "New Page Form"}
+                </h3>
+              </div>
+              <div>
+               {edit &&
+                <button
+                  onClick={() => setIsEdit(!isEdit)}
+                  className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white "
+                  type="button"
+                >
+                  {isEdit ? "View" : "Edit"}
+                </button>
+               } 
+              </div>
             </div>
             <Formik
               initialValues={initialValues}
               validationSchema={validationSchema}
-              onSubmit={onSubmit}
+              onSubmit={onSubmitHander}
               enableReinitialize={true}
             >
               {({ errors, touched }) => {
+                console.log(errors);
                 return (
                   <Form >
                     <div className="p-6.5">
@@ -85,11 +124,12 @@ const AddNewPage = () => {
                           </label>
                           <Field
                             type="text"
-                            name="siteName"
+                            name="page"
+                            disabled={!isEdit}
                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                            placeholder="Site name."
+                            placeholder="Page name."
                           />
-                          <ErrMessage name="siteName" />
+                          <ErrMessage name="page" />
 
                         </div>
                         <div className="w-full xl:w-1/2">
@@ -99,11 +139,12 @@ const AddNewPage = () => {
 
                           <Field
                             type="text"
-                            name="seoSlug"
+                            name="slug"
+                            disabled={!isEdit}
                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                            placeholder="Site name."
+                            placeholder="about-page."
                           />
-                          <ErrMessage name="siteName" />
+                          <ErrMessage name="slug" />
                         </div>
                       </div>
                       <div className="mb-4.5">
@@ -114,6 +155,7 @@ const AddNewPage = () => {
                         <Field
                           type="text"
                           name="title"
+                          disabled={!isEdit}
                           className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                           placeholder="Site name."
                         />
@@ -121,13 +163,14 @@ const AddNewPage = () => {
                       </div>
                       <div className="mb-4.5">
                         <label className="mb-2.5 block text-black dark:text-white">
-                          metaTitle <span className="text-meta-1">*</span>
+                          Meta Title <span className="text-meta-1">*</span>
                         </label>
 
 
                         <Field
                           type="text"
                           name="metaTitle"
+                          disabled={!isEdit}
                           className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                           placeholder="Site name."
                         />
@@ -136,11 +179,12 @@ const AddNewPage = () => {
 
                       <div className="mb-4.5">
                         <label className="mb-2.5 block text-black dark:text-white">
-                          metaDescription
+                          Meta Description
                         </label>
                         <Field
                           type="text"
                           name="metaDescription"
+                          disabled={!isEdit}
                           className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                           placeholder="Site name."
                         />
@@ -150,11 +194,11 @@ const AddNewPage = () => {
 
                       <div className="mb-4.5">
                         <label className="mb-2.5 block text-black dark:text-white">
-                          published
+                          Published
                         </label>
                         <div className="relative z-20 bg-transparent dark:bg-form-input">
 
-                          <Field as="select" name="published"
+                          <Field as="select" name="published"   disabled={!isEdit}
                             className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                           >
                             <option value="">Select</option>
@@ -195,8 +239,8 @@ const AddNewPage = () => {
                         </div>
                       </div>
 
-                      <button type="submit" className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray">
-                        Save Page
+                      <button type="submit"    disabled={!isEdit} className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray">
+                      {isEdit ? "Save Page" : "Update"}
                       </button>
                     </div>
                   </Form>

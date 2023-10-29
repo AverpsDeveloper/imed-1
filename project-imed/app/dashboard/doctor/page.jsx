@@ -64,6 +64,15 @@ const DoctorListingPage = () => {
     );
   }
 
+  const handleSearch = debounce(async (search) => {
+    const params = new URLSearchParams(searchParams);
+    search ? params.set("search", (search).toString())
+      : params.delete("search")
+    router.push(`${pathname}?${params.toString()}`);
+  }, 500);
+
+
+
 
   return (
     <div className="p-4">
@@ -82,8 +91,8 @@ const DoctorListingPage = () => {
                 </svg>
               </button>
               <input
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                defaultValue={search}
+                onChange={e => handleSearch(e.target.value)}
                 placeholder="Search by username..." class="w-full bg-transparent pl-9 pr-4 font-medium focus:outline-none xl:w-125" type="text" fdprocessedid="ai7g3k" />
             </div>
           </div>
