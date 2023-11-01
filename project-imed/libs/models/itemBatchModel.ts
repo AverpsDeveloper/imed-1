@@ -1,4 +1,4 @@
-import mongoose, { Document, model, Model,Schema, } from "mongoose";
+import mongoose, { Document, model, Model, Schema, } from "mongoose";
 import paginationPlugin from "../utils/paginationPlugin";
 
 export interface IPropsType extends Document {
@@ -19,10 +19,10 @@ const itemBatchSchema = new Schema(
             type: String,
         },
         qty: {
-            Number
+          type:  Number
         },
         arriveAt: {
-            Date
+            type: Date,
         },
         location: {
             String
@@ -43,4 +43,4 @@ const itemBatchSchema = new Schema(
 itemBatchSchema.plugin(paginationPlugin);
 
 export default (mongoose.models.ItemBatch ||
-    model<any, any>("ItemBatch", itemBatchSchema)) ;
+    model<any, any>("ItemBatch", itemBatchSchema));
