@@ -2,7 +2,7 @@ import tcWrap from "@/libs/utils/tcWrap";
 import { Types } from "mongoose";
 import itemBatchModel from "@/libs/models/itemBatchModel";
 export const GET = tcWrap(async (req, res) => {
-  const { search, arriveAt, price, page, limit } = req.query;
+  const { search, arriveAt, price, page, limit, date, product } = req.query;
 
   let filter = [{ deletedAt: { $exists: false } }];
   if (search) {
@@ -14,29 +14,39 @@ export const GET = tcWrap(async (req, res) => {
     });
   }
 
-  if (arriveAt) {
-    const [gt, lt] = arriveAt.split("-");
+  if (product) {
     filter.push({
-      retailPrice: { $gte: +gt, ...(lt && { $lte: +lt }) },
+      item: product,
     });
   }
-  if (price) {
-    const [gt, lt] = arriveAt.split("-");
-    filter.push({
-      sellingPrice: { $gte: +gt, ...(lt && { $lte: +lt }) },
-    });
-  }
-  const { data, meta } = await itemBatchModel.find({ $and: filter })
-    .populate("item", "name codename")
-    .paginate({ page, limit })//"item"
 
-  return res.json({
-    result: {
-      message: "inventry",
-      data,
-      meta,
-    }
+  if (date) {
+    let [gt, lt] = date.split("|");
+    gt = gt && new Date(gt);
+    lt = lt && new Date(lt);
+    console.log({ gt, lt })
+    filter.push({
+      arriveAt: {...(gt && { $gte: gt }), ...(lt && { $lte: lt })
+    },
+    });
+  }
+if (price) {
+  const [gt, lt] = arriveAt.split("-");
+  filter.push({
+    sellingPrice: { $gte: +gt, ...(lt && { $lte: +lt }) },
   });
+}
+const { data, meta } = await itemBatchModel.find({ $and: filter })
+  .populate("item", "name codename")
+  .paginate({ page, limit })//"item"
+
+return res.json({
+  result: {
+    message: "inventry",
+    data,
+    meta,
+  }
+});
 });
 
 export const POST = tcWrap(async (req, res) => {
