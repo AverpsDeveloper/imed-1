@@ -89,7 +89,7 @@ function ProductList() {
           className="inline-flex items-center justify-center gap-2.5 rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
         >
           <MdSaveAlt />
-          Exprot Data
+          Export Data
         </button>
       </div>
       <div className="overflow-x-auto">

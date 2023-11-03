@@ -11,21 +11,27 @@ import { useSession } from "next-auth/react";
 
 
 const validationSchemaInfo = Yup.object().shape({
-    username: Yup.string().matches(/^\S*$/, "This field cannot contain white space.")
-        .required('Username is required.'),
+    username: Yup.string().matches(/^\S*$/, "This field cannot contain white space.").required('Username is required.'),
     firstName: Yup.string().required('First name is required.'),
     lastName: Yup.string().required('Last name is required.'),
     email: Yup.string().email().required('Email is required.'),
     age: Yup.number().required('Age is required.'),
     gender: Yup.string().required('Gender is required.'),
+    nationality: Yup.string().required('Nationality is required.'),
     phoneNumber: Yup.number().required('Phone number is required.'),
+    idType: Yup.string().required('Id type is required.'),
+    idNumber: Yup.string().required('Id number is required.'),
+    postCode: Yup.number().required('Post code is required.'),
+    unitCode: Yup.number().required('Unit code is required.'),
+    allergy: Yup.boolean().required('Allergy is required.'),
+    g6PD: Yup.boolean().required('G6PD is required.'),
     address: Yup.string().required('Address is required.'),
 });
 
-const validationSchemaActivities = Yup.object().shape({
-    lastActive: Yup.string().required('Last Active.'),
-    isActive: Yup.boolean().required('Update User Active Status.'),
-})
+// const validationSchemaActivities = Yup.object().shape({
+//     lastActive: Yup.string().required('Last Active.'),
+//     isActive: Yup.boolean().required('Update User Active Status.'),
+// })
 
 function ErrMessage({ name }) {
     return (
@@ -38,7 +44,7 @@ function ErrMessage({ name }) {
     );
 }
 
-const RolesProfilePage = () => {
+const PatientsDetailsPage = () => {
 
     const [initialValuesActivities, setInitialValuesActivities] = useState({
         lastActive: '12:00',
@@ -48,35 +54,39 @@ const RolesProfilePage = () => {
     const { data: { user } = { user: {} } } = useSession();
 
     const [initialValuesInfo, setInitialValuesInfo] = useState({
-        _id: "",
-        username: 'username',
-        firstName: 'First name',
-        lastName: 'Last name',
-        age: 23,
+        username: "patient",
+        firstName: "first",
+        lastName: "user",
+        email: "patients@emial.com",
+        age: "24",
         gender: "male",
-        email: 'user@gmail.com',
-        phoneNumber: '123456789',
-        speciality: "",
-        availableHours: "",
-        address: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+        nationality: "singapore",
+        phoneNumber: 12346548,
+        idType: "passport",
+        idNumber: "DS545SA",
+        postCode: 35264,
+        unitCode: 12345,
+        allergy: true,
+        g6PD: false,
+        address: "Temp Address",
     })
 
 
 
-    useEffect(() => {
-        if (user) {
-            setInitialValuesInfo(user);
-        }
+    // useEffect(() => {
+    //     if (user) {
+    //         setInitialValuesInfo(user);
+    //     }
 
-        // api.get(`/users-admin/username/${username}`)
-        //     .then((response) => {
-        //         setInitialValuesInfo(response.data.result.data);
-        //     })
-        // api.get(`/users-admin/username/${username}`)
-        //     .then((response) => {
-        //         setInitialValuesActivities(response.data.result.data);
-        //     })
-    }, [user]);
+    //     // api.get(`/users-admin/username/${username}`)
+    //     //     .then((response) => {
+    //     //         setInitialValuesInfo(response.data.result.data);
+    //     //     })
+    //     // api.get(`/users-admin/username/${username}`)
+    //     //     .then((response) => {
+    //     //         setInitialValuesActivities(response.data.result.data);
+    //     //     })
+    // }, [user]);
 
     console.log("initialValuesInfo::", initialValuesInfo);
     const onSubmitInfo = (values) => {
@@ -92,13 +102,13 @@ const RolesProfilePage = () => {
     return (
         <>
             <div className="mx-auto max-w-270">
-                <Breadcrumb pageName="Profile" />
+                <Breadcrumb pageName="Patients Detail" />
                 <div className="grid grid-cols-5 gap-8">
                     <div className="col-span-5 xl:col-span-3">
                         <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
                             <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
                                 <h3 className="font-medium text-black dark:text-white">
-                                    Profile Info
+                                    Patients Info
                                 </h3>
                             </div>
                             <div className="p-7">
@@ -111,13 +121,28 @@ const RolesProfilePage = () => {
                                     {({ errors, touched }) => {
                                         return (
                                             <Form >
+                                                <div className="mb-5.5">
+                                                    <label
+                                                        className="mb-3 block text-sm font-medium text-black dark:text-white"
+                                                        htmlFor="Username"
+                                                    >
+                                                        Username
+                                                    </label>
+                                                    <Field
+                                                        type="text"
+                                                        name="username"
+                                                        className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark -4 dark:text-white dark:focus:border-primary"
+                                                        placeholder="Username"
+                                                    />
+                                                    <ErrMessage name="username" />
+                                                </div>
                                                 <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
                                                     <div className="w-full sm:w-1/2 ">
                                                         <label
                                                             className="mb-3 block text-sm font-medium text-black dark:text-white"
-                                                            htmlFor="fullName"
+                                                            htmlFor="firstName"
                                                         >
-                                                            Full Name
+                                                            First name
                                                         </label>
                                                         <div className="relative">
                                                             <span className="absolute left-4.5 top-4">
@@ -159,7 +184,7 @@ const RolesProfilePage = () => {
                                                             className="mb-3 block text-sm font-medium text-black dark:text-white"
                                                             htmlFor="lastName"
                                                         >
-                                                            Last Name
+                                                            Last name
                                                         </label>
                                                         <Field
                                                             type="text"
@@ -251,60 +276,166 @@ const RolesProfilePage = () => {
                                                         <ErrMessage name="gender" />
                                                     </div>
                                                 </div>
-                                                {user.role == "DOCTOR" &&
-                                                    <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
-                                                        <div className="w-full sm:w-1/2 ">
-                                                            <label
-                                                                className="mb-3 block text-sm font-medium text-black dark:text-white"
-                                                                htmlFor="Age"
-                                                            >
-                                                                Speciality
-                                                            </label>
+                                                <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
+                                                    <div className="w-full sm:w-1/2 ">
+                                                        <label
+                                                            className="mb-3 block text-sm font-medium text-black dark:text-white"
+                                                            htmlFor="Age"
+                                                        >
+                                                            Nationality
+                                                        </label>
 
-                                                            <Field
-                                                                type="text"
-                                                                name="speciality"
-                                                                className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark dark:text-white dark:focus:border-primary"
-                                                                placeholder="Doctor speciality"
-                                                            />
-                                                            <ErrMessage name="speciality" />
+                                                        <Field
+                                                            type="text"
+                                                            name="nationality"
+                                                            className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark dark:text-white dark:focus:border-primary"
+                                                            placeholder="Nationality"
+                                                        />
+                                                        <ErrMessage name="nationality" />
 
+                                                    </div>
 
-                                                        </div>
+                                                    <div className="w-full sm:w-1/2">
+                                                        <label
+                                                            className="mb-3 block text-sm font-medium text-black dark:text-white"
+                                                            htmlFor="Phone Number"
+                                                        >
+                                                            Phone number
+                                                        </label>
 
-                                                        <div className="w-full sm:w-1/2">
-                                                            <label
-                                                                className="mb-3 block text-sm font-medium text-black dark:text-white"
-                                                                htmlFor="Gender"
-                                                            >
-                                                                availableHours
-                                                            </label>
+                                                        <Field
+                                                            type="number"
+                                                            name="phoneNumber"
+                                                            className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark dark:text-white dark:focus:border-primary"
+                                                            placeholder="Phone Number"
+                                                        />
+                                                        <ErrMessage name="phoneNumber" />
 
-                                                            <Field
-                                                                type="text"
-                                                                name="availableHours"
-                                                                className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark dark:text-white dark:focus:border-primary"
-                                                                placeholder="Doctor availablity Hours"
-                                                            />
-                                                            <ErrMessage name="availableHours" />
-                                                        </div>
-                                                    </div>                                             
-                                                }
-                                                <div className="mb-5.5">
-                                                    <label
-                                                        className="mb-3 block text-sm font-medium text-black dark:text-white"
-                                                        htmlFor="Username"
-                                                    >
-                                                        Username
-                                                    </label>
-                                                    <Field
-                                                        type="text"
-                                                        name="username"
-                                                        className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark -4 dark:text-white dark:focus:border-primary"
-                                                        placeholder="Username"
-                                                    />
-                                                    <ErrMessage name="username" />
+                                                    </div>
                                                 </div>
+
+                                                <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
+
+                                                    <div className="w-full sm:w-1/2">
+                                                        <label
+                                                            className="mb-3 block text-sm font-medium text-black dark:text-white"
+                                                            htmlFor="Id Type"
+                                                        >
+                                                            ID Type
+                                                        </label>
+
+                                                        <Field as="select" name="idType"
+                                                            className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark dark:text-white dark:focus:border-primary"
+                                                        >
+                                                            <option >Select Id</option>
+                                                            <option value="passport">Passport</option>
+                                                            <option value="nricno">NRIC NO</option>
+                                                        </Field>
+                                                        <ErrMessage name="idType" />
+                                                    </div>
+
+                                                    <div className="w-full sm:w-1/2 ">
+                                                        <label
+                                                            className="mb-3 block text-sm font-medium text-black dark:text-white"
+                                                            htmlFor="Id Number"
+                                                        >
+                                                            ID Number
+                                                        </label>
+
+                                                        <Field
+                                                            type="text"
+                                                            name="idNumber"
+                                                            className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark dark:text-white dark:focus:border-primary"
+                                                            placeholder="Id number"
+                                                        />
+                                                        <ErrMessage name="idNumber" />
+
+
+                                                    </div>
+
+                                                </div>
+
+                                                <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
+
+                                                    <div className="w-full sm:w-1/2">
+                                                        <label
+                                                            className="mb-3 block text-sm font-medium text-black dark:text-white"
+                                                            htmlFor="postCode"
+                                                        >
+                                                            Post Code
+                                                        </label>
+
+                                                        <Field as="select" name="postCode"
+                                                            className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark dark:text-white dark:focus:border-primary"
+                                                        >
+                                                            <option >Select Id</option>
+                                                            <option value="male">Passport</option>
+                                                            <option value="female">NRIC NO</option>
+                                                        </Field>
+                                                        <ErrMessage name="postCode" />
+                                                    </div>
+
+                                                    <div className="w-full sm:w-1/2 ">
+                                                        <label
+                                                            className="mb-3 block text-sm font-medium text-black dark:text-white"
+                                                            htmlFor="Unit Code"
+                                                        >
+                                                            Unit Number
+                                                        </label>
+
+                                                        <Field
+                                                            type="number"
+                                                            name="unitCode"
+                                                            className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark dark:text-white dark:focus:border-primary"
+                                                            placeholder="Unit Code"
+                                                        />
+                                                        <ErrMessage name="unitCode" />
+
+
+                                                    </div>
+
+                                                </div>
+
+                                                <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
+
+                                                    <div className="w-full sm:w-1/2">
+                                                        <label
+                                                            className="mb-3 block text-sm font-medium text-black dark:text-white"
+                                                            htmlFor="Allergy"
+                                                        >
+                                                            Allergy
+                                                        </label>
+
+                                                        <Field as="select" name="allergy"
+                                                            className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark dark:text-white dark:focus:border-primary"
+                                                        >
+                                                            <option value="true">Yes</option>
+                                                            <option value="false">No</option>
+                                                        </Field>
+                                                        <ErrMessage name="allergy" />
+                                                    </div>
+
+                                                    <div className="w-full sm:w-1/2 ">
+                                                        <label
+                                                            className="mb-3 block text-sm font-medium text-black dark:text-white"
+                                                            htmlFor="g6PD"
+                                                        >
+                                                            G6PD
+                                                        </label>
+
+                                                        <Field as="select" name="g6PD"
+                                                            className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark dark:text-white dark:focus:border-primary"
+                                                        >
+                                                            <option value="true">Yes</option>
+                                                            <option value="false">No</option>
+                                                        </Field>
+                                                        <ErrMessage name="g6PD" />
+
+
+                                                    </div>
+
+                                                </div>
+
                                                 <div className="mb-5.5">
                                                     <label
                                                         className="mb-3 block text-sm font-medium text-black dark:text-white"
@@ -489,7 +620,7 @@ const RolesProfilePage = () => {
                                                 className="mb-3 block text-sm font-medium text-black dark:text-white"
                                                 htmlFor="fullName"
                                             >
-                                                Service Charge
+                                                Email
                                             </label>
                                             <div className="relative">
                                                 <span className="absolute left-4.5 top-4">
@@ -505,13 +636,13 @@ const RolesProfilePage = () => {
                                                             <path
                                                                 fillRule="evenodd"
                                                                 clipRule="evenodd"
-                                                                d="M3.72039 12.887C4.50179 12.1056 5.5616 11.6666 6.66667 11.6666H13.3333C14.4384 11.6666 15.4982 12.1056 16.2796 12.887C17.061 13.6684 17.5 14.7282 17.5 15.8333V17.5C17.5 17.9602 17.1269 18.3333 16.6667 18.3333C16.2064 18.3333 15.8333 17.9602 15.8333 17.5V15.8333C15.8333 15.1703 15.5699 14.5344 15.1011 14.0655C14.6323 13.5967 13.9964 13.3333 13.3333 13.3333H6.66667C6.00363 13.3333 5.36774 13.5967 4.8989 14.0655C4.43006 14.5344 4.16667 15.1703 4.16667 15.8333V17.5C4.16667 17.9602 3.79357 18.3333 3.33333 18.3333C2.8731 18.3333 2.5 17.9602 2.5 17.5V15.8333C2.5 14.7282 2.93899 13.6684 3.72039 12.887Z"
+                                                                d="M3.33301 4.16667C2.87658 4.16667 2.49967 4.54357 2.49967 5V15C2.49967 15.4564 2.87658 15.8333 3.33301 15.8333H16.6663C17.1228 15.8333 17.4997 15.4564 17.4997 15V5C17.4997 4.54357 17.1228 4.16667 16.6663 4.16667H3.33301ZM0.833008 5C0.833008 3.6231 1.9561 2.5 3.33301 2.5H16.6663C18.0432 2.5 19.1663 3.6231 19.1663 5V15C19.1663 16.3769 18.0432 17.5 16.6663 17.5H3.33301C1.9561 17.5 0.833008 16.3769 0.833008 15V5Z"
                                                                 fill=""
                                                             />
                                                             <path
                                                                 fillRule="evenodd"
                                                                 clipRule="evenodd"
-                                                                d="M9.99967 3.33329C8.61896 3.33329 7.49967 4.45258 7.49967 5.83329C7.49967 7.214 8.61896 8.33329 9.99967 8.33329C11.3804 8.33329 12.4997 7.214 12.4997 5.83329C12.4997 4.45258 11.3804 3.33329 9.99967 3.33329ZM5.83301 5.83329C5.83301 3.53211 7.69849 1.66663 9.99967 1.66663C12.3009 1.66663 14.1663 3.53211 14.1663 5.83329C14.1663 8.13448 12.3009 9.99996 9.99967 9.99996C7.69849 9.99996 5.83301 8.13448 5.83301 5.83329Z"
+                                                                d="M0.983719 4.52215C1.24765 4.1451 1.76726 4.05341 2.1443 4.31734L9.99975 9.81615L17.8552 4.31734C18.2322 4.05341 18.7518 4.1451 19.0158 4.52215C19.2797 4.89919 19.188 5.4188 18.811 5.68272L10.4776 11.5161C10.1907 11.7169 9.80879 11.7169 9.52186 11.5161L1.18853 5.68272C0.811486 5.4188 0.719791 4.89919 0.983719 4.52215Z"
                                                                 fill=""
                                                             />
                                                         </g>
@@ -531,14 +662,14 @@ const RolesProfilePage = () => {
                                         <div className="w-full sm:w-1/2">
                                             <label
                                                 className="mb-3 block text-sm font-medium text-black dark:text-white"
-                                                htmlFor="phoneNumber"
+                                                htmlFor="password"
                                             >
-                                                Serveice Rate
+                                                Password
                                             </label>
                                             <input
                                                 className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark -4 dark:text-white dark:focus:border-primary"
                                                 type="text"
-                                                name="phoneNumber"
+                                                name="password"
                                                 placeholder="+990 3343 7865"
                                                 defaultValue="+990 3343 7865"
                                             />
@@ -571,4 +702,4 @@ const RolesProfilePage = () => {
     );
 };
 
-export default RolesProfilePage;
+export default PatientsDetailsPage;
