@@ -36,6 +36,17 @@ const userSchema = new Schema(
             type: Boolean,
             default: false
         },
+        hp: String,
+        dob: Date,
+        idType: String,
+        idNumber: String,
+        nationality: String,
+        address: String,
+        PostCode: String,
+        isAllergy: Boolean,
+        isG6PD: Boolean,
+        isLimousine: Boolean,
+
         bio: {
             type: String,
         }
