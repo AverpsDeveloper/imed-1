@@ -1,5 +1,4 @@
 import mongoose, { Document, model, Model, Schema } from "mongoose";
-import { getCongig } from "@/libs/config/dbInit";
 
 export interface Iitem extends Document {
   itemType?: string;
