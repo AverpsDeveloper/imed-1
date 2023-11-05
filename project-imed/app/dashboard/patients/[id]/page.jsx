@@ -601,7 +601,29 @@ const PatientsDetailsPage = () => {
                                 </form>
                             </div>
                         </div>
-
+                        <div className="mt-10 rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+                            <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
+                                <h3 className="font-medium text-black dark:text-white">
+                                    User Active
+                                </h3>
+                            </div>
+                            <div className="p-7">
+                                    <div className="flex justify-end gap-4.5">
+                                        <button
+                                            className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
+                                            type="submit"
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-95"
+                                            type="submit"
+                                        >
+                                            Save
+                                        </button>
+                                    </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div className="grid grid-cols-5 gap-8 mt-8">

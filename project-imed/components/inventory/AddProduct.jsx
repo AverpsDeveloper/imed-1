@@ -67,7 +67,7 @@ function AddProductForm() {
     type: null,
     categories: null,
     codeName: '',
-    status: true,
+    isActive: '1',
     form: null,
     dispanseForm: null,
     strength: '',
