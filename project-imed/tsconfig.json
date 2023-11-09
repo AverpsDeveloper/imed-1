@@ -23,6 +23,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "iComponents/**/*.tsx","app/page.jsx", "components/inventory/AddProduct.jsx", "app/dashboard/inventory/products/page.jsx", "components/inventory/Modal.jsx", "app/dashboard/inventory/tags/page.jsx", "app/dashboard/inventory/tags/add/page.jsx", "components/manager/AddManager.jsx", "components/Doctors/AddDoctor.jsx", "app/dashboard/manager/page.jsx", "app/dashboard/doctor/page.jsx", "app/dashboard/settings/page.jsx", "app/dashboard/(pages)/pages/add/page.jsx", "app/api/(user)/users-admin/route.js", "app/dashboard/inventory/products/[product]/page.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "iComponents/**/*.tsx","app/page.jsx", "components/inventory/AddProduct.jsx", "app/dashboard/inventory/products/page.jsx", "components/inventory/Modal.jsx", "app/dashboard/inventory/tags/page.jsx", "app/dashboard/inventory/tags/add/page.jsx", "components/manager/AddManager.jsx", "components/Doctors/AddDoctor.jsx", "app/dashboard/manager/page.jsx", "app/dashboard/doctor/page.jsx", "app/dashboard/settings/page.jsx", "app/dashboard/(pages)/pages/add/page.jsx", "app/api/(user)/users-admin/route.js", "app/dashboard/inventory/products/[product]/page.jsx", "app/dashboard/patients/add/page.jsx", "components/Calender/index.jsx"],
   "exclude": ["node_modules"]
 }

@@ -1,23 +1,28 @@
 "use client"
-import React from 'react';
-import Breadcrumb from '../Breadcrumbs/Breadcrumb';
+import React, { useState } from 'react';
+import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import { Formik, Field, Form, ErrorMessage, useFormikContext, useField } from 'formik';
 import * as Yup from 'yup';
 import api from '@/http';
 
 const validationSchema = Yup.object().shape({
   username: Yup.string().matches(/^\S*$/, "This field cannot contain white space.")
-  .required('Username is required.'),
-  email: Yup.string().email().required('Email is required.'),
-  password: Yup.string().required('Password is required.'),
-  firstName: Yup.string().required('First name is required.'),
-  lastName: Yup.string().required('Last name is required.'),
-  address: Yup.string().required('Address is required.'),
-  profilePhoto: Yup.string(),
-  gender: Yup.string().required('Please select user gender.'),
-  phoneNumber: Yup.number().required('Phone number is required.'),
-  age: Yup.number().required('Age is required.'),
-  status: Yup.string().required('Please select status.'),
+    .required('Username is required.'),
+    firstName: Yup.string().required('First name is required.'),
+    lastName: Yup.string().required('Last name is required.'),
+    email: Yup.string().email().required('Email is required.'),
+    age: Yup.number().required('Age is required.'),
+    gender: Yup.string().required('Please select user gender.'),
+    nationality: Yup.string().required('Nationality is required.'),
+    phoneNumber: Yup.number().required('Phone number is required.'),
+    idType: Yup.string().required('Nationality is required.'),
+    idNumber: Yup.string().required('Nationality is required.'),
+    postCode: Yup.number().required('Phone number is required.'),
+    unitCode: Yup.number().required('Phone number is required.'),
+    allergy: Yup.boolean().required('Phone number is required.'),
+    g6PD: Yup.boolean().required('Phone number is required.'),
+    address: Yup.string().required('Address is required.'),
+    password: Yup.string().required('Password is required.'),
 });
 
 function ErrMessage({ name }) {
@@ -30,40 +35,43 @@ function ErrMessage({ name }) {
     />
   );
 }
-const AddManager = () => {
-  const initialValues = {
-    username: '',
-    email: '',
-    password: '',
-    firstName: '',
-    lastName: '',
-    address: '',
-    profilePhoto: '',
-    gender: '',
-    phoneNumber: '',
-    age: '',
-    status: '',
-  }
+const AddNewPatients = () => {
+  const [initialValuesInfo, setInitialValuesInfo] = useState({
+    username: "patient",
+    firstName: "first",
+    lastName: "user",
+    email: "patients@emial.com",
+    age: "24",
+    gender: "male",
+    nationality: "singapore",
+    phoneNumber: 12346548,
+    idType: "passport",
+    idNumber: "DS545SA",
+    postCode: 35264,
+    unitCode: 12345,
+    allergy: true,
+    g6PD: false,
+    address: "Temp Address",
+  })
+
   const onSubmit = (data) => {
-    console.log(data);
-    data.role = "MANAGER"
-    api.post("/users-admin",data)
+   
   };
 
   return (
     <>
-      <Breadcrumb pageName="Add Manager" />
+      <Breadcrumb pageName="Add Patient" />
       <div className="grid grid-cols-1 gap-9 sm:grid-cols-3">
         <div className="flex flex-col gap-9 col-span-3">
-          {/* <!-- Add Manager Form --> */}
+          {/* <!-- Add Patient Form --> */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
               <h3 className="font-medium text-black dark:text-white">
-                New Manager
+                New Patient
               </h3>
             </div>
             <Formik
-              initialValues={initialValues}
+              initialValues={initialValuesInfo}
               validationSchema={validationSchema}
               onSubmit={onSubmit}
               enableReinitialize={true}
@@ -260,7 +268,7 @@ const AddManager = () => {
                       </div>
 
                       <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray">
-                        Add Manager
+                        Add Patient
                       </button>
                     </div>
                   </Form>
@@ -275,4 +283,4 @@ const AddManager = () => {
   )
 }
 
-export default AddManager;
+export default AddNewPatients;

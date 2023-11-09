@@ -9,7 +9,7 @@ import Pagination from '@/iComponents/Pagination';
 import usePaginate from "@/hooks/usePaginate";
 import { debounce } from "@/helper";
 
-const DoctorListingPage = () => {
+const PatientListingPage = () => {
   const [genderFilter, setGenderFilter] = useState('all');
   const [doctors, setDoctors] = useState([])
   const { page, limit, search, searchHandler } = usePaginate();
@@ -197,4 +197,4 @@ const DoctorListingPage = () => {
   )
 }
 
-export default DoctorListingPage;
+export default PatientListingPage;

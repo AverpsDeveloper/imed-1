@@ -10,7 +10,7 @@ import { BiWallet } from 'react-icons/bi'
 import { MdPeopleOutline, MdOutlineInventory } from 'react-icons/md'
 import { useSession } from "next-auth/react";
 import Loader from "../common/Loader";
-
+import {GiMineTruck} from "react-icons/gi"
 interface SidebarProps {
   sidebarOpen: boolean;
   setSidebarOpen: (arg: boolean) => void;
@@ -192,9 +192,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <li>
                 <Link
                   href="/dashboard/calendar"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes("calendar") &&
-                    "bg-graydark dark:bg-meta-4"
-                    }`}
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${(pathname === "/calendar" ||
+                  pathname.includes("calendar")) &&
+                  "bg-graydark dark:bg-meta-4"
+                  }`}
                 >
                   <svg
                     className="fill-current"
@@ -215,6 +216,19 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Calendar --> */}
 
               {/* <!-- Menu Item Profile --> */}
+              {/* Orders */}
+              <li>
+                <Link
+                  href="/dashboard/orders"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${(pathname === "/orders" ||
+                  pathname.includes("orders")) &&
+                  "bg-graydark dark:bg-meta-4"
+                  }`}
+                >
+                  <GiMineTruck size={18}/>
+                  Orders
+                </Link>
+              </li>
               {/* <li>
                 <Link
                   href="/dashboard/profile"
@@ -499,7 +513,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                               </Link>
                             </li>
 
-                            <li>
+                            {/* <li>
                               <Link
                                 href="/dashboard/patients/add"
                                 className={`first-letter:group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${pathname === "/patients/add" &&
@@ -508,7 +522,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                               >
                                 Add patients
                               </Link>
-                            </li>
+                            </li> */}
                           </ul>
                         </div>
                         {/* <!-- Dropdown Menu End --> */}
