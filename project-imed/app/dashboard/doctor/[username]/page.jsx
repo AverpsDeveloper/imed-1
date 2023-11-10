@@ -551,11 +551,7 @@ const DoctorDetailsPage = () => {
                             </div>
                             <div className="p-7">
                                 <Formik
-                                    initialValues={{
-                                        availablity: [
-                                            { start: "", end: "", slots: "" },
-                                        ],
-                                    }}
+                                    initialValues={initialValuesInfo}
                                     validationSchema={Yup.object().shape({
                                         availablity: Yup.array()
                                             .of(
@@ -699,7 +695,7 @@ const DoctorDetailsPage = () => {
                                                                                 className="mb-3 block text-sm font-medium text-black dark:text-white"
                                                                                 htmlFor={`availablity[${index}].duration`}
                                                                             >
-                                                                                Duration Minuts
+                                                                                Appointment Duration
                                                                             </label>
                                                                             <div className="relative">
                                                                                 <span className="absolute left-4.5 top-4">
@@ -734,6 +730,9 @@ const DoctorDetailsPage = () => {
                                                                                     placeholder="Enter Slots Number"
 
                                                                                 />
+                                                                                <p className="text-sm text-gray-400">
+                                                                                  value in minuts
+                                                                                </p>
                                                                                 <p className="text-red-500">
                                                                                     <ErrorMessage
                                                                                         name={`availablity[${index}].duration`}
