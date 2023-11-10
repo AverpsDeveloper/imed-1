@@ -57,7 +57,7 @@ export default () => {
                                             className="mb-3 block text-sm font-medium text-black dark:text-white"
                                             htmlFor="serviceCharge"
                                         >
-                                            Service Charge
+                                            Service Charge(Dispensary Labor)
                                         </label>
                                         <div className="relative">
                                             <Field
@@ -74,7 +74,7 @@ export default () => {
                                             className="mb-3 block text-sm font-medium text-black dark:text-white"
                                             htmlFor="serviceRate"
                                         >
-                                            Service Rate
+                                            Service Rate(Markup%)
                                         </label>
                                         <div className="relative">
                                             <Field
