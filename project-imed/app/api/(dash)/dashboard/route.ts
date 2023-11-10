@@ -1,4 +1,4 @@
-import aminUserModel from "@/libs/models/aminUserModel";
+import aminUserModel from "@/libs/models/adminUserModel";
 import categoryModal from "@/libs/models/categoryModal";
 import itemBatchModel from "@/libs/models/itemBatchModel";
 import itemModel from "@/libs/models/itemModel";

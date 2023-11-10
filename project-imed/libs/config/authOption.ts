@@ -2,7 +2,7 @@ import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import userModel from "@/libs/models/userModel";
 import dbInit from "./dbInit";
-import aminUserModel from "@/libs/models/aminUserModel";
+import aminUserModel from "@/libs/models/adminUserModel";
 import { generateOtp, hashOtp, verifyOtp } from "../utils/optUtils";
 
 export const authOptions: NextAuthOptions = {

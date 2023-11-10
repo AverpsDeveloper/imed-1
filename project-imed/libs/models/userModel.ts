@@ -14,10 +14,6 @@ const userSchema = new Schema(
             type: String,
             required: [true, "Please Enter Name"],
         },
-        role: {
-            type: String,
-            required: [true, "Please Enter Role"]
-        },
         email: {
             unique: true,
             type: String,

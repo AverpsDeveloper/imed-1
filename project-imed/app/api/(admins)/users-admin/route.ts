@@ -1,13 +1,13 @@
-import aminUserModel from "@/libs/models/aminUserModel";
+import aminUserModel from "@/libs/models/adminUserModel";
 import tcWrap from "@/libs/utils/tcWrap";
 import { Types } from "mongoose";
 
 
 
 export const GET = tcWrap(async (req, res) => {
-    const { search, role, page, limit } = req.query;    
+    const { search, role, page, limit } = req.query;
 
-    let filter = [{ isBlocked: false }];
+    let filter: Record<string, Object>[] = [{ isBlocked: false }];
     if (search) {
         filter.push({
             $or: [
@@ -22,8 +22,8 @@ export const GET = tcWrap(async (req, res) => {
     if (role) {
         filter.push({ role });
     }
-
-    const {data, meta} = await aminUserModel.find({ $and: filter }).paginate({ page, limit })
+    //@ts-ignore
+    const { data, meta } = await aminUserModel.find({ $and: filter }).paginate({ page, limit })
 
     return res.json({
         result: {
@@ -38,6 +38,7 @@ export const GET = tcWrap(async (req, res) => {
 export const POST = tcWrap(async (req, res) => {
     const body = await req.json();
     console.log("body::", body);
+
     const item = await aminUserModel.create(body);
     console.log("reqbody", body);
     return res.json({ result: { message: "admin  user", item } });
@@ -58,7 +59,7 @@ export const PUT = tcWrap(async (req, res) => {
     const item = await aminUserModel.findByIdAndUpdate(id, body, {
         new: true, runValidators: true
     });
-    
+
     console.log("item", item);
     return res.json({ result: { message: "admin user update", item } });
 });
@@ -74,7 +75,7 @@ export const DELETE = tcWrap(async (req, res) => {
         throw new Error("field `id` invalid");
     }
     console.log("bodyData", body.id);
-    
+
     const item = await aminUserModel.findByIdAndDelete(
         body.id,
     );
@@ -82,7 +83,7 @@ export const DELETE = tcWrap(async (req, res) => {
     if (!item) {
         throw new Error("User not Found");
     }
-   
+
 
     console.log("reqbody", body);
     return res.json({ result: { message: "admin User Deleted", item } });

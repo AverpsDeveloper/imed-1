@@ -64,6 +64,11 @@ const adminUserSchema = new Schema(
             default: Date.now
         },
         availableHours: { type: String },
+        availablity: [{
+            start: String,
+            end: String,
+            duration: { type: Number, max: 180, min: 0 }
+        }],
         isTfa: {
             type: Boolean,
             default: false

@@ -1,5 +1,5 @@
 import tcWrap from "@/libs/utils/tcWrap";
-import aminUserModel from "@/libs/models/aminUserModel";
+import aminUserModel from "@/libs/models/adminUserModel";
 
 
 export const POST = tcWrap(async (req, res) => {
