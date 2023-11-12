@@ -4,11 +4,21 @@ import Breadcrumb from "../Breadcrumbs/Breadcrumb";
 import Link from "next/link";
 import Image from "next/image";
 import usePaginate from "@/hooks/usePaginate";
-import { useState } from "react";
+import { useState,useEffect  } from "react";
+import api from "@/http";
 
 const Calendar = () => {
   const { page, limit, search, searchHandler } = usePaginate();
   const [meta, setMeta] = useState({ page: 1, limit: 10, total: 10 });
+  // useEffect(() => {
+    api.get(`/appoint`)
+        .then(({ data }) => {
+          console.log("============");
+            console.log(data);
+            // setInitialValues(productItem)
+        })
+// }, [])
+
   return (
     <>
       <Breadcrumb pageName="Appointments" />
