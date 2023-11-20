@@ -79,6 +79,7 @@ const itemSchema = new Schema(
         saving: { type: Number }
       },
       required: true,
+      _id: false
     },
     prefQtyTwo: {
       type: {
@@ -88,6 +89,7 @@ const itemSchema = new Schema(
         saving: { type: Number }
       },
       required: true,
+      _id: false
     },
     prefQtyThree: {
       type: {
@@ -97,6 +99,7 @@ const itemSchema = new Schema(
         saving: { type: Number }
       },
       required: true,
+      _id: false
     },
     prefQtyFixed: {
       type: {
@@ -106,6 +109,7 @@ const itemSchema = new Schema(
         saving: { type: Number }
       },
       required: true,
+      _id: false
     },
     retailPrice: {
       type: Number,
