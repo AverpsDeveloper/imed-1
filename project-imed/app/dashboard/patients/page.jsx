@@ -11,32 +11,31 @@ import { debounce } from "@/helper";
 
 const PatientListingPage = () => {
   const [genderFilter, setGenderFilter] = useState('all');
-  const [doctors, setDoctors] = useState([])
+  const [patient, setPatient] = useState([])
   const { page, limit, search, searchHandler } = usePaginate();
   const [meta, setMeta] = useState({ page: 1, limit: 10, total: 10 });
 
   useEffect(() => {
-    api.get('/users-admin', {
+    api.get('/users', {
       params: {
-        role: "DOCTOR",
         page,
         limit,
         search,
       }
     })
       .then((response) => {
-        setDoctors(response.data.result.data);
+        setPatient(response.data.result.data);
         setMeta(response.data.result.meta);
       })
 
   }, [page, limit, search]);
 
-  const filteredPatients = doctors.filter((doctors) => {
+  const filteredPatients = patient.filter((patient) => {
     if (genderFilter === 'all') return true;
-    return doctors.gender === genderFilter;
+    return patient.gender === genderFilter;
   });
 
-  let sortedDoctor = [...filteredPatients];
+  let sortedpatient = [...filteredPatients];
 
 
   const handleSearch = debounce(async (search) => {
@@ -130,17 +129,17 @@ const PatientListingPage = () => {
               </tr>
             </thead>
             <tbody>
-              {doctors.map((doctor, index) => (
-                <tr key={doctor._id}>
+              {patient.map((patient, index) => (
+                <tr key={patient._id}>
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark pl-9 xl:pl-11">
-                    <Link href={`/dashboard/doctor/${doctor.username}`}>
+                    <Link href={`/dashboard/patient/${patient.username}`}>
                       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                         <div className="h-12.5 w-15 rounded-md">
                           <Image
-                            src={doctor.profilePic || "/images/logo/logo-icon.svg"}
+                            src={patient.profilePic || "/images/logo/logo-icon.svg"}
                             width={60}
                             height={50}
-                            alt="doctor"
+                            alt="patient"
                           />
                         </div>
                         <h5 className="font-medium text-black dark:text-white">
@@ -150,35 +149,35 @@ const PatientListingPage = () => {
                     </Link>
                   </td>
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark pl-9 xl:pl-11">
-                    <Link href={`/dashboard/doctor/${doctor.username}`}>
+                    <Link href={`/dashboard/patient/${patient.username}`}>
                       <h5 className="font-medium text-black dark:text-white">
-                        {doctor.firstName + " " + doctor.lastName}
+                        {patient.firstName + " " + patient.lastName}
                       </h5>
                     </Link>
                   </td>
                   <td className="border-b border-[#eee] py-5 px-4  dark:border-strokedark ">
                     <h5 className="font-medium text-black dark:text-white">
-                      {doctor.username}
+                      {patient.username}
                     </h5>
                   </td>
                   <td className="border-b border-[#eee] py-5 px-4  dark:border-strokedark ">
                     <h5 className="font-medium text-black dark:text-white">
-                      {doctor.gender}
+                      {patient.gender}
                     </h5>
                   </td>
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <h5 className="font-medium text-black dark:text-white">
-                      {doctor.age}
+                      {patient.age}
                     </h5>
                   </td>
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <h5 className="font-medium text-black dark:text-white">
-                      <Link href={`mailto:${doctor.email}`}><FaEnvelope title={`${doctor.email}`} />{doctor.email}</Link>
+                      <Link href={`mailto:${patient.email}`}><FaEnvelope title={`${patient.email}`} />{patient.email}</Link>
                     </h5>
                   </td>
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <div className="flex items-center space-x-3.5">
-                      <Link href={`/dashboard/patients/${doctor.username}`}>
+                      <Link href={`/dashboard/patients/${patient._id}`}>
                         <p className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
                           Detail
                         </p>
