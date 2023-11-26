@@ -11,21 +11,21 @@ import itemModel from "@/libs/models/itemModel";
 export const GET = tcWrap(async (req, res) => {
     const { search, arriveAt, price, page, limit, date, product } = req.query;
 
-    let filter: Record<string, Object>[] = [{ deletedAt: { $exists: false } }];
-    if (search) {
-        filter.push({
-            $or: [
-                { name: { $regex: search, $options: "i" } },
-                { description: { $regex: search, $options: "i" } },
-            ],
-        });
-    }
+    let filter: Record<string, Object>[] = [{}];
+    // if (search) {
+    //     filter.push({
+    //         $or: [
+    //             { name: { $regex: search, $options: "i" } },
+    //             { description: { $regex: search, $options: "i" } },
+    //         ],
+    //     });
+    // }
 
-    if (product) {
-        filter.push({
-            item: product,
-        });
-    }
+    // if (product) {
+    //     filter.push({
+    //         item: product,
+    //     });
+    // }
 
     if (date) {
         let [gt, lt] = date.split("|");
@@ -33,7 +33,7 @@ export const GET = tcWrap(async (req, res) => {
         lt = lt && new Date(lt);
         console.log({ gt, lt })
         filter.push({
-            arriveAt: {
+            createdAt: {
                 ...(gt && { $gte: gt }), ...(lt && { $lte: lt })
             },
         });
@@ -48,7 +48,7 @@ export const GET = tcWrap(async (req, res) => {
 
 
     const { data, meta } = await orderModal.find({ $and: filter })
-        .populate("item", "name codename")
+        .populate({ path: "items", populate: { path: "item", select: "name categories price" } })
         // @ts-ignore
         .paginate({ page, limit })
 
@@ -125,24 +125,6 @@ export const POST = tcWrap(async (req, res) => {
     return res.json({ result: { data: order } });
 });
 
-export function formatAmountForStripe(
-    amount: number,
-    currency: string
-): number {
-    let numberFormat = new Intl.NumberFormat(['en-US'], {
-        style: 'currency',
-        currency: currency,
-        currencyDisplay: 'symbol',
-    })
-    const parts = numberFormat.formatToParts(amount)
-    let zeroDecimalCurrency: boolean = true
-    for (let part of parts) {
-        if (part.type === 'decimal') {
-            zeroDecimalCurrency = false
-        }
-    }
-    return zeroDecimalCurrency ? amount : Math.round(amount * 100)
-}
 
 
 
