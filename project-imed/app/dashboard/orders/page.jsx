@@ -4,11 +4,30 @@ import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import Link from "next/link";
 import Image from "next/image";
 import usePaginate from "@/hooks/usePaginate";
-import { useState } from "react";
+import { useState,useEffect } from "react";
+import api from "@/http";
 
 const OrdersListPage = () => {
     const { page, limit, search, searchHandler } = usePaginate();
     const [meta, setMeta] = useState({ page: 1, limit: 10, total: 10 });
+    const [orders, setOrders] = useState([])
+
+    useEffect(() => {
+        api.get('/order', {
+          params: {
+            page,
+            limit,
+            search,
+          }
+        })
+          .then((response) => {
+            console.log("response.data::",response.data);
+            setOrders(response?.data?.result?.data);
+            setMeta(response?.data?.result?.meta);
+          })
+    
+      }, [page, limit, search]);
+    
     return (
         <>
             <Breadcrumb pageName="Order" />
@@ -67,6 +86,7 @@ const OrdersListPage = () => {
                                 </tr>
                             </thead>
                             <tbody>
+                                {/* {orders.map((item)=>{ */}
                                 <tr className="text-left text-black dark:text-white">
                                     <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
                                         as87897999jsdhjkas454da6s4d6as
@@ -91,58 +111,11 @@ const OrdersListPage = () => {
                                         </Link>
                                     </td>
                                 </tr>
-                                <tr className="text-left text-black dark:text-white">
-                                    <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                                    as87897999jsdhjkas454da6s4d6as
-                                    </td>
-                                    <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                                        h2
-                                    </td>
-                                    <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                                        h3
-                                    </td>
-                                    <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                                        h4
-                                    </td>
-                                    <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                                        h5
-                                    </td>
-                                    <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                                        <Link href={`/dashboard/order/`}>
-                                            <p className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
-                                                Detail
-                                            </p>
-                                        </Link>
-                                    </td>
-                                </tr>
-                                <tr className="text-left text-black dark:text-white">
-                                    <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                                    as87897999jsdhjkas454da6s4d6as
-                                    </td>
-                                    <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                                        h2
-                                    </td>
-                                    <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                                        h3
-                                    </td>
-                                    <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                                        h4
-                                    </td>
-                                    <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                                        h5
-                                    </td>
-                                    <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                                        <Link href={`/dashboard/order/`}>
-                                            <p className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
-                                                Detail
-                                            </p>
-                                        </Link>
-                                    </td>
-                                </tr>
+                                {/* })} */}
                             </tbody>
                         </table>
                     </div>
-                    <Pagination meta={meta} />
+                    {/* <Pagination meta={meta} /> */}
                 </div>
             </div>
         </>

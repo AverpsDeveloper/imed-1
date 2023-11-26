@@ -51,10 +51,11 @@ export const GET = tcWrap(async (req, res) => {
         .populate({ path: "items", populate: { path: "item", select: "name categories price" } })
         // @ts-ignore
         .paginate({ page, limit })
-
+    console.log(data, meta );
+    
     return res.json({
         result: {
-            message: "inventry",
+            message: "Order Data",
             data,
             meta,
         }

@@ -11,12 +11,12 @@ const Calendar = () => {
   const { page, limit, search, searchHandler } = usePaginate();
   const [meta, setMeta] = useState({ page: 1, limit: 10, total: 10 });
   // useEffect(() => {
-    api.get(`/appoint`)
-        .then(({ data }) => {
-          console.log("============");
-            console.log(data);
-            // setInitialValues(productItem)
-        })
+    // api.get(`/appoint`)
+    //     .then(({ data }) => {
+    //       console.log("============");
+    //         console.log(data);
+    //         // setInitialValues(productItem)
+    //     })
 // }, [])
 
   return (

@@ -23,15 +23,14 @@ const validationSchemaInfo = Yup.object().shape({
     idNumber: Yup.string().required('Id number is required.'),
     postCode: Yup.number().required('Post code is required.'),
     unitCode: Yup.number().required('Unit code is required.'),
-    allergy: Yup.boolean().required('Allergy is required.'),
-    g6PD: Yup.boolean().required('G6PD is required.'),
+    isAllergy: Yup.boolean().required('Allergy is required.'),
+    isG6PD: Yup.boolean().required('G6PD is required.'),
     address: Yup.string().required('Address is required.'),
 });
 
-// const validationSchemaActivities = Yup.object().shape({
-//     lastActive: Yup.string().required('Last Active.'),
-//     isActive: Yup.boolean().required('Update User Active Status.'),
-// })
+const validationSchemaActivities = Yup.object().shape({
+    isActive: Yup.boolean().required('Update User Active Status.'),
+})
 
 function ErrMessage({ name }) {
     return (
@@ -47,12 +46,11 @@ function ErrMessage({ name }) {
 const PatientsDetailsPage = () => {
 
     const [initialValuesActivities, setInitialValuesActivities] = useState({
-        lastActive: '12:00',
         isActive: true,
     })
-
-    const { data: { user } = { user: {} } } = useSession();
-
+    const { id:username } = useParams();
+    const [isEditInfo, setIsEditInfo] = useState(false);
+    
     const [initialValuesInfo, setInitialValuesInfo] = useState({
         username: "patient",
         firstName: "first",
@@ -64,40 +62,37 @@ const PatientsDetailsPage = () => {
         phoneNumber: 12346548,
         idType: "passport",
         idNumber: "DS545SA",
-        postCode: 35264,
+        postCode: 1,
         unitCode: 12345,
-        allergy: true,
-        g6PD: false,
+        isAllergy: true,
+        isG6PD: false,
         address: "Temp Address",
     })
 
 
 
-    // useEffect(() => {
-    //     if (user) {
-    //         setInitialValuesInfo(user);
-    //     }
+    useEffect(() => {
+        api.get(`/users/${username}`)
+            .then((response) => {
+                console.log(":1:response::",response);
+                setInitialValuesInfo(response.data.result.data);
+            })
+        // api.get(`/users/${username}`)
+        //     .then((response) => {
+        //         setInitialValuesActivities(response.data.result.data);
+        //     })
+    }, [username]);
 
-    //     // api.get(`/users-admin/username/${username}`)
-    //     //     .then((response) => {
-    //     //         setInitialValuesInfo(response.data.result.data);
-    //     //     })
-    //     // api.get(`/users-admin/username/${username}`)
-    //     //     .then((response) => {
-    //     //         setInitialValuesActivities(response.data.result.data);
-    //     //     })
-    // }, [user]);
-
-    console.log("initialValuesInfo::", initialValuesInfo);
+    // console.log("initialValuesInfo::", initialValuesInfo);
     const onSubmitInfo = (values) => {
         values.id = initialValuesInfo._id;
-        api.put("/users-admin", values)
+        api.put("/users", values)
     }
 
     const updateUserStatusHandler = (values) => {
         delete values.lastActive
         values.id = initialValuesInfo._id;
-        api.put("/users-admin", values)
+        api.put("/users", values)
     }
     return (
         <>
@@ -131,6 +126,7 @@ const PatientsDetailsPage = () => {
                                                     <Field
                                                         type="text"
                                                         name="username"
+                                                        disabled={!isEditInfo}
                                                         className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark -4 dark:text-white dark:focus:border-primary"
                                                         placeholder="Username"
                                                     />
@@ -173,6 +169,7 @@ const PatientsDetailsPage = () => {
                                                             <Field
                                                                 type="text"
                                                                 name="firstName"
+                                                                disabled={!isEditInfo}
                                                                 className="w-full rounded border border-stroke  bg-gray  py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark dark:text-white dark:focus:border-primary"
                                                                 placeholder="firstName"
                                                             />
@@ -189,6 +186,7 @@ const PatientsDetailsPage = () => {
                                                         <Field
                                                             type="text"
                                                             name="lastName"
+                                                            disabled={!isEditInfo}
                                                             className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark dark:text-white dark:focus:border-primary"
                                                             placeholder="Last name"
                                                         />
@@ -231,6 +229,7 @@ const PatientsDetailsPage = () => {
                                                         <Field
                                                             type="email"
                                                             name="email"
+                                                            disabled={!isEditInfo}
                                                             className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark -4 dark:text-white dark:focus:border-primary"
                                                             placeholder="Email"
                                                         />
@@ -249,6 +248,7 @@ const PatientsDetailsPage = () => {
                                                         <Field
                                                             type="number"
                                                             name="age"
+                                                            disabled={!isEditInfo}
                                                             className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark dark:text-white dark:focus:border-primary"
                                                             placeholder="Age"
                                                         />
@@ -265,7 +265,7 @@ const PatientsDetailsPage = () => {
                                                             Gender
                                                         </label>
 
-                                                        <Field as="select" name="gender"
+                                                        <Field as="select" name="gender"  disabled={!isEditInfo}
                                                             className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark dark:text-white dark:focus:border-primary"
                                                         >
                                                             <option >Select gender</option>
@@ -288,6 +288,7 @@ const PatientsDetailsPage = () => {
                                                         <Field
                                                             type="text"
                                                             name="nationality"
+                                                            disabled={!isEditInfo}
                                                             className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark dark:text-white dark:focus:border-primary"
                                                             placeholder="Nationality"
                                                         />
@@ -306,6 +307,7 @@ const PatientsDetailsPage = () => {
                                                         <Field
                                                             type="number"
                                                             name="phoneNumber"
+                                                            disabled={!isEditInfo}
                                                             className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark dark:text-white dark:focus:border-primary"
                                                             placeholder="Phone Number"
                                                         />
@@ -324,7 +326,7 @@ const PatientsDetailsPage = () => {
                                                             ID Type
                                                         </label>
 
-                                                        <Field as="select" name="idType"
+                                                        <Field as="select" name="idType" disabled={!isEditInfo}
                                                             className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark dark:text-white dark:focus:border-primary"
                                                         >
                                                             <option >Select Id</option>
@@ -345,6 +347,7 @@ const PatientsDetailsPage = () => {
                                                         <Field
                                                             type="text"
                                                             name="idNumber"
+                                                            disabled={!isEditInfo}
                                                             className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark dark:text-white dark:focus:border-primary"
                                                             placeholder="Id number"
                                                         />
@@ -365,12 +368,12 @@ const PatientsDetailsPage = () => {
                                                             Post Code
                                                         </label>
 
-                                                        <Field as="select" name="postCode"
+                                                        <Field as="select" name="postCode"  disabled={!isEditInfo}
                                                             className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark dark:text-white dark:focus:border-primary"
                                                         >
                                                             <option >Select Id</option>
-                                                            <option value="male">Passport</option>
-                                                            <option value="female">NRIC NO</option>
+                                                            <option value="1">1</option>
+                                                            <option value="2">2</option>
                                                         </Field>
                                                         <ErrMessage name="postCode" />
                                                     </div>
@@ -386,6 +389,7 @@ const PatientsDetailsPage = () => {
                                                         <Field
                                                             type="number"
                                                             name="unitCode"
+                                                            disabled={!isEditInfo}
                                                             className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark dark:text-white dark:focus:border-primary"
                                                             placeholder="Unit Code"
                                                         />
@@ -406,13 +410,13 @@ const PatientsDetailsPage = () => {
                                                             Allergy
                                                         </label>
 
-                                                        <Field as="select" name="allergy"
+                                                        <Field as="select" name="isAllergy"  disabled={!isEditInfo}
                                                             className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark dark:text-white dark:focus:border-primary"
                                                         >
                                                             <option value="true">Yes</option>
                                                             <option value="false">No</option>
                                                         </Field>
-                                                        <ErrMessage name="allergy" />
+                                                        <ErrMessage name="isAllergy" />
                                                     </div>
 
                                                     <div className="w-full sm:w-1/2 ">
@@ -423,13 +427,13 @@ const PatientsDetailsPage = () => {
                                                             G6PD
                                                         </label>
 
-                                                        <Field as="select" name="g6PD"
+                                                        <Field as="select" name="isG6PD"  disabled={!isEditInfo}
                                                             className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark dark:text-white dark:focus:border-primary"
                                                         >
                                                             <option value="true">Yes</option>
                                                             <option value="false">No</option>
                                                         </Field>
-                                                        <ErrMessage name="g6PD" />
+                                                        <ErrMessage name="isG6PD" />
 
 
                                                     </div>
@@ -478,6 +482,7 @@ const PatientsDetailsPage = () => {
                                                             rows={3}
                                                             as="textarea"
                                                             name="address"
+                                                            disabled={!isEditInfo}
                                                             className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark -4 dark:text-white dark:focus:border-primary"
                                                             placeholder="Address"
                                                         />
@@ -487,14 +492,16 @@ const PatientsDetailsPage = () => {
 
                                                 <div className="flex justify-end gap-4.5">
                                                     <button
+                                                    onClick={() => setIsEditInfo(!isEditInfo)}
                                                         className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
                                                         type="submit"
                                                     >
-                                                        Cancel
+                                                        {isEditInfo ? "View" : "Edit"}
                                                     </button>
                                                     <button
-                                                        className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-95"
+                                                        className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-95  disabled:bg-opacity-60 disabled:cursor-not-allowed"
                                                         type="submit"
+                                                        disabled={!isEditInfo}
                                                     >
                                                         Save
                                                     </button>
@@ -607,26 +614,76 @@ const PatientsDetailsPage = () => {
                                     User Active
                                 </h3>
                             </div>
-                            <div className="p-7">
-                                    <div className="flex justify-end gap-4.5">
-                                        <button
-                                            className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
-                                            type="submit"
-                                        >
-                                            Cancel
-                                        </button>
-                                        <button
-                                            className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-95"
-                                            type="submit"
-                                        >
-                                            Save
-                                        </button>
-                                    </div>
+                            <div className="p-7 font-medium text-black dark:text-white">
+                                <Formik
+                                    initialValues={initialValuesActivities}
+                                    validationSchema={validationSchemaActivities}
+                                    onSubmit={updateUserStatusHandler}
+                                    enableReinitialize={true}
+                                >
+                                    {({ errors, touched }) => {
+                                        return (
+                                            <Form >
+                                                <div className="mb-4.5">
+                                                    <div className="mb-4">
+                                                        <label className="block text-black dark:text-white">Active<span className="text-meta-1">*</span></label>
+                                                        <div className="relative z-20 bg-transparent dark:bg-form-input">
+                                                            <Field as="select" name="isActive"
+                                                                className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                                                            >
+                                                                <option >Select Status</option>
+                                                                <option value="true">Online</option>
+                                                                <option value="false">Ofline</option>
+                                                            </Field>
+                                                            <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2">
+                                                                <svg
+                                                                    className="fill-current"
+                                                                    width="24"
+                                                                    height="24"
+                                                                    viewBox="0 0 24 24"
+                                                                    fill="none"
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                >
+                                                                    <g opacity="0.8">
+                                                                        <path
+                                                                            fillRule="evenodd"
+                                                                            clipRule="evenodd"
+                                                                            d="M5.29289 8.29289C5.68342 7.90237 6.31658 7.90237 6.70711 8.29289L12 13.5858L17.2929 8.29289C17.6834 7.90237 18.3166 7.90237 18.7071 8.29289C19.0976 8.68342 19.0976 9.31658 18.7071 9.70711L12.7071 15.7071C12.3166 16.0976 11.6834 16.0976 11.2929 15.7071L5.29289 9.70711C4.90237 9.31658 4.90237 8.68342 5.29289 8.29289Z"
+                                                                            fill=""
+                                                                        ></path>
+                                                                    </g>
+                                                                </svg>
+                                                            </span>
+                                                        </div>
+                                                        <ErrMessage name="isActive" />
+                                                    </div>
+                                                </div>
+                                                <div className="p-5">
+                                                    <div className="flex justify-end gap-4.5">
+                                                        <button
+                                                            className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
+                                                            type="submit"
+                                                        >
+                                                            Cancel
+                                                        </button>
+                                                        <button
+                                                            className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-95"
+                                                            type="submit"
+                                                        >
+                                                            Save
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </Form>
+                                        )
+                                    }}
+                                </Formik>
                             </div>
+
                         </div>
                     </div>
                 </div>
-                <div className="grid grid-cols-5 gap-8 mt-8">
+                {/* <div className="grid grid-cols-5 gap-8 mt-8">
                     <div className="col-span-5 xl:col-span-3">
                         <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
                             <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
@@ -718,7 +775,7 @@ const PatientsDetailsPage = () => {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
             </div>
         </>
     );
