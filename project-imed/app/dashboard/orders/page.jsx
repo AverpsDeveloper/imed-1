@@ -4,7 +4,7 @@ import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import Link from "next/link";
 import Image from "next/image";
 import usePaginate from "@/hooks/usePaginate";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import api from "@/http";
 
 const OrdersListPage = () => {
@@ -14,20 +14,21 @@ const OrdersListPage = () => {
 
     useEffect(() => {
         api.get('/order', {
-          params: {
-            page,
-            limit,
-            search,
-          }
+            params: {
+                page,
+                limit,
+                search,
+            }
         })
-          .then((response) => {
-            console.log("response.data::",response.data);
-            setOrders(response?.data?.result?.data);
-            setMeta(response?.data?.result?.meta);
-          })
-    
-      }, [page, limit, search]);
-    
+            .then((response) => {
+                console.log("response.data::", response.data);
+                setOrders(response?.data?.result?.data);
+                setMeta(response?.data?.result?.meta);
+            })
+
+    }, [page, limit, search]);
+
+    console.log("orders", orders);
     return (
         <>
             <Breadcrumb pageName="Order" />
@@ -66,10 +67,10 @@ const OrdersListPage = () => {
                             <thead>
                                 <tr className="bg-gray-2 text-left dark:bg-meta-4">
                                     <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
-                                    Order Id
+                                        Order Id
                                     </th>
                                     <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
-                                    Date
+                                        Date
                                     </th>
                                     <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
                                         Price
@@ -78,40 +79,59 @@ const OrdersListPage = () => {
                                         Payment Status
                                     </th>
                                     <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
-                                        Payment Method
+                                        Items
                                     </th>
-                                    <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
+                                    <th className="min-w-[140px] py-4 px-4 font-medium text-black dark:text-black">
                                         More Details
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {/* {orders.map((item)=>{ */}
-                                <tr className="text-left text-black dark:text-white">
-                                    <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                                        as87897999jsdhjkas454da6s4d6as
-                                    </td>
-                                    <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                                        h2
-                                    </td>
-                                    <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                                        h3
-                                    </td>
-                                    <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                                        h4
-                                    </td>
-                                    <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                                        h5
-                                    </td>
-                                    <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                                        <Link href={`/dashboard/order/`}>
-                                            <p className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
-                                                Detail
-                                            </p>
-                                        </Link>
-                                    </td>
-                                </tr>
-                                {/* })} */}
+                                {orders.map((item) => (
+                                    <tr className="text-left text-black dark:text-white">
+                                        <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                                            {
+                                                item?.user ? <ul>
+                                                    <li className="uppercase">
+                                                        {item?.user.firstName}  {item?.user.lastName}
+                                                    </li>
+                                                    <li>
+                                                        {item.user.email}
+                                                    </li>
+                                                    <li>
+                                                        {item.user._id}
+                                                    </li>
+                                                </ul> : "email"
+                                            }
+                                        </td>
+                                        <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                                            {item.createdAt}
+                                        </td>
+                                        <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                                            {item.amount}
+                                        </td>
+                                        <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                                            {item.paymentStatus}
+                                        </td>
+                                        <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+                                            <ul>
+                                                {item?.items?.map((d, i) => (
+                                                    <li>
+                                                        {d.item.name} | qty-{d.qty}
+                                                        {item?.items.length - 1 != i ? <hr /> : ""}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </td>
+                                        <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                                            <Link href={`/dashboard/orders/${item._id}`}>
+                                                <p className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
+                                                    Detail
+                                                </p>
+                                            </Link>
+                                        </td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
                     </div>

@@ -23,6 +23,7 @@ const orderSchema = new Schema(
         paymentId: { type: String, unique: true },
         paymentUrl: String,
         paymentStatus: String,
+        paymentMethod: String,
         amount: Number,
         isPaid: { type: Boolean, default: false },
         address: {

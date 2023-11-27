@@ -48,11 +48,10 @@ export const GET = tcWrap(async (req, res) => {
 
 
     const { data, meta } = await orderModal.find({ $and: filter })
-        .populate({ path: "items", populate: { path: "item", select: "name categories price" } })
+        .populate([{ path: "user", select: "email firstName lastName" }, { path: "items", populate: { path: "item", select: "name categories price" } }])
         // @ts-ignore
         .paginate({ page, limit })
-    console.log(data, meta );
-    
+
     return res.json({
         result: {
             message: "Order Data",
