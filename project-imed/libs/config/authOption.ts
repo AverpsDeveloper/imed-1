@@ -2,8 +2,9 @@ import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import userModel from "@/libs/models/userModel";
 import dbInit from "./dbInit";
-import aminUserModel from "@/libs/models/aminUserModel";
+import aminUserModel from "@/libs/models/adminUserModel";
 import { generateOtp, hashOtp, verifyOtp } from "../utils/optUtils";
+import { sendMail } from "../utils/emailUtil";
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -32,13 +33,14 @@ export const authOptions: NextAuthOptions = {
 
           if (user && (credentials.password == user.password)) {
             if (user.isTfa) {
-              // const otp = await generateOtp();
-              const otp = 7777;
+              const otp = await generateOtp();
+              // const otp = 7777;
               const ttl = 1000 * 60 * 60 * 5; // 5 day
               const expires = Date.now() + ttl;
               const data = `${user.email}.${otp}.${expires}`;
               const tfaHash = `${hashOtp(data)}.${expires}`;
               await aminUserModel.findByIdAndUpdate(user._id, { tfaHash, lastActive: new Date() });
+              await sendMail("longin otp",user.email, otp);
             }
             return user;
           }

@@ -1,7 +1,7 @@
 import mongoose, { Document, model, Model, Schema } from "mongoose";
 
 export interface IPropsType extends Document {
-    name?: string;
+    username?: string;
     email?: string;
     phone?: string;
     isActive?: boolean;
@@ -10,22 +10,59 @@ export interface IPropsType extends Document {
 
 const userSchema = new Schema(
     {
-        name: {
+        
+        username : {
             type: String,
-            required: [true, "Please Enter Name"],
+            required: [true, "Please Enter Username"],
         },
-        role: {
+        firstName : {
             type: String,
-            required: [true, "Please Enter Role"]
         },
-        email: {
+        lastName : {
+            type: String,
+        },
+        email : {
             unique: true,
+            type: String,
+            required: [true, "Please Enter Email"],
+        },
+        age : {
+            type: String,
+        },
+        // DOB : {
+        //     type: Date,
+        // },
+        gender : {
+            type: String,
+        },
+        nationality : {
+            type: String,
+        },
+        phoneNumber : {
+            type: String,
+        },
+        idType : {
+            type: String,
+        },
+        idNumber : {
+            type: String,
+        },
+        postCode : {
+            type: String,
+        },
+        unitCode : {
+            type: String,
+        },
+        isAllergy : {
+            type: Boolean,
+        },
+        isG6PD : {
+            type: Boolean,
+        },
+        address : {
             type: String,
         },
         password: {
-            type: String,
-        },
-        phone: {
             type: String,
         },
         isActive: {
@@ -36,6 +73,22 @@ const userSchema = new Schema(
             type: Boolean,
             default: false
         },
+        // name: {
+        //     type: String,
+        // },
+        // phone: {
+        //     type: String,
+        // },
+        // hp: String,
+        // dob: Date,
+        // idType: String,
+        // idNumber: String,
+        // nationality: String,
+        // address: String,
+        // PostCode: String,
+        // isAllergy: Boolean,
+        // isG6PD: Boolean,
+        // isLimousine: Boolean,
         bio: {
             type: String,
         }

@@ -8,11 +8,12 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import AsyncSelect from 'react-select/async';
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string().required('Batch name is required'),
-  isActive: Yup.string().required('Batch status is required'),
+  name: Yup.string().required(),
+  isActive: Yup.string().required(),
   description: Yup.string(),
   // location: Yup.string().required('Location is required'),
-  arriveAt: Yup.date().required('Date is required'),
+  qty: Yup.number().positive().required(),
+  arriveAt: Yup.date().required(),
   // batchCost: Yup.number().required('Batch cost is required'),
   // sellingPrice: Yup.number().required('Selling price is required'),
 });
@@ -122,7 +123,7 @@ function AddNewBatch() {
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                 placeholder="Batch name"
               />
-              <ErrMassage name="name" />
+              <ErrMassage name="item" />
             </div>
 
             {/* <div className="mb-4">
@@ -136,6 +137,17 @@ function AddNewBatch() {
               <ErrMassage name="location" />
             </div> */}
 
+
+            <div className="mb-4">
+              <label className="mb-3 block text-black dark:text-white">Quantity</label>
+              <Field
+                type="number"
+                name="qty"
+                className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                placeholder="Quantity"
+              />
+              <ErrMassage name="qty" />
+            </div>
 
             <div className="mb-4">
               <label className="mb-3 block text-black dark:text-white">Date</label>

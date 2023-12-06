@@ -3,6 +3,7 @@ import api from "@/http";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { IoIosCopy } from "react-icons/io";
 
 const PagesListing = () => {
@@ -19,11 +20,18 @@ const PagesListing = () => {
   const viewHandler = (id) => {
     if (!id) return;
     router.push(`/dashboard/pages/add?id=${id}`)
-
   }
   const deletehander = (id) => {
-    api.delete(`/pages`, { data: { id } }).then((res) => {
-    })
+    api.delete(`/pages`, { data: { id } })
+  }
+
+  async function copyToClipboard() {
+    try {
+      await navigator.clipboard.writeText("URL not found right now");
+      toast.success("Url copy in your clipbord")
+    } catch (e) {
+      toast.error("Url not found try after some time")
+    }
   }
   return (
     <div className="p-4 shadow-md drounded-m rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -105,7 +113,7 @@ const PagesListing = () => {
                 </h5>
               </td>
               <td className="border-b border-[#eee] py-5 px-4  dark:border-strokedark ">
-                <h5 className="font-medium text-black dark:text-white cursor-pointer px-4">
+                <h5 className="font-medium text-black dark:text-white cursor-pointer px-4" onClick={()=>copyToClipboard()}>
                   <IoIosCopy size={16} />
                 </h5>
               </td>

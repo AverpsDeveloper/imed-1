@@ -2,9 +2,10 @@
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { Formik, Field, StyledTextArea, Form, ErrorMessage, useFormikContext, useField } from 'formik';
+import { Formik, Field, StyledTextArea, Form, ErrorMessage, useFormikContext, useField, FieldArray } from 'formik';
 import * as Yup from 'yup';
 import api from "@/http"
+import moment from "moment";
 
 import { useParams } from 'next/navigation';
 
@@ -45,7 +46,7 @@ const DoctorDetailsPage = () => {
     })
 
     const [initialValuesInfo, setInitialValuesInfo] = useState({
-        _id : "",
+        _id: "",
         username: 'username',
         firstName: 'First name',
         lastName: 'Last name',
@@ -54,7 +55,7 @@ const DoctorDetailsPage = () => {
         email: 'user@gmail.com',
         phoneNumber: '123456789',
         speciality: '',
-        availableHours:"",
+        availableHours: "",
         address: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     })
     const { username } = useParams();
@@ -69,16 +70,16 @@ const DoctorDetailsPage = () => {
             })
     }, []);
 
-    
+
     const onSubmitInfo = (values) => {
         values.id = initialValuesInfo._id;
-        api.put("/users-admin",values)
+        api.put("/users-admin", values)
     }
-    
+
     const updateUserStatusHandler = (values) => {
         delete values.lastActive
         values.id = initialValuesInfo._id;
-        api.put("/users-admin",values)
+        api.put("/users-admin", values)
     }
     return (
         <>
@@ -488,9 +489,7 @@ const DoctorDetailsPage = () => {
                                                         placeholder="LastActive"
                                                     />
                                                     <ErrMessage name="lastActive" />
-
                                                 </div>
-
                                                 <div className="mb-4.5">
                                                     <div className="mb-4">
                                                         <label className="block text-black dark:text-white">is Active<span className="text-meta-1">*</span></label>
@@ -540,102 +539,252 @@ const DoctorDetailsPage = () => {
                             </div>
                         </div>
 
-
                     </div>
                 </div>
-                {/* <div className="grid grid-cols-5 gap-8 mt-8">
+                <div className="grid grid-cols-5 gap-8 mt-8">
                     <div className="col-span-5 xl:col-span-3">
                         <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
                             <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
                                 <h3 className="font-medium text-black dark:text-white">
-                                    Pricing  Information
+                                    Shedule appointment Time
                                 </h3>
                             </div>
                             <div className="p-7">
-                                <form action="#">
-                                    <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
-                                        <div className="w-full sm:w-1/2">
-                                            <label
-                                                className="mb-3 block text-sm font-medium text-black dark:text-white"
-                                                htmlFor="fullName"
-                                            >
-                                                Service Charge
-                                            </label>
-                                            <div className="relative">
-                                                <span className="absolute left-4.5 top-4">
-                                                    <svg
-                                                        className="fill-current"
-                                                        width="20"
-                                                        height="20"
-                                                        viewBox="0 0 20 20"
-                                                        fill="none"
-                                                        xmlns="http://www.w3.org/2000/svg"
+                                <Formik
+                                    initialValues={initialValuesInfo}
+                                    validationSchema={Yup.object().shape({
+                                        availablity: Yup.array()
+                                            .of(
+                                                Yup.object().shape({
+                                                    start: Yup.string().required().label("Start Time"),
+                                                    duration: Yup.number().positive().max(180).required().label("Duration"),
+                                                    end: Yup
+                                                        .string()
+                                                        .required()
+                                                        .test("is-greater", "End time should be 1 hour greater", function (value) {
+                                                            const { start } = this.parent;
+                                                            // return moment(value, "HH:mm").isAfter(moment(start, "HH:mm"));
+                                                            return moment(value, 'HH:mm').isSameOrAfter(moment(start, 'HH:mm').add(1, 'hours'));
+                                                        }).label("End Time") // these constraints take precedence
+                                                })
+                                            )
+                                            .required(),
+                                    })
+                                    }
+                                    onSubmit={async (values, { resetForm }) => {
+                                        values.id = initialValuesInfo._id;
+                                        await api.put("/users-admin", values);
+                                        console.log("submint")
+                                    }}
+                                    enableReinitialize
+                                >
+                                    {({ errors, touched, values }) => {
+                                        console.log("erorrs", errors);
+                                        console.log("values", values);
+                                        return (
+                                            <Form>
+                                                <div>
+                                                    <FieldArray
+                                                        name="availablity">
+                                                        {(arrayHelpers => (
+                                                            <div className="">
+                                                                {values?.availablity?.map((friend, index) => (
+                                                                    <div key={index} className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
+                                                                        {/** both these conventions do the same */}
+
+                                                                        {/* <Field name={`friends[${index}].name`} />
+                                                                    <Field name={`friends.${index}.age`} /> */}
+
+                                                                        <div className="w-full sm:w-1/3">
+                                                                            <label
+                                                                                className="mb-3 block text-sm font-medium text-black dark:text-white"
+                                                                                htmlFor="fullName"
+                                                                            >
+                                                                                Start Time
+                                                                            </label>
+                                                                            <div className="relative">
+                                                                                <span className="absolute left-4.5 top-4">
+                                                                                    <svg
+                                                                                        className="fill-current"
+                                                                                        width="20"
+                                                                                        height="20"
+                                                                                        viewBox="0 0 20 20"
+                                                                                        fill="none"
+                                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                                    >
+                                                                                        <g opacity="0.8">
+                                                                                            <path
+                                                                                                fillRule="evenodd"
+                                                                                                clipRule="evenodd"
+                                                                                                d="M3.72039 12.887C4.50179 12.1056 5.5616 11.6666 6.66667 11.6666H13.3333C14.4384 11.6666 15.4982 12.1056 16.2796 12.887C17.061 13.6684 17.5 14.7282 17.5 15.8333V17.5C17.5 17.9602 17.1269 18.3333 16.6667 18.3333C16.2064 18.3333 15.8333 17.9602 15.8333 17.5V15.8333C15.8333 15.1703 15.5699 14.5344 15.1011 14.0655C14.6323 13.5967 13.9964 13.3333 13.3333 13.3333H6.66667C6.00363 13.3333 5.36774 13.5967 4.8989 14.0655C4.43006 14.5344 4.16667 15.1703 4.16667 15.8333V17.5C4.16667 17.9602 3.79357 18.3333 3.33333 18.3333C2.8731 18.3333 2.5 17.9602 2.5 17.5V15.8333C2.5 14.7282 2.93899 13.6684 3.72039 12.887Z"
+                                                                                                fill=""
+                                                                                            />
+                                                                                            <path
+                                                                                                fillRule="evenodd"
+                                                                                                clipRule="evenodd"
+                                                                                                d="M9.99967 3.33329C8.61896 3.33329 7.49967 4.45258 7.49967 5.83329C7.49967 7.214 8.61896 8.33329 9.99967 8.33329C11.3804 8.33329 12.4997 7.214 12.4997 5.83329C12.4997 4.45258 11.3804 3.33329 9.99967 3.33329ZM5.83301 5.83329C5.83301 3.53211 7.69849 1.66663 9.99967 1.66663C12.3009 1.66663 14.1663 3.53211 14.1663 5.83329C14.1663 8.13448 12.3009 9.99996 9.99967 9.99996C7.69849 9.99996 5.83301 8.13448 5.83301 5.83329Z"
+                                                                                                fill=""
+                                                                                            />
+                                                                                        </g>
+                                                                                    </svg>
+                                                                                </span>
+                                                                                <Field
+                                                                                    className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark -4 dark:text-white dark:focus:border-primary"
+                                                                                    type="time"
+                                                                                    name={`availablity[${index}].start`}
+                                                                                    placeholder="Devid Jhon"
+                                                                                    defaultValue="Devid Jhon"
+                                                                                />
+                                                                                <p className="text-red-500">
+                                                                                    <ErrorMessage
+                                                                                        name={`availablity[${index}].start`}
+                                                                                    />
+                                                                                </p >
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div className="w-full sm:w-1/3">
+                                                                            <label
+                                                                                className="mb-3 block text-sm font-medium text-black dark:text-white"
+                                                                                htmlFor="fullName"
+                                                                            >
+                                                                                End Date
+                                                                            </label>
+                                                                            <div className="relative">
+                                                                                <span className="absolute left-4.5 top-4">
+                                                                                    <svg
+                                                                                        className="fill-current"
+                                                                                        width="20"
+                                                                                        height="20"
+                                                                                        viewBox="0 0 20 20"
+                                                                                        fill="none"
+                                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                                    >
+                                                                                        <g opacity="0.8">
+                                                                                            <path
+                                                                                                fillRule="evenodd"
+                                                                                                clipRule="evenodd"
+                                                                                                d="M3.72039 12.887C4.50179 12.1056 5.5616 11.6666 6.66667 11.6666H13.3333C14.4384 11.6666 15.4982 12.1056 16.2796 12.887C17.061 13.6684 17.5 14.7282 17.5 15.8333V17.5C17.5 17.9602 17.1269 18.3333 16.6667 18.3333C16.2064 18.3333 15.8333 17.9602 15.8333 17.5V15.8333C15.8333 15.1703 15.5699 14.5344 15.1011 14.0655C14.6323 13.5967 13.9964 13.3333 13.3333 13.3333H6.66667C6.00363 13.3333 5.36774 13.5967 4.8989 14.0655C4.43006 14.5344 4.16667 15.1703 4.16667 15.8333V17.5C4.16667 17.9602 3.79357 18.3333 3.33333 18.3333C2.8731 18.3333 2.5 17.9602 2.5 17.5V15.8333C2.5 14.7282 2.93899 13.6684 3.72039 12.887Z"
+                                                                                                fill=""
+                                                                                            />
+                                                                                            <path
+                                                                                                fillRule="evenodd"
+                                                                                                clipRule="evenodd"
+                                                                                                d="M9.99967 3.33329C8.61896 3.33329 7.49967 4.45258 7.49967 5.83329C7.49967 7.214 8.61896 8.33329 9.99967 8.33329C11.3804 8.33329 12.4997 7.214 12.4997 5.83329C12.4997 4.45258 11.3804 3.33329 9.99967 3.33329ZM5.83301 5.83329C5.83301 3.53211 7.69849 1.66663 9.99967 1.66663C12.3009 1.66663 14.1663 3.53211 14.1663 5.83329C14.1663 8.13448 12.3009 9.99996 9.99967 9.99996C7.69849 9.99996 5.83301 8.13448 5.83301 5.83329Z"
+                                                                                                fill=""
+                                                                                            />
+                                                                                        </g>
+                                                                                    </svg>
+                                                                                </span>
+                                                                                <Field
+                                                                                    className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark -4 dark:text-white dark:focus:border-primary"
+                                                                                    type="time"
+                                                                                    name={`availablity[${index}].end`}
+                                                                                    placeholder="Devid Jhon"
+                                                                                    defaultValue="Devid Jhon"
+                                                                                />
+                                                                                <p className="text-red-500">
+                                                                                    <ErrorMessage
+                                                                                        name={`availablity[${index}].end`}
+                                                                                    />
+                                                                                </p >
+                                                                            </div>
+                                                                        </div>
+                                                                        <div className="w-full sm:w-1/3">
+                                                                            <label
+                                                                                className="mb-3 block text-sm font-medium text-black dark:text-white"
+                                                                                htmlFor={`availablity[${index}].duration`}
+                                                                            >
+                                                                                Appointment Duration
+                                                                            </label>
+                                                                            <div className="relative">
+                                                                                <span className="absolute left-4.5 top-4">
+                                                                                    <svg
+                                                                                        className="fill-current"
+                                                                                        width="20"
+                                                                                        height="20"
+                                                                                        viewBox="0 0 20 20"
+                                                                                        fill="none"
+                                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                                    >
+                                                                                        <g opacity="0.8">
+                                                                                            <path
+                                                                                                fillRule="evenodd"
+                                                                                                clipRule="evenodd"
+                                                                                                d="M3.72039 12.887C4.50179 12.1056 5.5616 11.6666 6.66667 11.6666H13.3333C14.4384 11.6666 15.4982 12.1056 16.2796 12.887C17.061 13.6684 17.5 14.7282 17.5 15.8333V17.5C17.5 17.9602 17.1269 18.3333 16.6667 18.3333C16.2064 18.3333 15.8333 17.9602 15.8333 17.5V15.8333C15.8333 15.1703 15.5699 14.5344 15.1011 14.0655C14.6323 13.5967 13.9964 13.3333 13.3333 13.3333H6.66667C6.00363 13.3333 5.36774 13.5967 4.8989 14.0655C4.43006 14.5344 4.16667 15.1703 4.16667 15.8333V17.5C4.16667 17.9602 3.79357 18.3333 3.33333 18.3333C2.8731 18.3333 2.5 17.9602 2.5 17.5V15.8333C2.5 14.7282 2.93899 13.6684 3.72039 12.887Z"
+                                                                                                fill=""
+                                                                                            />
+                                                                                            <path
+                                                                                                fillRule="evenodd"
+                                                                                                clipRule="evenodd"
+                                                                                                d="M9.99967 3.33329C8.61896 3.33329 7.49967 4.45258 7.49967 5.83329C7.49967 7.214 8.61896 8.33329 9.99967 8.33329C11.3804 8.33329 12.4997 7.214 12.4997 5.83329C12.4997 4.45258 11.3804 3.33329 9.99967 3.33329ZM5.83301 5.83329C5.83301 3.53211 7.69849 1.66663 9.99967 1.66663C12.3009 1.66663 14.1663 3.53211 14.1663 5.83329C14.1663 8.13448 12.3009 9.99996 9.99967 9.99996C7.69849 9.99996 5.83301 8.13448 5.83301 5.83329Z"
+                                                                                                fill=""
+                                                                                            />
+                                                                                        </g>
+                                                                                    </svg>
+                                                                                </span>
+                                                                                <Field
+                                                                                    className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark -4 dark:text-white dark:focus:border-primary"
+                                                                                    type="number"
+                                                                                    name={`availablity[${index}].duration`}
+                                                                                    placeholder="Enter Slots Number"
+
+                                                                                />
+                                                                                <p className="text-sm text-gray-400">
+                                                                                  value in minuts
+                                                                                </p>
+                                                                                <p className="text-red-500">
+                                                                                    <ErrorMessage
+                                                                                        name={`availablity[${index}].duration`}
+                                                                                    />
+                                                                                </p >
+                                                                            </div>
+                                                                        </div>
+                                                                        <div className="mt-8">
+                                                                            <button
+                                                                                type="button"
+                                                                                className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-95"
+                                                                                onClick={() => arrayHelpers.remove(index)}>
+                                                                                -
+                                                                            </button>
+                                                                        </div>
+
+                                                                    </div>
+                                                                )) ?? []}
+                                                                <button
+                                                                    type="button"
+                                                                    className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-95"
+
+                                                                    onClick={() => arrayHelpers.push({ start: '', end: '' })}
+                                                                >
+                                                                    +
+                                                                </button>
+
+                                                            </div>
+                                                        ))}
+                                                    </FieldArray>
+                                                    {/* <p className="text-red-500">
+                                                        <ErrorMessage
+                                                            name={`availablity`}
+                                                        />
+                                                    </p > */}
+                                                </div>
+                                                <div className="mt-2">
+                                                    <button
+                                                        // type="button"
+                                                        className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-95"
                                                     >
-                                                        <g opacity="0.8">
-                                                            <path
-                                                                fillRule="evenodd"
-                                                                clipRule="evenodd"
-                                                                d="M3.72039 12.887C4.50179 12.1056 5.5616 11.6666 6.66667 11.6666H13.3333C14.4384 11.6666 15.4982 12.1056 16.2796 12.887C17.061 13.6684 17.5 14.7282 17.5 15.8333V17.5C17.5 17.9602 17.1269 18.3333 16.6667 18.3333C16.2064 18.3333 15.8333 17.9602 15.8333 17.5V15.8333C15.8333 15.1703 15.5699 14.5344 15.1011 14.0655C14.6323 13.5967 13.9964 13.3333 13.3333 13.3333H6.66667C6.00363 13.3333 5.36774 13.5967 4.8989 14.0655C4.43006 14.5344 4.16667 15.1703 4.16667 15.8333V17.5C4.16667 17.9602 3.79357 18.3333 3.33333 18.3333C2.8731 18.3333 2.5 17.9602 2.5 17.5V15.8333C2.5 14.7282 2.93899 13.6684 3.72039 12.887Z"
-                                                                fill=""
-                                                            />
-                                                            <path
-                                                                fillRule="evenodd"
-                                                                clipRule="evenodd"
-                                                                d="M9.99967 3.33329C8.61896 3.33329 7.49967 4.45258 7.49967 5.83329C7.49967 7.214 8.61896 8.33329 9.99967 8.33329C11.3804 8.33329 12.4997 7.214 12.4997 5.83329C12.4997 4.45258 11.3804 3.33329 9.99967 3.33329ZM5.83301 5.83329C5.83301 3.53211 7.69849 1.66663 9.99967 1.66663C12.3009 1.66663 14.1663 3.53211 14.1663 5.83329C14.1663 8.13448 12.3009 9.99996 9.99967 9.99996C7.69849 9.99996 5.83301 8.13448 5.83301 5.83329Z"
-                                                                fill=""
-                                                            />
-                                                        </g>
-                                                    </svg>
-                                                </span>
-                                                <input
-                                                    className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark -4 dark:text-white dark:focus:border-primary"
-                                                    type="text"
-                                                    name="fullName"
-
-                                                    placeholder="Devid Jhon"
-                                                    defaultValue="Devid Jhon"
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div className="w-full sm:w-1/2">
-                                            <label
-                                                className="mb-3 block text-sm font-medium text-black dark:text-white"
-                                                htmlFor="phoneNumber"
-                                            >
-                                                Serveice Rate
-                                            </label>
-                                            <input
-                                                className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark -4 dark:text-white dark:focus:border-primary"
-                                                type="text"
-                                                name="phoneNumber"
-                                                placeholder="+990 3343 7865"
-                                                defaultValue="+990 3343 7865"
-                                            />
-                                        </div>
-                                    </div>
-
-
-
-                                    <div className="flex justify-end gap-4.5">
-                                        <button
-                                            className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
-                                            type="submit"
-                                        >
-                                            Cancel
-                                        </button>
-                                        <button
-                                            className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-95"
-                                            type="submit"
-                                        >
-                                            Save
-                                        </button>
-                                    </div>
-                                </form>
+                                                        Submit
+                                                    </button>
+                                                </div>
+                                            </Form>
+                                        )
+                                    }}
+                                </Formik>
                             </div>
                         </div>
                     </div>
-                </div> */}
+                </div>
             </div>
         </>
     );
