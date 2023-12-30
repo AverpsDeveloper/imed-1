@@ -8,14 +8,19 @@ import { useEffect, useState } from "react";
 
 const ProductDetailsPage = () => {
     const [initialValues, setInitialValues] = useState([]);
-    const { product } = useParams();
-
+    const {id} = useParams();
+    console.log("id::",id);
     useEffect(() => {
         // api.get(`/inventory/${product}`)
         //     .then(({ data }) => {
 
         //         setInitialValues(productItem)
         //     })
+        api.get(`/order/${id}`)
+            .then(({data}) => {
+                console.log("data::",data);
+                setInitialValues(data.result.data)
+            })
     }, [])
 
     if (!initialValues) {
@@ -71,14 +76,16 @@ const ProductDetailsPage = () => {
                                         </th>
                                     </tr>
                                 </thead>
+                                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                                 <tbody className="text-xs">
                                     {Object.entries(initialValues).map(([key, value]) => (
                                         <tr className="border-b border-gray-200 dark:border-gray-700" key={key}>
                                             <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">{key}</th>
-                                            <th className="px-6 py-4">{value}</th>
+                                            <td className="px-6 py-4">{JSON.stringify(value)}</td>
                                         </tr>
                                     ))}
                                 </tbody>
+                            </table>
                             </table>
                         </div>
                     </div>
