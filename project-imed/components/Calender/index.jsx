@@ -4,20 +4,24 @@ import Breadcrumb from "../Breadcrumbs/Breadcrumb";
 import Link from "next/link";
 import Image from "next/image";
 import usePaginate from "@/hooks/usePaginate";
-import { useState,useEffect  } from "react";
-import api from "@/http";
+import { useState, useEffect } from "react";
+import { useParams } from 'next/navigation';
+import axios from "axios";
+import moment from "moment";
 
 const Calendar = () => {
   const { page, limit, search, searchHandler } = usePaginate();
   const [meta, setMeta] = useState({ page: 1, limit: 10, total: 10 });
-  // useEffect(() => {
-    // api.get(`/appoint`)
-    //     .then(({ data }) => {
-    //       console.log("============");
-    //         console.log(data);
-    //         // setInitialValues(productItem)
-    //     })
-// }, [])
+  const [doctor, setDoctor] = useState([]);
+  console.log('doctor', doctor)
+  useEffect(() => {
+    const fetchDoctor = async () => {
+      const doctorDetail = await axios.get('http://localhost:3000/api/appoint')
+      //  console.log('doctoterDetail', doctorDetail.data.result.data)
+      setDoctor(doctorDetail.data.result.data)
+    }
+    fetchDoctor()
+  }, [])
 
   return (
     <>
@@ -57,6 +61,9 @@ const Calendar = () => {
               <thead>
                 <tr className="bg-gray-2 text-left dark:bg-meta-4">
                   <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
+                    Doctor
+                  </th>
+                  <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
                     Date
                   </th>
                   <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
@@ -68,17 +75,27 @@ const Calendar = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr  className="text-left text-black dark:text-white">
-                  <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                    h1
-                  </td>
-                  <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                    h2
-                  </td>
-                  <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                    h3
-                  </td>
-                </tr>
+                {
+                  doctor.map((detail, ind) => (
+                    <tr className="text-left text-black dark:text-white">
+                      <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                        <h1 className="font-bold text-2xl">{detail.doctor.username}</h1>
+                        <p>{detail.doctor.email}</p>
+                      </td>
+                      <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                        {moment(detail.date).format("mm dd yyyy")}
+                      </td>
+                      <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                        <h1 className="font-bold text-2xl">{detail.user.username}</h1>
+                        <p>{detail.user.email}</p>
+                      </td>
+                      <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                        <button className='bg-primary text-white px-2 mx-1 rounded '> Cancel </button>
+                        <Link href={`/dashboard/appointment/${detail._id}`} className="bg-primary text-white px-2 mx-1 rounded ">View Detail</Link>
+                      </td>
+                    </tr>
+                  ))
+                }
               </tbody>
             </table>
           </div>

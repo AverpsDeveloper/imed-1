@@ -13,11 +13,11 @@ const ProductDetailsPage = () => {
     useEffect(() => {
         // api.get(`/inventory/${product}`)
         //     .then(({ data }) => {
-                
+
         //         setInitialValues(productItem)
         //     })
     }, [])
-    
+
     if (!initialValues) {
         return (
             <div className="mx-auto max-w-270">
