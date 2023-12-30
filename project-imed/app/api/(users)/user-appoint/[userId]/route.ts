@@ -4,33 +4,35 @@ import tcWrap from "@/libs/utils/tcWrap";
 
 
 export const GET = tcWrap(async (req, res) => {
+    const { page, limit, date } = req.query;
+    const userId = req.params;
+    let filter: Record<string, any>[] = [{ user: userId }];
+    if (date) {
+        let [gt, lt] = date.split("|");
+        gt = gt && new Date(gt);
+        lt = lt && new Date(lt);
+        console.log({ gt, lt })
+        filter.push({
+            arriveAt: {
+                ...(gt && { $gte: gt }), ...(lt && { $lte: lt })
+            },
+        });
+    }
 
-    const data = await appointModel.find({}).populate("doctor user");
+    // @ts-ignore
+    const { data, meta } = await appointModel.find({ $and: filter }).paginate({ page, limit });
     if (!data) throw new Error("something went wrong");
     return res.json({
         result: {
             message: "apointment done",
-            data: data,
+            data,
+            meta
         },
-    }, { status: 201 });
+    }, { status: 200 });
 });
 
 export const POST = tcWrap(async (req, res) => {
     const body = await req.json()
-    if (!body.doctor) throw new Error("Doctor required");
-    if (!body.user) throw new Error("User required");
-    if (!body.date) throw new Error("Date required");
-
-    const isExist = await appointModel.findOne({ user: body.user, date: body.date });
-
-    if (isExist) {
-        if (isExist.doctor._id == body.doctor) {
-            throw new Error("Already booked with this Doctor");
-        } else {
-            throw new Error("Already booked with Other Doctor");
-        }
-    }
-
     const data = await appointModel.create(body);
     if (!data) throw new Error("something went wrong");
     return res.json({

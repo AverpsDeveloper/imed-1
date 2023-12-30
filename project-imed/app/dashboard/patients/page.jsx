@@ -72,16 +72,17 @@ const PatientListingPage = () => {
 
 
   useEffect(() => {
-    const doctorId = async () => {
-      const dId = await api.get(`/doctors-appoint/${selectedDoctor._id}`)
-      setAppointment(dId.data?.result?.data)
+    if (selectedDoctor) {
+      const doctorId = async () => {
+        const dId = await api.get(`/doctors-appoint/${selectedDoctor._id}`)
+        setAppointment(dId.data?.result?.data)
+      }
+
+      doctorId()
     }
 
-    doctorId()
 
-
-  }, [open, selectedDoctor,])
-
+  }, [open, selectedDoctor])
 
   useEffect(() => {
     api.get('/users', {
@@ -89,6 +90,7 @@ const PatientListingPage = () => {
         page,
         limit,
         search,
+        
       }
     })
       .then((response) => {
@@ -103,21 +105,9 @@ const PatientListingPage = () => {
     return patient.gender === genderFilter;
   });
 
-  let sortedpatient = [...filteredPatients];
-
-
-  const handleSearch = debounce(async (search) => {
-    const params = new URLSearchParams(searchParams);
-    search ? params.set("search", (search).toString())
-      : params.delete("search")
-    router.push(`${pathname}?${params.toString()}`);
-  }, 500);
-
-
   const handleCancel = () => {
     setIsvisible(false)
   };
-
 
   const handleOk = async () => {
 
@@ -125,7 +115,7 @@ const PatientListingPage = () => {
     if (selectedDate) {
       const createAppointment = async () => {
         const cAppointment = await api.post('/appoint', {
-          doctor: session.user.id,
+          doctor: selectedDoctor._id,
           user: selectedPatiantId,
           date: selectedDate
         })
@@ -161,7 +151,7 @@ const PatientListingPage = () => {
               </button>
               <input
                 defaultValue={search}
-                onChange={e => handleSearch(e.target.value)}
+                onChange={e => searchHandler(e.target.value)}
                 placeholder="Search by username..." class="w-full bg-transparent pl-9 pr-4 font-medium focus:outline-none xl:w-125" type="text" fdprocessedid="ai7g3k" />
             </div>
           </div>
@@ -242,7 +232,7 @@ const PatientListingPage = () => {
 
                           appoin?.isAvailable ?
                             <div className="flex items-center gap-2" key={appoin?.time}>
-                              <input type="radio" name={'date'} value={moment(appoin?.time).format("LT")} onChange={(e) => setSelectedDate(e.target.value)} className=" h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                              <input type="radio" name={'date'} value={appoin?.time} onChange={(e) => setSelectedDate(e.target.value)} className=" h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                               <h1>{moment(appoin?.time).format('LT')}</h1>
                             </div>
                             :

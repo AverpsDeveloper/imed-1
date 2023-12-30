@@ -8,20 +8,28 @@ import { useState, useEffect } from "react";
 import { useParams } from 'next/navigation';
 import axios from "axios";
 import moment from "moment";
+import api from "@/http";
 
 const Calendar = () => {
-  const { page, limit, search, searchHandler } = usePaginate();
+  const { page, limit, search, searchHandler, date } = usePaginate();
   const [meta, setMeta] = useState({ page: 1, limit: 10, total: 10 });
   const [doctor, setDoctor] = useState([]);
+
   console.log('doctor', doctor)
+
   useEffect(() => {
     const fetchDoctor = async () => {
-      const doctorDetail = await axios.get('http://localhost:3000/api/appoint')
-      //  console.log('doctoterDetail', doctorDetail.data.result.data)
+      const doctorDetail = await api.get('/appoint', {
+        params: {
+          page, limit, date
+        }
+      })
+      console.log('doctoterDetail', doctorDetail)
       setDoctor(doctorDetail.data.result.data)
+      setMeta(doctorDetail.data.result.meta)
     }
     fetchDoctor()
-  }, [])
+  }, [page, limit, date])
 
   return (
     <>
@@ -53,7 +61,7 @@ const Calendar = () => {
         <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
           <div className="py-6 px-4 md:px-6 xl:px-7.5">
             <h4 className="text-xl font-semibold text-black dark:text-white">
-            Appointments list
+              Appointments list
             </h4>
           </div>
           <div className="overflow-x-auto">
@@ -76,7 +84,7 @@ const Calendar = () => {
               </thead>
               <tbody>
                 {
-                  doctor.map((detail, ind) => (
+                  doctor?.map((detail, ind) => (
                     <tr className="text-left text-black dark:text-white">
                       <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
                         <h1 className="font-bold text-2xl">{detail.doctor.username}</h1>
