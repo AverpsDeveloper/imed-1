@@ -4,7 +4,7 @@ import tcWrap from "@/libs/utils/tcWrap";
 
 
 export const GET = tcWrap(async (req, res) => {
-    const { search, page, limit, date } = req.query;
+    const { search, page, limit, date, doctor } = req.query;
 
     let filter: Record<string, Object>[] = [{isCancel : false}];
     
@@ -16,6 +16,9 @@ export const GET = tcWrap(async (req, res) => {
     //         ],
     //     });
     // }
+    if(doctor){
+        filter.push({doctor})
+    }
 
     if (date) {
         let [gt, lt] = date.split("|");

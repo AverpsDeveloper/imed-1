@@ -9,22 +9,24 @@ import { useParams } from 'next/navigation';
 import axios from "axios";
 import moment from "moment";
 import api from "@/http";
+import { useSession } from "next-auth/react";
 
 const Calendar = () => {
   const { page, limit, search, searchHandler, date } = usePaginate();
   const [meta, setMeta] = useState({ page: 1, limit: 10, total: 10 });
   const [doctor, setDoctor] = useState([]);
+  const { data: session, status } = useSession();
 
   console.log('doctor', doctor)
 
   useEffect(() => {
     fetchAppointment()
-  }, [page, limit, date])
+  }, [page, limit, date, session?.user])
   
   const fetchAppointment = async () => {
     const doctorDetail = await api.get('/appoint', {
       params: {
-        page, limit, date
+        page, limit, date , doctor : session?.user.role == 'DOCTOR' ? session.user._id : "", 
       }
     })
     console.log('doctoterDetail', doctorDetail)
