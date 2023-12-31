@@ -6,7 +6,7 @@ import tcWrap from "@/libs/utils/tcWrap";
 export const GET = tcWrap(async (req, res) => {
     const { search, page, limit, date } = req.query;
 
-    let filter: Record<string, Object>[] = [{}];
+    let filter: Record<string, Object>[] = [{isCancel : false}];
     
     // if (search) {
     //     filter.push({

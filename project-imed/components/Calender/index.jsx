@@ -18,19 +18,24 @@ const Calendar = () => {
   console.log('doctor', doctor)
 
   useEffect(() => {
-    const fetchDoctor = async () => {
-      const doctorDetail = await api.get('/appoint', {
-        params: {
-          page, limit, date
-        }
-      })
-      console.log('doctoterDetail', doctorDetail)
-      setDoctor(doctorDetail.data.result.data)
-      setMeta(doctorDetail.data.result.meta)
-    }
-    fetchDoctor()
+    fetchAppointment()
   }, [page, limit, date])
+  
+  const fetchAppointment = async () => {
+    const doctorDetail = await api.get('/appoint', {
+      params: {
+        page, limit, date
+      }
+    })
+    console.log('doctoterDetail', doctorDetail)
+    setDoctor(doctorDetail.data.result.data)
+    setMeta(doctorDetail.data.result.meta)
+  }
 
+  const cancelAppointment =async (id) =>{
+    await api.post(`/appoint/${id}/cancel`);
+    fetchAppointment();
+  }
   return (
     <>
       <Breadcrumb pageName="Appointments" />
@@ -91,14 +96,14 @@ const Calendar = () => {
                         <p>{detail.doctor.email}</p>
                       </td>
                       <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                        {moment(detail.date).format("mm dd yyyy")}
+                        {moment(detail.date).calendar()}
                       </td>
                       <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
                         <h1 className="font-bold text-2xl">{detail.user.username}</h1>
                         <p>{detail.user.email}</p>
                       </td>
                       <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                        <button className='bg-primary text-white px-2 mx-1 rounded '> Cancel </button>
+                        <button className='bg-primary text-white px-2 mx-1 rounded ' onClick={()=>cancelAppointment(detail._id)}> Cancel </button>
                         <Link href={`/dashboard/appointment/${detail._id}`} className="bg-primary text-white px-2 mx-1 rounded ">View Detail</Link>
                       </td>
                     </tr>

@@ -22,9 +22,10 @@ const PatientListingPage = () => {
   const [appointment, setAppointment] = useState({})
   const [isVisibale, setIsvisible] = useState(false)
   const [value, setValue] = useState();
-  const [selectedDate, setSelectedDate] = useState()
+  const [bookingDate, setBookingDate] = useState()
   const [doctor, setDoctor] = useState([])
   const [selectedDoctor, setSelectedDoctor] = useState()
+  const [selectedDate, setSelectedDate] = useState(moment().format('YYYY-MM-DD'))
   console.log('selectedDoctor', selectedDoctor)
 
   const { data: session, status } = useSession();
@@ -106,23 +107,25 @@ const PatientListingPage = () => {
   });
 
   const handleCancel = () => {
+    setAppointment({})
     setIsvisible(false)
   };
 
   const handleOk = async () => {
 
 
-    if (selectedDate) {
+    if (bookingDate) {
       const createAppointment = async () => {
         const cAppointment = await api.post('/appoint', {
           doctor: selectedDoctor._id,
           user: selectedPatiantId,
-          date: selectedDate
+          date: bookingDate
         })
 
         console.log(cAppointment)
       }
       await createAppointment()
+      setAppointment({})
       setIsvisible(false);
     }
   };
@@ -208,7 +211,7 @@ const PatientListingPage = () => {
               <h1>Doctor: {selectedDoctor?.username}   {selectedDoctor?.firstName}   {selectedDoctor?.lastName}</h1>
               <br />
               <div>
-                <input type='date' className='border p-2 rounded-xl ' min={moment().format('yyyy-mm-dd')} onChange={(e) => setSelectedDate(e.target.value)} />
+                <input type='date' className='border p-2 rounded-xl ' min={moment().format('YYYY-MM-DD')} value={selectedDate} onChange={(e) =>  setSelectedDate(e.target.value)} />
                 <button className="ml-4 inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10 h-10 leading-4 cursor-pointer" onClick={CheackAvaibility}>
                   Cheack Avaibility
                 </button>
@@ -232,7 +235,7 @@ const PatientListingPage = () => {
 
                           appoin?.isAvailable ?
                             <div className="flex items-center gap-2" key={appoin?.time}>
-                              <input type="radio" name={'date'} value={appoin?.time} onChange={(e) => setSelectedDate(e.target.value)} className=" h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                              <input type="radio" name={'date'} value={appoin?.time} onChange={(e) => setBookingDate(e.target.value)} className=" h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                               <h1>{moment(appoin?.time).format('LT')}</h1>
                             </div>
                             :
@@ -252,7 +255,11 @@ const PatientListingPage = () => {
               </div>
               <div className="flex justify-end gap-3">
                 <button className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10 h-10 leading-4 cursor-pointer" autoFocus onClick={handleCancel}> Cancel </button>
-                <button className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10 h-10 leading-4 cursor-pointer" onClick={handleOk}>Book Appointment</button>
+                <button className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10 h-10 leading-4 cursor-pointer
+                disabled:bg-opacity-40
+                " onClick={handleOk}
+                disabled = {!selectedDoctor?._id || !bookingDate }
+                >Book Appointment</button>
               </div>
             </div>
           </Modal>

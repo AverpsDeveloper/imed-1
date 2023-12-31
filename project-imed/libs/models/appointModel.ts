@@ -43,6 +43,12 @@ const appointSchema = new Schema(
             type: Boolean,
             default: false
         },
+
+        isCancel: {
+            type: Boolean,
+            default: false
+        },
+
     },
     {
         timestamps: true,
