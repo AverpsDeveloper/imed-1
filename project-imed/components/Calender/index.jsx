@@ -4,21 +4,40 @@ import Breadcrumb from "../Breadcrumbs/Breadcrumb";
 import Link from "next/link";
 import Image from "next/image";
 import usePaginate from "@/hooks/usePaginate";
-import { useState,useEffect  } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from 'next/navigation';
+import axios from "axios";
+import moment from "moment";
 import api from "@/http";
+import { useSession } from "next-auth/react";
 
 const Calendar = () => {
-  const { page, limit, search, searchHandler } = usePaginate();
+  const { page, limit, search, searchHandler, date } = usePaginate();
   const [meta, setMeta] = useState({ page: 1, limit: 10, total: 10 });
-  // useEffect(() => {
-    // api.get(`/appoint`)
-    //     .then(({ data }) => {
-    //       console.log("============");
-    //         console.log(data);
-    //         // setInitialValues(productItem)
-    //     })
-// }, [])
+  const [doctor, setDoctor] = useState([]);
+  const { data: session, status } = useSession();
 
+  console.log('doctor', doctor)
+
+  useEffect(() => {
+    fetchAppointment()
+  }, [page, limit, date, session?.user])
+  
+  const fetchAppointment = async () => {
+    const doctorDetail = await api.get('/appoint', {
+      params: {
+        page, limit, date , doctor : session?.user.role == 'DOCTOR' ? session.user._id : "", 
+      }
+    })
+    console.log('doctoterDetail', doctorDetail)
+    setDoctor(doctorDetail.data.result.data)
+    setMeta(doctorDetail.data.result.meta)
+  }
+
+  const cancelAppointment =async (id) =>{
+    await api.post(`/appoint/${id}/cancel`);
+    fetchAppointment();
+  }
   return (
     <>
       <Breadcrumb pageName="Appointments" />
@@ -49,13 +68,16 @@ const Calendar = () => {
         <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
           <div className="py-6 px-4 md:px-6 xl:px-7.5">
             <h4 className="text-xl font-semibold text-black dark:text-white">
-            Appointments list
+              Appointments list
             </h4>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full table-auto">
               <thead>
                 <tr className="bg-gray-2 text-left dark:bg-meta-4">
+                  <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
+                    Doctor
+                  </th>
                   <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
                     Date
                   </th>
@@ -68,17 +90,27 @@ const Calendar = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr  className="text-left text-black dark:text-white">
-                  <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                    h1
-                  </td>
-                  <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                    h2
-                  </td>
-                  <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                    h3
-                  </td>
-                </tr>
+                {
+                  doctor?.map((detail, ind) => (
+                    <tr className="text-left text-black dark:text-white">
+                      <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                        <h1 className="font-bold text-2xl">{detail.doctor.username}</h1>
+                        <p>{detail.doctor.email}</p>
+                      </td>
+                      <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                        {moment(detail.date).calendar()}
+                      </td>
+                      <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                        <h1 className="font-bold text-2xl">{detail.user.username}</h1>
+                        <p>{detail.user.email}</p>
+                      </td>
+                      <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                        <button className='bg-primary text-white px-2 mx-1 rounded ' onClick={()=>cancelAppointment(detail._id)}> Cancel </button>
+                        <Link href={`/dashboard/appointment/${detail._id}`} className="bg-primary text-white px-2 mx-1 rounded ">View Detail</Link>
+                      </td>
+                    </tr>
+                  ))
+                }
               </tbody>
             </table>
           </div>

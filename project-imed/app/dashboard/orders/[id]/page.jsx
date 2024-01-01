@@ -11,13 +11,18 @@ const ProductDetailsPage = () => {
     const {id} = useParams();
     console.log("id::",id);
     useEffect(() => {
+        // api.get(`/inventory/${product}`)
+        //     .then(({ data }) => {
+
+        //         setInitialValues(productItem)
+        //     })
         api.get(`/order/${id}`)
             .then(({data}) => {
                 console.log("data::",data);
                 setInitialValues(data.result.data)
             })
     }, [])
-    
+
     if (!initialValues) {
         return (
             <div className="mx-auto max-w-270">
