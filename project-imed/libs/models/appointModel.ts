@@ -43,6 +43,9 @@ const appointSchema = new Schema(
             type: Boolean,
             default: false
         },
+        meetDetial:{
+            type:Schema.Types.Mixed 
+        },
 
         isCancel: {
             type: Boolean,

@@ -127,12 +127,22 @@ const page = () => {
                         </tr>
                     </tbody>
                 </table>
-                
-                <Link href="https://zoom.us/j/92646564199?pwd=NTlldW80RmdIWlhocHVLYlRkV2llUT09"
-                    className="cursor-pointer inline-flex items-center justify-center gap-2.5 rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
-                >
-                    Join Meeting
-                </Link>
+                <div className='flex items-center'>
+                    <div className='flex-1'>
+                        <Link href={appointDetail?.meetDetial?.join_url ?? "https://zoom.us/j/92646564199?pwd=NTlldW80RmdIWlhocHVLYlRkV2llUT09"}
+                            className="cursor-pointer inline-flex items-center justify-center gap-2.5 rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+                        >
+                            Join Meeting
+                        </Link>
+                    </div>
+                    <div className='flex-1'>
+                        <Link href={appointDetail?.meetDetial?.start_url ?? "https://zoom.us/j/92646564199?pwd=NTlldW80RmdIWlhocHVLYlRkV2llUT09"}
+                            className="cursor-pointer inline-flex items-center justify-center gap-2.5 rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+                        >
+                            Start Meeting
+                        </Link>
+                    </div>
+                </div>
             </div>
         </div>
     )

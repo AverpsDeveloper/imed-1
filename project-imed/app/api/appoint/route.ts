@@ -1,13 +1,15 @@
 import appointModel from "@/libs/models/appointModel";
 import userModel from "@/libs/models/userModel";
+import { genMeeting } from "@/libs/utils/meetingUtils";
 import tcWrap from "@/libs/utils/tcWrap";
+import moment from "moment";
 
 
 export const GET = tcWrap(async (req, res) => {
     const { search, page, limit, date, doctor } = req.query;
 
-    let filter: Record<string, Object>[] = [{isCancel : false}];
-    
+    let filter: Record<string, Object>[] = [{ isCancel: false }];
+
     // if (search) {
     //     filter.push({
     //         $or: [
@@ -16,8 +18,8 @@ export const GET = tcWrap(async (req, res) => {
     //         ],
     //     });
     // }
-    if(doctor){
-        filter.push({doctor})
+    if (doctor) {
+        filter.push({ doctor })
     }
 
     if (date) {
@@ -59,8 +61,17 @@ export const POST = tcWrap(async (req, res) => {
             throw new Error("Already booked with Other Doctor");
         }
     }
-
-    const data = await appointModel.create(body);
+    const meet = await genMeeting({
+        "topic": "Doctor Appointment",
+        "type": 2,
+        // "start_time": "2024-02-30",
+        "start_time": moment().format('yyyy-mm-dd'),
+        "duration": 30,
+        "timezone": "America/Mexico_City",
+        "password": ""
+    });
+    console.log("meet", meet);
+    const data = await appointModel.create({ ...body, meetDetial: meet });
     if (!data) throw new Error("something went wrong");
     return res.json({
         result: {
