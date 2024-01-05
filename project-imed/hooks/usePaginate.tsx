@@ -11,6 +11,8 @@ const usePaginate = () => {
     const search = searchParams.get('search') || "";
     const date = searchParams.get('date') || "";
     const product = searchParams.get('product') || "";
+    const order = searchParams.get('order') || "";
+    const meetingType = searchParams.get('meetingType') || "";
 
     const searchHandler = debounce(async (search) => {
         const params = new URLSearchParams(searchParams);
@@ -26,7 +28,7 @@ const usePaginate = () => {
         router.push(`${pathname}?${params.toString()}`);
     }
     return {
-        page, limit, search, searchHandler, router, pathname, date, product, setSearchParmas
+        page, limit, search, searchHandler, router, pathname, date, product, order, meetingType, setSearchParmas
     }
 }
 

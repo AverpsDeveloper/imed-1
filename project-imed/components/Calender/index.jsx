@@ -12,7 +12,7 @@ import api from "@/http";
 import { useSession } from "next-auth/react";
 
 const Calendar = () => {
-  const { page, limit, search, searchHandler, date } = usePaginate();
+  const { page, limit, search, searchHandler, setSearchParmas, date, order, meetingType } = usePaginate();
   const [meta, setMeta] = useState({ page: 1, limit: 10, total: 10 });
   const [doctor, setDoctor] = useState([]);
   const { data: session, status } = useSession();
@@ -21,12 +21,12 @@ const Calendar = () => {
 
   useEffect(() => {
     fetchAppointment()
-  }, [page, limit, date, session?.user])
+  }, [page, limit, date, order, meetingType, session?.user])
   
   const fetchAppointment = async () => {
     const doctorDetail = await api.get('/appoint', {
       params: {
-        page, limit, date , doctor : session?.user.role == 'DOCTOR' ? session.user._id : "", 
+        page, limit, date, order, meetingType, doctor: session?.user.role == 'DOCTOR' ? session.user._id : "",
       }
     })
     console.log('doctoterDetail', doctorDetail)
@@ -34,10 +34,11 @@ const Calendar = () => {
     setMeta(doctorDetail.data.result.meta)
   }
 
-  const cancelAppointment =async (id) =>{
+  const cancelAppointment = async (id) => {
     await api.post(`/appoint/${id}/cancel`);
     fetchAppointment();
   }
+
   return (
     <>
       <Breadcrumb pageName="Appointments" />
@@ -45,6 +46,37 @@ const Calendar = () => {
         <div className="flex justify-between mb-4 ">
           <h1 className="text-2xl font-bold"></h1>
           <div className="flex items-center space-x-2">
+            <select defaultValue={meetingType} onChange={e => setSearchParmas('meetingType', e.target.value)}>
+              <option selected  value={''}>--select--</option>
+              <option value={"online"} >Online</option>
+              <option value={"offline"}>Offline</option>
+            </select>
+
+            <select defaultValue={order} onChange={e => setSearchParmas('order', e.target.value)}>
+              <option selected value={''}>--Select--</option>
+              <option value={"asc"}>Accending</option>
+              <option value={"desc"}>Deccending</option>
+            </select>
+
+            <label>
+              From
+            </label>
+            <input
+              type="date"
+              className=" rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+              placeholder="Search Product"
+              defaultValue={date}
+              onChange={e => setSearchParmas("date", e.target.value)}
+            />
+            <label>
+              to
+            </label>
+            <input
+              type="date"
+              className=" rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+              placeholder="Search Product"
+              defaultValue={date}
+              onChange={e => setSearchParmas("date", `${date ? `${date}|` : "|"}${e.target.value}`)} />
 
             <div className="hidden sm:block shadow-md px-4 py-4 rounded ">
               <div className="relative">
@@ -58,7 +90,7 @@ const Calendar = () => {
                 </button>
                 <input
                   defaultValue={search}
-                  onChange={e => handleSearch(e.target.value)}
+                  onChange={e => searchHandler(e.target.value)}
                   placeholder="Search by username..." className="w-full bg-transparent pl-9 pr-4 font-medium focus:outline-none xl:w-125" type="text" fdprocessedid="ai7g3k" />
               </div>
             </div>
@@ -105,7 +137,7 @@ const Calendar = () => {
                         <p>{detail.user.email}</p>
                       </td>
                       <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                        <button className='bg-primary text-white px-2 mx-1 rounded ' onClick={()=>cancelAppointment(detail._id)}> Cancel </button>
+                        <button className='bg-primary text-white px-2 mx-1 rounded ' onClick={() => cancelAppointment(detail._id)}> Cancel </button>
                         <Link href={`/dashboard/appointment/${detail._id}`} className="bg-primary text-white px-2 mx-1 rounded ">View Detail</Link>
                       </td>
                     </tr>

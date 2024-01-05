@@ -27,9 +27,9 @@ export const POST = tcWrap(async (req, res) => {
     if (body.categories && !body.categories.length) {
         throw new Error("field categories can't empty");
     }
-    if(body.status == "active"){
+    if (body.status == "active") {
         body.isActive = true;
-    }else{
+    } else {
         body.isActive = false;
     }
     const item = await categoryModal.create(
@@ -44,9 +44,9 @@ export const PUT = tcWrap(async (req, res) => {
     console.log("put");
     const body = await req.json();
     const id = body.id;
-    if(body.status == "active"){
+    if (body.status == "active") {
         body.isActive = true;
-    }else{
+    } else {
         body.isActive = false;
     }
     if (!id) {
@@ -71,8 +71,8 @@ export const PUT = tcWrap(async (req, res) => {
 export const DELETE = tcWrap(async (req, res) => {
     console.log("delete");
     const body = await req.json();
-    console.log("BBB",body);
-    
+    console.log("BBB", body);
+
     if (!body.id) {
         throw new Error("field `id` required");
     }

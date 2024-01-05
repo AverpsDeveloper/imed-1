@@ -26,6 +26,8 @@ const PatientListingPage = () => {
   const [doctor, setDoctor] = useState([])
   const [selectedDoctor, setSelectedDoctor] = useState()
   const [selectedDate, setSelectedDate] = useState(moment().format('YYYY-MM-DD'))
+  const [selectedType, setSelectedType] = useState()
+  console.log('selectedType', selectedType)
   console.log('selectedDoctor', selectedDoctor)
 
   const { data: session, status } = useSession();
@@ -119,7 +121,8 @@ const PatientListingPage = () => {
         const cAppointment = await api.post('/appoint', {
           doctor: selectedDoctor._id,
           user: selectedPatiantId,
-          date: bookingDate
+          date: bookingDate,
+          meetingType: selectedType ?? 'offline'
         })
 
         console.log(cAppointment)
@@ -210,8 +213,18 @@ const PatientListingPage = () => {
               }
               <h1>Doctor: {selectedDoctor?.username}   {selectedDoctor?.firstName}   {selectedDoctor?.lastName}</h1>
               <br />
+              <select
+                className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+                defaultValue={selectedType}
+                onChange={e => setSelectedType(e.target.value)} >
+                <option selected value={''}>--MeetingType--</option>
+                <option value={'offline'}>Offline</option>
+                <option value={'online'}>Online</option>
+              </select>
+              <br />
+              <br />
               <div>
-                <input type='date' className='border p-2 rounded-xl ' min={moment().format('YYYY-MM-DD')} value={selectedDate} onChange={(e) =>  setSelectedDate(e.target.value)} />
+                <input type='date' className='border p-2 rounded-xl ' min={moment().format('YYYY-MM-DD')} value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} />
                 <button className="ml-4 inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10 h-10 leading-4 cursor-pointer" onClick={CheackAvaibility}>
                   Cheack Avaibility
                 </button>
@@ -258,7 +271,7 @@ const PatientListingPage = () => {
                 <button className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10 h-10 leading-4 cursor-pointer
                 disabled:bg-opacity-40
                 " onClick={handleOk}
-                disabled = {!selectedDoctor?._id || !bookingDate }
+                  disabled={!selectedDoctor?._id || !bookingDate}
                 >Book Appointment</button>
               </div>
             </div>

@@ -24,7 +24,7 @@ const appointSchema = new Schema(
             type: String,
         },
         date: {
-            type: String,
+            type: Date,
             default: Date.now
         },
         status: {
@@ -43,9 +43,14 @@ const appointSchema = new Schema(
             type: Boolean,
             default: false
         },
-        meetDetial:{
-            type:Schema.Types.Mixed 
+        meetDetial: {
+            type: Schema.Types.Mixed
         },
+
+        meetingType: {
+            type: String,
+        },
+
 
         isCancel: {
             type: Boolean,
