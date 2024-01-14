@@ -8,6 +8,7 @@ import api from "@/http"
 
 import { useParams } from 'next/navigation';
 import { useSession } from "next-auth/react";
+import moment from "moment";
 
 
 
@@ -131,14 +132,14 @@ const PatientsDetailsPage = () => {
                     </li>
                     <li class="me-2">
                         <a href="#"
-                            onClick={() => setActiveTab("Medial History")}
-                            class={activeTab == "Medial History"
+                            onClick={() => setActiveTab("Medical History")}
+                            class={activeTab == "Medical History"
                                 ? "inline-flex items-center justify-center p-4 border-b-2 rounded-t-lg text-blue-600  border-blue-600 active dark:text-blue-500 dark:border-blue-500 group"
                                 : "inline-flex items-center justify-center p-4 border-b-2 rounded-t-lg border-transparent  hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group"}>
 
                             <svg class="w-4 h-4 me-2 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M5 11.424V1a1 1 0 1 0-2 0v10.424a3.228 3.228 0 0 0 0 6.152V19a1 1 0 1 0 2 0v-1.424a3.228 3.228 0 0 0 0-6.152ZM19.25 14.5A3.243 3.243 0 0 0 17 11.424V1a1 1 0 0 0-2 0v10.424a3.227 3.227 0 0 0 0 6.152V19a1 1 0 1 0 2 0v-1.424a3.243 3.243 0 0 0 2.25-3.076Zm-6-9A3.243 3.243 0 0 0 11 2.424V1a1 1 0 0 0-2 0v1.424a3.228 3.228 0 0 0 0 6.152V19a1 1 0 1 0 2 0V8.576A3.243 3.243 0 0 0 13.25 5.5Z" />
-                            </svg>Medial History
+                            </svg>Medical History
                         </a>
                     </li>
                     <li class="me-2">
@@ -838,7 +839,194 @@ const PatientsDetailsPage = () => {
                 </div> */}
             </div>
             }
-
+            {
+                activeTab == "Medical History" &&
+                <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark mt-4">
+                    <div className="py-6 px-4 md:px-6 xl:px-7.5">
+                        <h4 className="text-xl font-semibold text-black dark:text-white">
+                            Medical History
+                        </h4>
+                    </div>
+                    <div className="overflow-x-auto">
+                        <table className="w-full table-auto">
+                            <thead>
+                                <tr className="bg-gray-2 text-left dark:bg-meta-4">
+                                    <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
+                                        Order Id
+                                    </th>
+                                    <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
+                                        Date
+                                    </th>
+                                    <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
+                                        Price
+                                    </th>
+                                    <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
+                                        Payment Status
+                                    </th>
+                                    <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
+                                        Items
+                                    </th>
+                                    <th className="min-w-[140px] py-4 px-4 font-medium text-black dark:text-black">
+                                        More Details
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    [].map((item) => (
+                                        <tr className="text-left text-black dark:text-white">
+                                            <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                                                {
+                                                    item?.user ? <ul>
+                                                        <li className="uppercase">
+                                                            {item?.user.firstName}  {item?.user.lastName}
+                                                        </li>
+                                                        <li>
+                                                            {item.user.email}
+                                                        </li>
+                                                        <li>
+                                                            {item.user._id}
+                                                        </li>
+                                                    </ul> : "email"
+                                                }
+                                            </td>
+                                            <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                                                {moment(item.createdAt).calendar()}
+                                            </td>
+                                            <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                                                {item.amount}
+                                            </td>
+                                            <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                                                {item.paymentStatus}
+                                            </td>
+                                            <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+                                                <ul>
+                                                    {item?.items?.map((d, i) => (
+                                                        <li>
+                                                            {d.item.name} | qty-{d.qty}
+                                                            {item?.items.length - 1 != i ? <hr /> : ""}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </td>
+                                            <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                                                <Link href={`/dashboard/orders/${item._id}`}>
+                                                    <p className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
+                                                        Detail
+                                                    </p>
+                                                </Link>
+                                            </td>
+                                        </tr>
+                                    ))
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    {/* <Pagination meta={meta} /> */}
+                </div>
+            }
+            {
+                activeTab == "Order History" &&
+                <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark mt-4">
+                    <div className="py-6 px-4 md:px-6 xl:px-7.5">
+                        <h4 className="text-xl font-semibold text-black dark:text-white">
+                            Order History
+                        </h4>
+                    </div>
+                    <div className="overflow-x-auto">
+                        <table className="w-full table-auto">
+                            <thead>
+                                <tr className="bg-gray-2 text-left dark:bg-meta-4">
+                                    <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
+                                        Order Id
+                                    </th>
+                                    <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
+                                        Date
+                                    </th>
+                                    <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
+                                        Price
+                                    </th>
+                                    <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
+                                        Payment Status
+                                    </th>
+                                    <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
+                                        Items
+                                    </th>
+                                    <th className="min-w-[140px] py-4 px-4 font-medium text-black dark:text-black">
+                                        More Details
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    [].map((item) => (
+                                        <tr className="text-left text-black dark:text-white">
+                                            <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                                                {
+                                                    item?.user ? <ul>
+                                                        <li className="uppercase">
+                                                            {item?.user.firstName}  {item?.user.lastName}
+                                                        </li>
+                                                        <li>
+                                                            {item.user.email}
+                                                        </li>
+                                                        <li>
+                                                            {item.user._id}
+                                                        </li>
+                                                    </ul> : "email"
+                                                }
+                                            </td>
+                                            <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                                                {moment(item.createdAt).calendar()}
+                                            </td>
+                                            <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                                                {item.amount}
+                                            </td>
+                                            <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                                                {item.paymentStatus}
+                                            </td>
+                                            <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+                                                <ul>
+                                                    {item?.items?.map((d, i) => (
+                                                        <li>
+                                                            {d.item.name} | qty-{d.qty}
+                                                            {item?.items.length - 1 != i ? <hr /> : ""}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </td>
+                                            <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                                                <Link href={`/dashboard/orders/${item._id}`}>
+                                                    <p className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
+                                                        Detail
+                                                    </p>
+                                                </Link>
+                                            </td>
+                                        </tr>
+                                    ))
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    {/* <Pagination meta={meta} /> */}
+                </div>
+            }
+            {
+                activeTab == "Nots" &&
+                <div className="bg-white mt-4">
+                    <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
+                        <h3 className="font-medium text-black dark:text-white">
+                            Nots
+                        </h3>
+                    </div>
+                    <div className='p-6'>
+                        <textarea
+                            rows={6}
+                            className=" w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark -4 dark:text-white dark:focus:border-primary"
+                        ></textarea>
+                    </div>
+                </div>
+            }
         </>
     );
 };
