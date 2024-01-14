@@ -1,4 +1,5 @@
 import mongoose, { Document, model, Model, Schema } from "mongoose";
+import paginationPlugin from "../utils/paginationPlugin";
 
 export interface IPropsType extends Document {
     name?: string;
@@ -24,7 +25,7 @@ const prescriptionSchema = new Schema(
                 {
                     item: { type: Schema.Types.ObjectId, ref: "Item" },
                     qty: Number,
-                    description: String,
+                    desc: String,
                 }
             ],
             _id: false
@@ -36,11 +37,13 @@ const prescriptionSchema = new Schema(
             type: Boolean,
             default: false
         },
+        deletedAt: { type: Date } 
     },
     {
         timestamps: true,
     }
 );
 
+prescriptionSchema.plugin(paginationPlugin);
 export default (mongoose.models.category ||
     model("category", prescriptionSchema)) as Model<IPropsType>;

@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { FaHistory, FaEnvelope, FaPhone } from 'react-icons/fa';
 import Pagination from '@/iComponents/Pagination';
 import usePaginate from "@/hooks/usePaginate";
+import { useParams } from "next/navigation";
 import { debounce } from "@/helper";
 import { useSession } from "next-auth/react";
 import Modal from "@/components/inventory/Modal";
@@ -21,14 +22,18 @@ const PatientListingPage = () => {
   const [selectedPatiantId, setSelectedPatiantId] = useState()
   const [appointment, setAppointment] = useState({})
   const [isVisibale, setIsvisible] = useState(false)
+  const [isAppointmentOpen, setIsAppointmentOpen] = useState(false)
   const [value, setValue] = useState();
   const [bookingDate, setBookingDate] = useState()
   const [doctor, setDoctor] = useState([])
   const [selectedDoctor, setSelectedDoctor] = useState()
   const [selectedDate, setSelectedDate] = useState(moment().format('YYYY-MM-DD'))
   const [selectedType, setSelectedType] = useState()
+  const [prescription, setPrescription] = useState([])
+  const { product } = useParams();
   console.log('selectedType', selectedType)
   console.log('selectedDoctor', selectedDoctor)
+  console.log('prescription', prescription)
 
   const { data: session, status } = useSession();
 
@@ -93,7 +98,7 @@ const PatientListingPage = () => {
         page,
         limit,
         search,
-        
+
       }
     })
       .then((response) => {
@@ -138,6 +143,17 @@ const PatientListingPage = () => {
     setSelectedPatiantId(id)
   };
 
+  const handleClickAppointment = () => {
+    setIsAppointmentOpen(true)
+    api.get('/inventory')
+      .then(({ data }) => {
+        setPrescription(data.result.data)
+      })
+  }
+
+  const prescriptionCancel = () => {
+    setIsAppointmentOpen(false)
+  }
 
   return (
     <div className="p-4">
@@ -276,6 +292,22 @@ const PatientListingPage = () => {
               </div>
             </div>
           </Modal>
+          <Modal isVisibale={isAppointmentOpen}>
+            {
+              prescription.slice(0, 2).map((p) => (
+                <div>
+                  <p>Code Name: {p.codeName}</p>
+                  <p>Name: {p.name}</p>
+                  <hr />
+                </div>
+              ))
+            }
+            <br />
+            <div className="flex justify-end gap-3">
+              <button className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10 h-10 leading-4 cursor-pointer" autoFocus onClick={prescriptionCancel}> Cancel </button>
+              <button className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10 h-10 leading-4 cursor-pointer"> Book Prescription </button>
+            </div>
+          </Modal>
           <table className="w-full table-auto">
             <thead>
               <tr className="bg-gray-2 text-left dark:bg-meta-4">
@@ -342,6 +374,9 @@ const PatientListingPage = () => {
                       </Link>
                       <p className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10 h-10 leading-4 cursor-pointer" onClick={() => handleClickListItem(patient._id)}>
                         Book Appointment
+                      </p>
+                      <p className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10 h-10 leading-4 cursor-pointer" onClick={handleClickAppointment}>
+                        Add Prescription
                       </p>
                     </div>
                   </td>

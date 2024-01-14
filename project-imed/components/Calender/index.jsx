@@ -22,7 +22,7 @@ const Calendar = () => {
   useEffect(() => {
     fetchAppointment()
   }, [page, limit, date, order, meetingType, session?.user])
-  
+
   const fetchAppointment = async () => {
     const doctorDetail = await api.get('/appoint', {
       params: {
@@ -47,7 +47,7 @@ const Calendar = () => {
           <h1 className="text-2xl font-bold"></h1>
           <div className="flex items-center space-x-2">
             <select defaultValue={meetingType} onChange={e => setSearchParmas('meetingType', e.target.value)}>
-              <option selected  value={''}>--select--</option>
+              <option selected value={''}>--select--</option>
               <option value={"online"} >Online</option>
               <option value={"offline"}>Offline</option>
             </select>
@@ -139,6 +139,7 @@ const Calendar = () => {
                       <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
                         <button className='bg-primary text-white px-2 mx-1 rounded ' onClick={() => cancelAppointment(detail._id)}> Cancel </button>
                         <Link href={`/dashboard/appointment/${detail._id}`} className="bg-primary text-white px-2 mx-1 rounded ">View Detail</Link>
+                     
                       </td>
                     </tr>
                   ))
