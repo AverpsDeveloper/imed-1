@@ -9,6 +9,7 @@ import api from "@/http"
 import { useParams } from 'next/navigation';
 import { useSession } from "next-auth/react";
 import moment from "moment";
+import Link from "next/link";
 
 
 
@@ -55,7 +56,9 @@ const PatientsDetailsPage = () => {
     })
     const { id: username } = useParams();
     const [isEditInfo, setIsEditInfo] = useState(false);
-    const [activeTab, setActiveTab] = useState("Profile")
+    const [activeTab, setActiveTab] = useState("Profile");
+    const [orders, setOrders] = useState([]);
+    const [prescriptions, setPrescriptions] = useState([]);
 
     const [initialValuesInfo, setInitialValuesInfo] = useState({
         username: "patient",
@@ -75,7 +78,38 @@ const PatientsDetailsPage = () => {
         address: "Temp Address",
     })
 
+    useEffect(() => {
+        if (activeTab == 'Order History') {
+            api.get('/order', {
+                params: {
+                    user: username
+                }
+            })
+                .then((response) => {
+                    console.log("response.data::", response.data);
+                    setOrders(response?.data?.result?.data);
+                    // setMeta(response?.data?.result?.meta);
+                })
+        }
 
+
+    }, [activeTab]);
+    useEffect(() => {
+        if (activeTab == 'Medical History') {
+            api.get('/prescription', {
+                params: {
+                    user: username
+                }
+            })
+                .then((response) => {
+                    console.log("response.data::", response.data);
+                    setPrescriptions(response?.data?.result?.data);
+                    // setMeta(response?.data?.result?.meta);
+                })
+        }
+
+
+    }, [activeTab]);
 
     useEffect(() => {
         api.get(`/users/${username}`)
@@ -851,17 +885,15 @@ const PatientsDetailsPage = () => {
                         <table className="w-full table-auto">
                             <thead>
                                 <tr className="bg-gray-2 text-left dark:bg-meta-4">
-                                    <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
-                                        Order Id
-                                    </th>
+                                    
                                     <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
                                         Date
                                     </th>
                                     <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
-                                        Price
+                                        Doctor
                                     </th>
                                     <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
-                                        Payment Status
+                                        doscription
                                     </th>
                                     <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
                                         Items
@@ -873,31 +905,17 @@ const PatientsDetailsPage = () => {
                             </thead>
                             <tbody>
                                 {
-                                    [].map((item) => (
+                                    prescriptions?.map((item) => (
                                         <tr className="text-left text-black dark:text-white">
-                                            <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                                                {
-                                                    item?.user ? <ul>
-                                                        <li className="uppercase">
-                                                            {item?.user.firstName}  {item?.user.lastName}
-                                                        </li>
-                                                        <li>
-                                                            {item.user.email}
-                                                        </li>
-                                                        <li>
-                                                            {item.user._id}
-                                                        </li>
-                                                    </ul> : "email"
-                                                }
-                                            </td>
+                                           
                                             <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
                                                 {moment(item.createdAt).calendar()}
                                             </td>
                                             <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                                                {item.amount}
+                                                {item?.doctor?.username}
                                             </td>
                                             <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                                                {item.paymentStatus}
+                                                {item.description}
                                             </td>
                                             <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
                                                 <ul>
@@ -910,7 +928,7 @@ const PatientsDetailsPage = () => {
                                                 </ul>
                                             </td>
                                             <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                                                <Link href={`/dashboard/orders/${item._id}`}>
+                                                <Link href={`/dashboard/appointment/${item._id}`}>
                                                     <p className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
                                                         Detail
                                                     </p>
@@ -959,7 +977,7 @@ const PatientsDetailsPage = () => {
                             </thead>
                             <tbody>
                                 {
-                                    [].map((item) => (
+                                    orders.map((item) => (
                                         <tr className="text-left text-black dark:text-white">
                                             <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
                                                 {

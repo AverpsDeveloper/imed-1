@@ -45,5 +45,5 @@ const prescriptionSchema = new Schema(
 );
 
 prescriptionSchema.plugin(paginationPlugin);
-export default (mongoose.models.category ||
-    model("category", prescriptionSchema)) as Model<IPropsType>;
+export default (mongoose.models.Prescription ||
+    model("Prescription", prescriptionSchema)) as Model<IPropsType>;

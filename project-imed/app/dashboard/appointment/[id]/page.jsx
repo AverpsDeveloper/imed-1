@@ -16,7 +16,7 @@ const page = () => {
     console.log('params', params)
     const [prescription, setPrescription] = useState([])
     const [appointDetail, setAppointDetail] = useState(null)
-    const [isPresOpen, setIsPresOpen] = useState(true)
+    const [isPresOpen, setIsPresOpen] = useState(false)
     const [initialPresInfo, setInitialPresInfo] = useState({
         items: [
             {

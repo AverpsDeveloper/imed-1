@@ -2,7 +2,7 @@ import tcWrap from "@/libs/utils/tcWrap";
 import { Types } from "mongoose";
 import prescriptionModal from "@/libs/models/prescriptionModal";
 export const GET = tcWrap(async (req, res) => {
-    const { page, limit, date, product, doctor } = req.query;
+    const { page, limit, date, product, doctor, user } = req.query;
 
     let filter: any = [{ deletedAt: { $exists: false } }];
 
@@ -13,7 +13,12 @@ export const GET = tcWrap(async (req, res) => {
     }
     if (doctor) {
         filter.push({
-            doctor: product,
+            doctor: doctor,
+        });
+    }
+    if (user) {
+        filter.push({
+            user,
         });
     }
 
@@ -30,7 +35,15 @@ export const GET = tcWrap(async (req, res) => {
     }
 
     const { data, meta } = await prescriptionModal.find({ $and: filter })
-        .populate("item", "name codename")
+        .populate([
+            { path: "user" },
+            { path: "doctor" },
+            {
+                path: 'items',
+                populate: [
+                    { path: 'item' },
+                ]
+            }])
         //@ts-ignore
         .paginate({ page, limit })//"item"
 
@@ -57,7 +70,7 @@ export const POST = tcWrap(async (req, res) => {
     }
     const item = await prescriptionModal.create(body);
     console.log(item, "reqbody", body);
-    return res.json({ result: { message: "Prescription added Successfully", item }});
+    return res.json({ result: { message: "Prescription added Successfully", item } });
 });
 
 export const PUT = tcWrap(async (req, res) => {
