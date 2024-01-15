@@ -9,7 +9,7 @@ import itemModel from "@/libs/models/itemModel";
 
 
 export const GET = tcWrap(async (req, res) => {
-    const { search, arriveAt, price, page, limit, date, product, orderStatus } = req.query;
+    const { search, arriveAt, price, page, limit, date, product, orderStatus, user } = req.query;
 
     let filter: Record<string, Object>[] = [{}];
     // if (search) {
@@ -24,6 +24,11 @@ export const GET = tcWrap(async (req, res) => {
     if (product) {
         filter.push({
             item: product,
+        });
+    }
+    if (user) {
+        filter.push({
+            item: user,
         });
     }
     if (orderStatus) {
