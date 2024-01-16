@@ -513,7 +513,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                               </Link>
                             </li>
 
-                            {/* <li>
+                            <li>
                               <Link
                                 href="/dashboard/patients/add"
                                 className={`first-letter:group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${pathname === "/patients/add" &&
@@ -522,7 +522,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                               >
                                 Add patients
                               </Link>
-                            </li> */}
+                            </li>
                           </ul>
                         </div>
                         {/* <!-- Dropdown Menu End --> */}

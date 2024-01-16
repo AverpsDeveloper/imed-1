@@ -180,7 +180,7 @@ const page = () => {
                             </div>
                             <div className="m-6 text-center ">
                                 <a className="inline-block text-sm text-blue-500 align-baseline hover:text-blue-800" href="#">
-                                Already Have an Account? <span className='cursor-pointer text-iPrimary'>Login</span>With Us Today
+                                    Already Have an Account? <span className='cursor-pointer text-iPrimary'>Login</span>With Us Today
                                 </a>
                             </div>
                             {/* <div className="text-center">
