@@ -1,13 +1,15 @@
 import appointModel from "@/libs/models/appointModel";
 import userModel from "@/libs/models/userModel";
+import { genMeeting } from "@/libs/utils/meetingUtils";
 import tcWrap from "@/libs/utils/tcWrap";
+import moment from "moment";
 
 
 export const GET = tcWrap(async (req, res) => {
-    const { search, page, limit, date, doctor } = req.query;
+    const { search, page, limit, date, doctor, order, meetingType } = req.query;
 
-    let filter: Record<string, Object>[] = [{isCancel : false}];
-    
+    let filter: Record<string, Object>[] = [{ isCancel: false }];
+
     // if (search) {
     //     filter.push({
     //         $or: [
@@ -16,8 +18,12 @@ export const GET = tcWrap(async (req, res) => {
     //         ],
     //     });
     // }
-    if(doctor){
-        filter.push({doctor})
+    if (doctor) {
+        filter.push({ doctor })
+    }
+
+    if (meetingType) {
+        filter.push({ meetingType })
     }
 
     if (date) {
@@ -32,7 +38,7 @@ export const GET = tcWrap(async (req, res) => {
         });
     }
     const { data, meta } = await appointModel.find({ $and: filter })
-        .populate("doctor user")
+        .populate("doctor user").sort({ date: order ? order : "desc" })
         //@ts-ignore
         .paginate({ page, limit });
     if (!data) throw new Error("something went wrong");
@@ -60,7 +66,23 @@ export const POST = tcWrap(async (req, res) => {
         }
     }
 
-    const data = await appointModel.create(body);
+    let meet: any;
+    if (body.meetingType == "online") {
+
+        meet = await genMeeting({
+            "topic": "Doctor Appointment",
+            "type": 2,
+            // "start_time": "2024-02-30",
+            //@ts-ignore
+            "start_time": moment(body.date).utc().format(),
+            "duration": 30,
+            "timezone": "America/Mexico_City",
+            "password": ""
+        });
+    }
+
+    console.log("meet", meet);
+    const data = await appointModel.create({ ...body, meetDetial: meet });
     if (!data) throw new Error("something went wrong");
     return res.json({
         result: {

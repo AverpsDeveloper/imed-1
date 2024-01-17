@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { FaHistory, FaEnvelope, FaPhone } from 'react-icons/fa';
 import Pagination from '@/iComponents/Pagination';
 import usePaginate from "@/hooks/usePaginate";
+import { useParams } from "next/navigation";
 import { debounce } from "@/helper";
 import { useSession } from "next-auth/react";
 import Modal from "@/components/inventory/Modal";
@@ -21,12 +22,18 @@ const PatientListingPage = () => {
   const [selectedPatiantId, setSelectedPatiantId] = useState()
   const [appointment, setAppointment] = useState({})
   const [isVisibale, setIsvisible] = useState(false)
+  const [isAppointmentOpen, setIsAppointmentOpen] = useState(false)
   const [value, setValue] = useState();
   const [bookingDate, setBookingDate] = useState()
   const [doctor, setDoctor] = useState([])
   const [selectedDoctor, setSelectedDoctor] = useState()
   const [selectedDate, setSelectedDate] = useState(moment().format('YYYY-MM-DD'))
+  const [selectedType, setSelectedType] = useState()
+  const [prescription, setPrescription] = useState([])
+  const { product } = useParams();
+  console.log('selectedType', selectedType)
   console.log('selectedDoctor', selectedDoctor)
+  console.log('prescription', prescription)
 
   const { data: session, status } = useSession();
 
@@ -91,7 +98,7 @@ const PatientListingPage = () => {
         page,
         limit,
         search,
-        
+
       }
     })
       .then((response) => {
@@ -119,7 +126,8 @@ const PatientListingPage = () => {
         const cAppointment = await api.post('/appoint', {
           doctor: selectedDoctor._id,
           user: selectedPatiantId,
-          date: bookingDate
+          date: bookingDate,
+          meetingType: selectedType ?? 'offline'
         })
 
         console.log(cAppointment)
@@ -135,6 +143,17 @@ const PatientListingPage = () => {
     setSelectedPatiantId(id)
   };
 
+  const handleClickAppointment = () => {
+    setIsAppointmentOpen(true)
+    api.get('/inventory')
+      .then(({ data }) => {
+        setPrescription(data.result.data)
+      })
+  }
+
+  const prescriptionCancel = () => {
+    setIsAppointmentOpen(false)
+  }
 
   return (
     <div className="p-4">
@@ -210,8 +229,18 @@ const PatientListingPage = () => {
               }
               <h1>Doctor: {selectedDoctor?.username}   {selectedDoctor?.firstName}   {selectedDoctor?.lastName}</h1>
               <br />
+              <select
+                className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+                defaultValue={selectedType}
+                onChange={e => setSelectedType(e.target.value)} >
+                <option selected value={''}>--MeetingType--</option>
+                <option value={'offline'}>Offline</option>
+                <option value={'online'}>Online</option>
+              </select>
+              <br />
+              <br />
               <div>
-                <input type='date' className='border p-2 rounded-xl ' min={moment().format('YYYY-MM-DD')} value={selectedDate} onChange={(e) =>  setSelectedDate(e.target.value)} />
+                <input type='date' className='border p-2 rounded-xl ' min={moment().format('YYYY-MM-DD')} value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} />
                 <button className="ml-4 inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10 h-10 leading-4 cursor-pointer" onClick={CheackAvaibility}>
                   Cheack Avaibility
                 </button>
@@ -258,9 +287,25 @@ const PatientListingPage = () => {
                 <button className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10 h-10 leading-4 cursor-pointer
                 disabled:bg-opacity-40
                 " onClick={handleOk}
-                disabled = {!selectedDoctor?._id || !bookingDate }
+                  disabled={!selectedDoctor?._id || !bookingDate}
                 >Book Appointment</button>
               </div>
+            </div>
+          </Modal>
+          <Modal isVisibale={isAppointmentOpen}>
+            {
+              prescription.slice(0, 2).map((p) => (
+                <div>
+                  <p>Code Name: {p.codeName}</p>
+                  <p>Name: {p.name}</p>
+                  <hr />
+                </div>
+              ))
+            }
+            <br />
+            <div className="flex justify-end gap-3">
+              <button className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10 h-10 leading-4 cursor-pointer" autoFocus onClick={prescriptionCancel}> Cancel </button>
+              <button className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10 h-10 leading-4 cursor-pointer"> Book Prescription </button>
             </div>
           </Modal>
           <table className="w-full table-auto">
@@ -329,6 +374,9 @@ const PatientListingPage = () => {
                       </Link>
                       <p className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10 h-10 leading-4 cursor-pointer" onClick={() => handleClickListItem(patient._id)}>
                         Book Appointment
+                      </p>
+                      <p className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10 h-10 leading-4 cursor-pointer" onClick={handleClickAppointment}>
+                        Add Prescription
                       </p>
                     </div>
                   </td>

@@ -6,9 +6,10 @@ import Image from "next/image";
 import usePaginate from "@/hooks/usePaginate";
 import { useState, useEffect } from "react";
 import api from "@/http";
+import moment from "moment";
 
 const OrdersListPage = () => {
-    const { page, limit, search, searchHandler } = usePaginate();
+    const { page, limit, search, date, searchHandler, setSearchParmas, orderStatus } = usePaginate();
     const [meta, setMeta] = useState({ page: 1, limit: 10, total: 10 });
     const [orders, setOrders] = useState([])
 
@@ -18,6 +19,8 @@ const OrdersListPage = () => {
                 page,
                 limit,
                 search,
+                date,
+                orderStatus
             }
         })
             .then((response) => {
@@ -26,7 +29,7 @@ const OrdersListPage = () => {
                 setMeta(response?.data?.result?.meta);
             })
 
-    }, [page, limit, search]);
+    }, [page, limit, search, date, orderStatus]);
 
     console.log("orders", orders);
     return (
@@ -53,6 +56,49 @@ const OrdersListPage = () => {
                                     placeholder="Search by username..." className="w-full bg-transparent pl-9 pr-4 font-medium focus:outline-none xl:w-125" type="text" fdprocessedid="ai7g3k" />
                             </div>
                         </div>
+                        <div>
+                            <label>
+                                From
+                            </label>
+                            <input
+                                type="date"
+                                className=" rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                                placeholder="Search Product"
+                                defaultValue={date}
+                                onChange={e => setSearchParmas("date", e.target.value)}
+                            />
+                            <label>
+                                to
+                            </label>
+                            <input
+                                type="date"
+                                className=" rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                                placeholder="Search Product"
+                                defaultValue={date}
+                                onChange={e => setSearchParmas("date", `${date ? `${date}|` : "|"}${e.target.value}`)} />
+                        </div>
+                        <select
+                            value={orderStatus}
+                            className=" mt-4 rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                            onChange={e => setSearchParmas("orderStatus", e.target.value)}
+                        >
+                           
+                            <option value={''}>
+                                Select Order Status
+                            </option>
+                            <option value={'Pending'}>
+                                Pending
+                            </option>
+                            <option value={'Processing'}>
+                                Processing
+                            </option>
+                            <option value={'Out for Shipping'}>
+                                Out for Shipping
+                            </option>
+                            <option value={'Shipped'} >
+                                Shipped
+                            </option>
+                        </select>
 
                     </div>
                 </div>
@@ -105,7 +151,7 @@ const OrdersListPage = () => {
                                             }
                                         </td>
                                         <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                                            {item.createdAt}
+                                            {moment(item.createdAt).calendar()}
                                         </td>
                                         <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
                                             {item.amount}

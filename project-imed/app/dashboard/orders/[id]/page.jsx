@@ -8,21 +8,28 @@ import { useEffect, useState } from "react";
 
 const ProductDetailsPage = () => {
     const [initialValues, setInitialValues] = useState([]);
-    const {id} = useParams();
-    console.log("id::",id);
-    useEffect(() => {
-        // api.get(`/inventory/${product}`)
-        //     .then(({ data }) => {
+    const [orderStatus, setOrderStatus] = useState("Pending");
+    const { id } = useParams();
+    console.log("id::", id);
 
-        //         setInitialValues(productItem)
-        //     })
+    const getOrderDetail = () => {
         api.get(`/order/${id}`)
-            .then(({data}) => {
-                console.log("data::",data);
-                setInitialValues(data.result.data)
+            .then(({ data }) => {
+                console.log("data::", data);
+                setInitialValues(data.result.data);
+                setOrderStatus(data.result.data.orderStatus);
             })
-    }, [])
 
+    }
+    useEffect(() => {
+        getOrderDetail()
+    }, [])
+    const updateOrder = () => {
+        api.put(`/order/${id}`, { orderStatus })
+            .then(({ data }) => {
+                getOrderDetail();
+            })
+    }
     if (!initialValues) {
         return (
             <div className="mx-auto max-w-270">
@@ -50,7 +57,7 @@ const ProductDetailsPage = () => {
                         <div className="border-b border-stroke py-4 px-7 dark:border-strokedark flex justify-between items-center">
                             <div>
                                 <h3 className="font-medium text-black dark:text-white">
-                                Order Information
+                                    Order Information
                                 </h3>
                             </div>
                             <div>
@@ -77,16 +84,46 @@ const ProductDetailsPage = () => {
                                     </tr>
                                 </thead>
                                 <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                <tbody className="text-xs">
-                                    {Object.entries(initialValues).map(([key, value]) => (
-                                        <tr className="border-b border-gray-200 dark:border-gray-700" key={key}>
-                                            <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">{key}</th>
-                                            <td className="px-6 py-4">{JSON.stringify(value)}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
+                                    <tbody className="text-xs">
+                                        {Object.entries(initialValues).map(([key, value]) => (
+                                            <tr className="border-b border-gray-200 dark:border-gray-700" key={key}>
+                                                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">{key}</th>
+                                                <td className="px-6 py-4">{JSON.stringify(value)}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
                             </table>
-                            </table>
+                        </div>
+                        <div className="p-8">
+                            <h3 className="font-medium text-xl text-black dark:text-white">
+                                Updata Order States
+                            </h3>
+                            <select
+                                value={orderStatus}
+                                className=" mt-4 rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                                onChange={e => setOrderStatus(e.target.value)}
+                            >
+
+                                <option value={'Pending'}>
+                                    Pending
+                                </option>
+                                <option value={'Processing'}>
+                                    Processing
+                                </option>
+                                <option value={'Out for Shipping'}>
+                                    Out for Shipping
+                                </option>
+                                <option value={'Shipped'} >
+                                    Shipped
+                                </option>
+                            </select>
+                            <button
+                                className="flex mt-4 justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-95"
+
+                                onClick={updateOrder}>
+                                Update
+                            </button>
                         </div>
                     </div>
                 </div>
