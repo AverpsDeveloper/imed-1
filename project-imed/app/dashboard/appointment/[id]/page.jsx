@@ -190,7 +190,7 @@ const page = () => {
                                                                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                                                                         type="text"
                                                                         name={`items[${index}].desc`}
-                                                                        placeholder="Medicien Desciption"
+                                                                        placeholder="Medicien Description "
 
                                                                     />
 
@@ -216,7 +216,7 @@ const page = () => {
                                                             className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-95"
                                                             onClick={() => arrayHelpers.push({ item: '', qty: '', desc: '' })}
                                                         >
-                                                            + Add More Mediciens
+                                                            + Add More Medicines
                                                         </button>
 
                                                     </div>

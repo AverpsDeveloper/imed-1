@@ -51,11 +51,11 @@ const AddNewPatients = () => {
     unitCode: 12345,
     allergy: true,
     g6PD: false,
-    address: "Temp Address",
+    address: "Temp Address"
   })
 
   const onSubmit = (data) => {
-   
+    api.post("/users",data)
   };
 
   return (
@@ -171,6 +171,36 @@ const AddNewPatients = () => {
                               </span>
                             </div>
                             <ErrMessage name="gender" />
+                          </div>
+                        </div>
+
+                      </div>
+
+
+                      <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                        <div className="w-full xl:w-1/2">
+                          <div className="mb-4">
+                            <label className="block text-gray-600">Post Code<span className="text-meta-1">*</span></label>
+                            <Field
+                              type="text"
+                              name="postCode"
+                              className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                              placeholder="Post Code"
+                            />
+                            <ErrMessage name="postCode" />
+                          </div>
+                        </div>
+
+                        <div className="w-full xl:w-1/2">
+                          <div className="mb-4">
+                          <label className="block text-gray-600">Unit code<span className="text-meta-1">*</span></label>
+                            <Field
+                              type="text"
+                              name="unitCode"
+                              className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                              placeholder="Unit code"
+                            />
+                            <ErrMessage name="unitCode" />
                           </div>
                         </div>
 

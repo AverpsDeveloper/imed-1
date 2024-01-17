@@ -889,7 +889,7 @@ const PatientsDetailsPage = () => {
                                         Doctor
                                     </th>
                                     <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
-                                        doscription
+                                    Description
                                     </th>
                                     <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
                                         Items
