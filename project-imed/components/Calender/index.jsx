@@ -114,6 +114,9 @@ const Calendar = () => {
                     Date
                   </th>
                   <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
+                    Appointment Status
+                  </th>
+                  <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
                     Patients
                   </th>
                   <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
@@ -130,7 +133,10 @@ const Calendar = () => {
                         <p>{detail.doctor.email}</p>
                       </td>
                       <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                        {moment(detail.date).calendar()}
+                        {moment(detail.date).format("lll")}
+                      </td>
+                      <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                        {detail.appoimentStatus}
                       </td>
                       <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
                         <h1 className="font-bold text-2xl">{detail.user.username}</h1>
@@ -139,7 +145,6 @@ const Calendar = () => {
                       <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
                         <button className='bg-primary text-white px-2 mx-1 rounded ' onClick={() => cancelAppointment(detail._id)}> Cancel </button>
                         <Link href={`/dashboard/appointment/${detail._id}`} className="bg-primary text-white px-2 mx-1 rounded ">View Detail</Link>
-                     
                       </td>
                     </tr>
                   ))

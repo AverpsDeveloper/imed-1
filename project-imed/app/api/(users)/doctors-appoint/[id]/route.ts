@@ -22,7 +22,7 @@ export const GET = tcWrap(async (req, res) => {
     ]);
 
     const bookedAppontmentMap = appointments.reduce((acc: Record<string, any>, apoint: any) => {
-        acc[String(apoint.date)] = 1;
+        acc[moment(apoint.date).toISOString()] = 1;
         return acc;
     }, {});
 

@@ -50,8 +50,9 @@ const appointSchema = new Schema(
         meetingType: {
             type: String,
         },
-
-
+        appoimentStatus: {
+            type: String,
+        },
         isCancel: {
             type: Boolean,
             default: false

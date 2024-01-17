@@ -9,88 +9,17 @@ import Pagination from '@/iComponents/Pagination';
 import usePaginate from "@/hooks/usePaginate";
 import { useParams } from "next/navigation";
 import { debounce } from "@/helper";
-import { useSession } from "next-auth/react";
-import Modal from "@/components/inventory/Modal";
 import moment from "moment";
+import BookAppointModal from "@/components/modal/BookAppointModal";
 
 const PatientListingPage = () => {
+  const { page, limit, search, searchHandler } = usePaginate();
   const [genderFilter, setGenderFilter] = useState('all');
   const [patient, setPatient] = useState([])
-  const { page, limit, search, searchHandler } = usePaginate();
   const [meta, setMeta] = useState({ page: 1, limit: 10, total: 10 });
-  const [open, setOpen] = useState(false)
   const [selectedPatiantId, setSelectedPatiantId] = useState()
-  const [appointment, setAppointment] = useState({})
   const [isVisibale, setIsvisible] = useState(false)
-  const [isAppointmentOpen, setIsAppointmentOpen] = useState(false)
-  const [value, setValue] = useState();
-  const [bookingDate, setBookingDate] = useState()
-  const [doctor, setDoctor] = useState([])
-  const [selectedDoctor, setSelectedDoctor] = useState()
-  const [selectedDate, setSelectedDate] = useState(moment().format('YYYY-MM-DD'))
-  const [selectedType, setSelectedType] = useState()
-  const [prescription, setPrescription] = useState([])
-  const { product } = useParams();
-  console.log('selectedType', selectedType)
-  console.log('selectedDoctor', selectedDoctor)
-  console.log('prescription', prescription)
 
-  const { data: session, status } = useSession();
-
-
-  const isDoctorLogin = session?.user?.role === "DOCTOR"
-
-  console.log('appointment', appointment)
-
-  useEffect(() => {
-    if (isDoctorLogin) {
-      setSelectedDoctor(session.user)
-    }
-
-  }, [session?.user])
-
-
-  const CheackAvaibility = async () => {
-    const result = await api.get(`/doctors-appoint/${selectedDoctor._id}`, {
-      params: {
-        date: selectedDate
-      }
-    })
-
-    console.log('cAvaibility', result)
-    setAppointment(result.data?.result?.data)
-  }
-
-
-  useEffect(() => {
-    const fetchDoctor = async () => {
-      const doctorInfo = await api.get('/users-admin', {
-        params: {
-          role: "DOCTOR",
-        }
-      })
-      console.log('doctor', doctor)
-      setDoctor(doctorInfo.data.result.data)
-    }
-
-    fetchDoctor()
-
-
-  }, [isDoctorLogin])
-
-
-  useEffect(() => {
-    if (selectedDoctor) {
-      const doctorId = async () => {
-        const dId = await api.get(`/doctors-appoint/${selectedDoctor._id}`)
-        setAppointment(dId.data?.result?.data)
-      }
-
-      doctorId()
-    }
-
-
-  }, [open, selectedDoctor])
 
   useEffect(() => {
     api.get('/users', {
@@ -98,7 +27,6 @@ const PatientListingPage = () => {
         page,
         limit,
         search,
-
       }
     })
       .then((response) => {
@@ -108,59 +36,17 @@ const PatientListingPage = () => {
 
   }, [page, limit, search]);
 
-  const filteredPatients = patient.filter((patient) => {
-    if (genderFilter === 'all') return true;
-    return patient.gender === genderFilter;
-  });
-
-  const handleCancel = () => {
-    setAppointment({})
-    setIsvisible(false)
-  };
-
-  const handleOk = async () => {
-
-
-    if (bookingDate) {
-      const createAppointment = async () => {
-        const cAppointment = await api.post('/appoint', {
-          doctor: selectedDoctor._id,
-          user: selectedPatiantId,
-          date: bookingDate,
-          meetingType: selectedType ?? 'offline'
-        })
-
-        console.log(cAppointment)
-      }
-      await createAppointment()
-      setAppointment({})
-      setIsvisible(false);
-    }
-  };
-
   const handleClickListItem = (id) => {
     setIsvisible(true)
     setSelectedPatiantId(id)
   };
 
-  const handleClickAppointment = () => {
-    setIsAppointmentOpen(true)
-    api.get('/inventory')
-      .then(({ data }) => {
-        setPrescription(data.result.data)
-      })
-  }
-
-  const prescriptionCancel = () => {
-    setIsAppointmentOpen(false)
-  }
-
   return (
     <div className="p-4">
+      <BookAppointModal isVisibale={isVisibale} onClose={() => setIsvisible(false)} selectedPatiantId={selectedPatiantId} />
       <div className="flex justify-between mb-4 ">
         <h1 className="text-2xl font-bold"></h1>
         <div className="flex items-center space-x-2">
-
           <div class="hidden sm:block shadow-md px-4 py-4 rounded ">
             <div class="relative">
               <button class="absolute left-0 top-1/2 -translate-y-1/2" fdprocessedid="x8uxg">
@@ -209,105 +95,6 @@ const PatientListingPage = () => {
           </h4>
         </div>
         <div className="overflow-x-auto">
-          <Modal isVisibale={isVisibale} >
-            <div className="overflow-x-auto p-5">
-
-              {
-                !isDoctorLogin ? <div>
-
-                  <label for="countries" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select Doctor</label>
-                  <select id="countries" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" onChange={(e) => setSelectedDoctor(() => doctor.find(d => d._id == e.target.value))}>
-                    <option>Select Doctor</option>
-                    {
-                      doctor.map((doc) => (
-                        <option value={doc._id}>{doc.username}</option>
-                      ))
-                    }
-
-                  </select>
-                </div> : ''
-              }
-              <h1>Doctor: {selectedDoctor?.username}   {selectedDoctor?.firstName}   {selectedDoctor?.lastName}</h1>
-              <br />
-              <select
-                className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
-                defaultValue={selectedType}
-                onChange={e => setSelectedType(e.target.value)} >
-                <option selected value={''}>--MeetingType--</option>
-                <option value={'offline'}>Offline</option>
-                <option value={'online'}>Online</option>
-              </select>
-              <br />
-              <br />
-              <div>
-                <input type='date' className='border p-2 rounded-xl ' min={moment().format('YYYY-MM-DD')} value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} />
-                <button className="ml-4 inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10 h-10 leading-4 cursor-pointer" onClick={CheackAvaibility}>
-                  Cheack Avaibility
-                </button>
-              </div>
-              <br />
-              <div className='flex justify-space-between'>
-                <p className='font-bold'>Appointment -</p>
-                <p>{appointment?.apointDate}</p>
-              </div>
-              <div>
-                {
-                  appointment?.apointments?.map((appo) => (
-                    <div key={appo.apointDate}>
-                      <div className='flex justify-between'>
-                        <p>Start- {moment(appo.start).format("LT")}</p>
-                        <p>End- {moment(appo.end).format("LT")}</p>
-                      </div>
-                      <br />
-                      <div className="grid grid-cols-3 md:grid-cols-4 gap-4">
-                        {appo?.slots?.map((appoin) => (
-
-                          appoin?.isAvailable ?
-                            <div className="flex items-center gap-2" key={appoin?.time}>
-                              <input type="radio" name={'date'} value={appoin?.time} onChange={(e) => setBookingDate(e.target.value)} className=" h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                              <h1>{moment(appoin?.time).format('LT')}</h1>
-                            </div>
-                            :
-                            <div className="flex items-center gap-2" key={appoin?.time}>
-
-                              <input type="radio" checked disabled className=" h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                                name={moment(appoin?.time).format("LT")} />
-                              <h1 className="text-gray-100">{moment(appoin?.time).format('LT')}</h1>
-                            </div>
-                        ))}
-
-                      </div>
-                    </div>
-                  ))
-                }
-
-              </div>
-              <div className="flex justify-end gap-3">
-                <button className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10 h-10 leading-4 cursor-pointer" autoFocus onClick={handleCancel}> Cancel </button>
-                <button className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10 h-10 leading-4 cursor-pointer
-                disabled:bg-opacity-40
-                " onClick={handleOk}
-                  disabled={!selectedDoctor?._id || !bookingDate}
-                >Book Appointment</button>
-              </div>
-            </div>
-          </Modal>
-          <Modal isVisibale={isAppointmentOpen}>
-            {
-              prescription.slice(0, 2).map((p) => (
-                <div>
-                  <p>Code Name: {p.codeName}</p>
-                  <p>Name: {p.name}</p>
-                  <hr />
-                </div>
-              ))
-            }
-            <br />
-            <div className="flex justify-end gap-3">
-              <button className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10 h-10 leading-4 cursor-pointer" autoFocus onClick={prescriptionCancel}> Cancel </button>
-              <button className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10 h-10 leading-4 cursor-pointer"> Book Prescription </button>
-            </div>
-          </Modal>
           <table className="w-full table-auto">
             <thead>
               <tr className="bg-gray-2 text-left dark:bg-meta-4">
@@ -374,9 +161,6 @@ const PatientListingPage = () => {
                       </Link>
                       <p className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10 h-10 leading-4 cursor-pointer" onClick={() => handleClickListItem(patient._id)}>
                         Book Appointment
-                      </p>
-                      <p className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10 h-10 leading-4 cursor-pointer" onClick={handleClickAppointment}>
-                        Add Prescription
                       </p>
                     </div>
                   </td>

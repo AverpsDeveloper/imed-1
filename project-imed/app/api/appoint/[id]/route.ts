@@ -1,5 +1,6 @@
 import appointModel from "@/libs/models/appointModel";
 import tcWrap from "@/libs/utils/tcWrap";
+import { Types } from "mongoose";
 
 
 export const GET = tcWrap(async (req, res) => {
@@ -25,4 +26,27 @@ export const POST = tcWrap(async (req, res) => {
             data: data,
         },
     }, { status: 201 });
+});
+export const PUT = tcWrap(async (req, res) => {
+    const { id } = req.params;
+  const body = await req.json();
+  console.log("body::", body);
+  if (!id) {
+    throw new Error("field id required");
+  }
+  if (!body.appoimentStatus ) {
+    throw new Error("Appoiment Status id required");
+  }
+  if (!Types.ObjectId.isValid(id)) {
+    throw new Error("field `id` invalid");
+  }
+
+  const appoint = await appointModel.findByIdAndUpdate(id, { appoimentStatus: body.appoimentStatus })
+  if (!appoint) throw new Error("Data Not found");
+  return res.json({
+    result: {
+      message: "Appointmet Status Updated",
+      data: appoint,
+    }
+  });
 });
