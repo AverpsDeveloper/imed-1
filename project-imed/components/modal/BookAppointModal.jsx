@@ -117,7 +117,7 @@ const BookAppointModal = ({ isVisibale, onClose, selectedPatiantId }) => {
           <div>
             <input type='date' className='border p-2 rounded-xl ' min={moment().format('YYYY-MM-DD')} value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} />
             <button className="ml-4 inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10 h-10 leading-4 cursor-pointer" onClick={CheackAvaibility}>
-              Cheack Avaibility
+            Check Availability
             </button>
           </div>
           <br />

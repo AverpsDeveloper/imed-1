@@ -74,7 +74,9 @@ const userSchema = new Schema(
             type: String,
         },
         lastActive: Date,
-        note: String
+        note:  [{
+            type: String
+        }]        
     },
     {
         timestamps: true,

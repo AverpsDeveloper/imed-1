@@ -71,7 +71,7 @@ export const POST = tcWrap(async (req, res) => {
     }
     const item = await prescriptionModal.create(body);
     if (body.note) {
-        const user = await userModel.findByIdAndUpdate(body.user, { note: body.note });
+        const user = await userModel.findByIdAndUpdate(body.user, { $push: { note: body.note }});
         console.log("user", user);
     }
     console.log(item, "reqbody", body);
