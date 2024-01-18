@@ -1,6 +1,7 @@
 import tcWrap from "@/libs/utils/tcWrap";
 import { Types } from "mongoose";
 import prescriptionModal from "@/libs/models/prescriptionModal";
+import userModel from "@/libs/models/userModel";
 export const GET = tcWrap(async (req, res) => {
     const { page, limit, date, product, doctor, user } = req.query;
 
@@ -69,6 +70,10 @@ export const POST = tcWrap(async (req, res) => {
         throw new Error("field `User` invalid");
     }
     const item = await prescriptionModal.create(body);
+    if (body.note) {
+        const user = await userModel.findByIdAndUpdate(body.user, { $push: { note: body.note }});
+        console.log("user", user);
+    }
     console.log(item, "reqbody", body);
     return res.json({ result: { message: "Prescription added Successfully", item } });
 });

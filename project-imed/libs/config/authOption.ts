@@ -39,9 +39,12 @@ export const authOptions: NextAuthOptions = {
               const expires = Date.now() + ttl;
               const data = `${user.email}.${otp}.${expires}`;
               const tfaHash = `${hashOtp(data)}.${expires}`;
-              await aminUserModel.findByIdAndUpdate(user._id, { tfaHash, lastActive: new Date() });
-              await sendMail("longin otp",user.email, otp);
+              await aminUserModel.findByIdAndUpdate(user._id, { tfaHash });
+              await sendMail("longin otp", user.email, otp);
+            } else {
+              await aminUserModel.findByIdAndUpdate(user._id, { lastActive: new Date() });
             }
+
             return user;
           }
           return null;
@@ -81,6 +84,7 @@ export const authOptions: NextAuthOptions = {
           const isValid = verifyOtp(tfaHash, data);
           console.log("isValie", isValid);
           if (isValid) {
+            await aminUserModel.findByIdAndUpdate(user._id, { lastActive: new Date() });
             return { ...user, isTfaAuth: true };
           }
           return null;
@@ -112,6 +116,7 @@ export const authOptions: NextAuthOptions = {
           }).lean();
 
           if (user && (credentials.password == user.password)) {
+            await userModel.findByIdAndUpdate(user._id, { lastActive: new Date() });
             return user;
           }
           return null;

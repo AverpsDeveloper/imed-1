@@ -29,9 +29,6 @@ const userSchema = new Schema(
         age : {
             type: String,
         },
-        // DOB : {
-        //     type: Date,
-        // },
         gender : {
             type: String,
         },
@@ -73,25 +70,13 @@ const userSchema = new Schema(
             type: Boolean,
             default: false
         },
-        // name: {
-        //     type: String,
-        // },
-        // phone: {
-        //     type: String,
-        // },
-        // hp: String,
-        // dob: Date,
-        // idType: String,
-        // idNumber: String,
-        // nationality: String,
-        // address: String,
-        // PostCode: String,
-        // isAllergy: Boolean,
-        // isG6PD: Boolean,
-        // isLimousine: Boolean,
         bio: {
             type: String,
-        }
+        },
+        lastActive: Date,
+        note:  [{
+            type: String
+        }]        
     },
     {
         timestamps: true,

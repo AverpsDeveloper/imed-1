@@ -7,14 +7,8 @@ import * as Yup from 'yup';
 import api from "@/http"
 
 import { useParams } from 'next/navigation';
-import { useSession } from "next-auth/react";
 import moment from "moment";
 import Link from "next/link";
-
-
-
-
-
 
 const validationSchemaInfo = Yup.object().shape({
     username: Yup.string().matches(/^\S*$/, "This field cannot contain white space.").required('Username is required.'),
@@ -91,8 +85,6 @@ const PatientsDetailsPage = () => {
                     // setMeta(response?.data?.result?.meta);
                 })
         }
-
-
     }, [activeTab]);
     useEffect(() => {
         if (activeTab == 'Medical History') {
@@ -134,7 +126,11 @@ const PatientsDetailsPage = () => {
         values.id = initialValuesInfo._id;
         api.put("/users", values)
     }
-
+    const refillHandle = (values) => {
+        delete values._id;
+        console.log("values", values);
+        api.put(`/user-cart`, values)
+    }
     return (
         <>
             <div class="border-b border-gray-200 dark:border-gray-700">
@@ -185,7 +181,7 @@ const PatientsDetailsPage = () => {
                             }>
                             <svg class="w-4 h-4 me-2 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
                                 <path d="M16 1h-3.278A1.992 1.992 0 0 0 11 0H7a1.993 1.993 0 0 0-1.722 1H2a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2Zm-3 14H5a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2Zm0-4H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Zm0-5H5a1 1 0 0 1 0-2h2V2h4v2h2a1 1 0 1 1 0 2Z" />
-                            </svg>Nots
+                            </svg>Notes
                         </a>
                     </li>
 
@@ -885,7 +881,7 @@ const PatientsDetailsPage = () => {
                         <table className="w-full table-auto">
                             <thead>
                                 <tr className="bg-gray-2 text-left dark:bg-meta-4">
-                                    
+
                                     <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
                                         Date
                                     </th>
@@ -907,7 +903,7 @@ const PatientsDetailsPage = () => {
                                 {
                                     prescriptions?.map((item) => (
                                         <tr className="text-left text-black dark:text-white">
-                                           
+
                                             <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
                                                 {moment(item.createdAt).calendar()}
                                             </td>
@@ -927,12 +923,15 @@ const PatientsDetailsPage = () => {
                                                     ))}
                                                 </ul>
                                             </td>
-                                            <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                                            <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11 flex">
                                                 <Link href={`/dashboard/appointment/${item._id}`}>
                                                     <p className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
                                                         Detail
                                                     </p>
                                                 </Link>
+                                                <button onClick={() => refillHandle(item)} className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
+                                                    Refill
+                                                </button>
                                             </td>
                                         </tr>
                                     ))
@@ -1038,10 +1037,15 @@ const PatientsDetailsPage = () => {
                         </h3>
                     </div>
                     <div className='p-6'>
-                        <textarea
-                            rows={6}
-                            className=" w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark -4 dark:text-white dark:focus:border-primary"
-                        ></textarea>
+                        {
+                            initialValuesInfo?.note.map((val)=>(
+                            <textarea
+                                value={val}
+                                rows={3}
+                                className=" w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark -4 dark:text-white dark:focus:border-primary"
+                            ></textarea>
+                            ))
+                        }
                     </div>
                 </div>
             }
