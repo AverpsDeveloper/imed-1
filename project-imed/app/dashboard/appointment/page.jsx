@@ -10,9 +10,7 @@ const CalendarPage = () => {
     <>
     <Breadcrumb pageName="Appointments" />
       <div className="p-4">
-          <h1 className="text-2xl font-bold"></h1>
-           <Calendar /> 
-          
+          <Calendar/>
         </div>
     </>
   );

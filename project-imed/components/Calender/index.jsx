@@ -8,77 +8,11 @@ import { useState, useEffect } from "react";
 import { useParams } from 'next/navigation';
 import api from "@/http";
 import { useSession } from "next-auth/react";
-
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import { useRouter } from "next/navigation";
-
 moment.locale("en-GB");
 const localizer = momentLocalizer(moment);
-
-const event = [
-  {
-    id: 1,
-    title: "Metting 1",
-    start: new Date(2024, 0, 20, 19, 30, 0),
-    end: new Date(2024, 0, 20, 22, 0, 0)
-  },
-  {
-    id: 2,
-    title: "Metting 2",
-    start: new Date(new Date().setHours(new Date().getHours() - 3)),
-    end: new Date(new Date().setHours(new Date().getHours() + 3))
-  },
-
-  {
-    id: 4,
-    title: "Metting 4",
-    start: new Date(2024, 0, 10, 1, 30, 0),
-    end: new Date(2024, 0, 10, 2, 30, 0)
-  },
-  {
-    id: 5,
-    title: "Metting 5",
-    start: new Date(2024, 0, 5, 14, 0, 0),
-    end: new Date(2024, 0, 5, 14, 30, 0)
-  },
-  {
-    id: 6,
-    title: "Metting 6",
-    start: new Date(2024, 0, 6, 10, 30, 0),
-    end: new Date(2024, 0, 6, 10, 11, 0)
-  },
-  {
-    id: 7,
-    title: "Metting 7",
-    start: new Date(2024, 0, 6, 12, 30, 0),
-    end: new Date(2024, 0, 6, 14, 0, 0)
-  },
-  {
-    id: 8,
-    title: "Metting 8",
-    start: new Date(2024, 1, 1, 9, 30, 0),
-    end: new Date(2024, 1, 1, 10, 30, 0)
-  },
-  {
-    id: 9,
-    title: "Metting 9",
-    start: new Date(2024, 1, 1, 9, 30, 0),
-    end: new Date(2024, 1, 1, 10, 30, 0)
-  },
-  {
-    id: 10,
-    title: "Metting 11",
-    start: new Date(2024, 1, 1, 11, 30, 0),
-    end: new Date(2024, 1, 1, 12, 30, 0)
-  },
-  {
-    id: 11,
-    title: "Metting 12",
-    start: new Date(2024, 1, 1, 11, 30, 0),
-    end: new Date(2024, 1, 1, 12, 30, 0)
-  }
-];
 
 const CalendarAppointment = () => {
   const { page, limit, search, searchHandler, setSearchParmas, date, order, meetingType } = usePaginate();
@@ -108,7 +42,7 @@ const CalendarAppointment = () => {
     await api.post(`/appoint/${id}/cancel`);
     fetchAppointment();
   }
-
+console.log("doctor::",doctor);
   return (
     <>
       <div className="p-4">
@@ -230,27 +164,29 @@ const CalendarAppointment = () => {
         }
 
       </div>
-      {doctor.length ? <Calendar
-        views={["day", "agenda", "work_week", "month"]}
-        selectable
-        localizer={localizer}
-        defaultDate={new Date()}
-        defaultView="month"
-        events={doctor.map(a => ({
-          _id: a._id,
-          title: `${a.user.username} with ${a.doctor.username}`,
-          start: moment(a.date),
-          end: moment(a.date)
-        }))}
-        style={{ height: "100vh" }}
-        onSelectEvent={(event) => {
-          // alert(event.title)
-
-          router.push(`/dashboard/appointment/${event._id}`)
-
-          console.log("event", event);
-        }}
-      /> : ""}
+      <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+        <div className="py-6 px-4 md:px-6 xl:px-7.5 height600">
+          {doctor.length ? <Calendar
+            views={["day", "agenda", "work_week", "month"]}
+            selectable
+            localizer={localizer}
+            defaultDate={new Date()}
+            defaultView="month"
+            style={{ height: "100vh" }}
+            events={doctor.map(a => ({
+              id: a._id,
+              title: `${a.user.username} with ${a.doctor.username}`,
+              start:  new Date(a.date),
+              end:  new Date(a.date)
+            }))}
+           
+            onSelectEvent={(event) => {
+              router.push(`/dashboard/appointment/${event.id}`)
+            }
+          }
+          /> : ""}
+      </div>
+    </div>
     </>
   );
 };
