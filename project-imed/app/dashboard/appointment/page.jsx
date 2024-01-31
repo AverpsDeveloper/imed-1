@@ -11,12 +11,8 @@ const CalendarPage = () => {
     <Breadcrumb pageName="Appointments" />
       <div className="p-4">
           <h1 className="text-2xl font-bold"></h1>
-          {/* <Calendar /> */}
-          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-          <div className="py-6 px-4 md:px-6 xl:px-7.5">
-              <ReactBigCalendar events={events}/>
-          </div>
-          </div>
+           <Calendar /> 
+          
         </div>
     </>
   );
