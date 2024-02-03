@@ -81,6 +81,7 @@ const page = () => {
                                         Yup.object().shape({
                                             item: Yup.string().required().label("Name"),
                                             qty: Yup.string().required().label("Quantity"),
+                                            endDate: Yup.string().required().label("End Date"),
                                             desc: Yup
                                                 .string()
                                                 .required()
@@ -180,6 +181,28 @@ const page = () => {
                                                                 <div className="w-full sm:w-1/3">
                                                                     <label
                                                                         className="mb-3 block text-sm font-medium text-black dark:text-white"
+                                                                        htmlFor={`items[${index}].endDate`}
+                                                                    >
+                                                                        End Date
+                                                                    </label>
+
+                                                                    <Field
+                                                                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                                                                        type="date"
+                                                                        name={`items[${index}].endDate`}
+                                                                        placeholder="Medicine Quentity"
+                                                                        defaultValue=""
+                                                                    />
+
+                                                                    <p className="text-red-500">
+                                                                        <ErrorMessage
+                                                                            name={`items[${index}].endDate`}
+                                                                        />
+                                                                    </p >
+                                                                </div>
+                                                                <div className="w-full sm:w-1/3">
+                                                                    <label
+                                                                        className="mb-3 block text-sm font-medium text-black dark:text-white"
                                                                         htmlFor={`items[${index}].desc`}
                                                                     >
                                                                         Description
@@ -273,6 +296,11 @@ const page = () => {
             <div className="p-4 shadow-md drounded-m rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
                 <div className="flex justify-between items-center mb-4 ">
                     <h2 className="text-2xl font-bold">Appointment Details</h2>
+                    <Link href={`/dashboard/patients/${appointDetail?.user?._id ?? 1}`}
+                        className="cursor-pointer inline-flex items-center justify-center gap-2.5 rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+                    >
+                        Pation Detail
+                    </Link>
                     <h3 className="inline-flex items-center justify-center gap-2.5 rounded-full bg-green-600 py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
                         Booking Date time : {moment(appointDetail?.date).calendar()}
                     </h3>

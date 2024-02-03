@@ -26,9 +26,10 @@ const prescriptionSchema = new Schema(
                     item: { type: Schema.Types.ObjectId, ref: "Item" },
                     qty: Number,
                     desc: String,
+                    endDate: Date,
+                    used: Number,
                 }
             ],
-            _id: false
         },
         description: {
             type: String,
@@ -37,7 +38,7 @@ const prescriptionSchema = new Schema(
             type: Boolean,
             default: false
         },
-        deletedAt: { type: Date } 
+        deletedAt: { type: Date }
     },
     {
         timestamps: true,

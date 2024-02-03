@@ -42,7 +42,7 @@ const CalendarAppointment = () => {
     await api.post(`/appoint/${id}/cancel`);
     fetchAppointment();
   }
-console.log("doctor::",doctor);
+  console.log("doctor::", doctor);
   return (
     <>
       <div className="p-4">
@@ -166,27 +166,33 @@ console.log("doctor::",doctor);
       </div>
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="py-6 px-4 md:px-6 xl:px-7.5 height600">
-          {doctor.length ? <Calendar
+          <Calendar
             views={["day", "agenda", "work_week", "month"]}
+
             selectable
             localizer={localizer}
             defaultDate={new Date()}
-            defaultView="month"
+            defaultView="day"
+
             style={{ height: "100vh" }}
+
             events={doctor.map(a => ({
               id: a._id,
               title: `${a.user.username} with ${a.doctor.username}`,
-              start:  new Date(a.date),
-              end:  new Date(a.date)
+              start: new Date(a.date),
+              end: new Date(a.date)
             }))}
-           
-            onSelectEvent={(event) => {
+
+            onSelectEvent={(event) =>
               router.push(`/dashboard/appointment/${event.id}`)
+
             }
-          }
-          /> : ""}
+            onRangeChange={(r) => 
+              setSearchParmas("date", `${moment(r[0] ?? r.start).format("YYYY-MM-DD")}${r.end ? `|${moment(r.end).format("YYYY-MM-DD")}` : ""}`)
+            }
+          />
+        </div>
       </div>
-    </div>
     </>
   );
 };
