@@ -15,8 +15,8 @@ const validationSchema = Yup.object().shape({
     gender: Yup.string().required('Please select user gender.'),
     nationality: Yup.string().required('Nationality is required.'),
     phoneNumber: Yup.number().required('Phone number is required.'),
-    idType: Yup.string().required('Nationality is required.'),
-    idNumber: Yup.string().required('Nationality is required.'),
+    idType: Yup.string().required('ID Type is required.'),
+    idNumber: Yup.string().required('Id number is required.'),
     postCode: Yup.number().required('Phone number is required.'),
     unitCode: Yup.number().required('Phone number is required.'),
     allergy: Yup.boolean().required('Phone number is required.'),
@@ -37,21 +37,21 @@ function ErrMessage({ name }) {
 }
 const AddNewPatients = () => {
   const [initialValuesInfo, setInitialValuesInfo] = useState({
-    username: "patient",
-    firstName: "first",
-    lastName: "user",
-    email: "patients@emial.com",
-    age: "24",
-    gender: "male",
-    nationality: "singapore",
-    phoneNumber: 12346548,
-    idType: "passport",
+    username: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    age: "",
+    gender: "",
+    nationality: "",
+    phoneNumber: +613456789,
+    idType: "",
     idNumber: "DS545SA",
     postCode: 35264,
     unitCode: 12345,
     allergy: true,
     g6PD: false,
-    address: "Temp Address"
+    address: ""
   })
 
   const onSubmit = (data) => {
@@ -201,6 +201,47 @@ const AddNewPatients = () => {
                               placeholder="Unit code"
                             />
                             <ErrMessage name="unitCode" />
+                          </div>
+                        </div>
+
+                      </div>
+                      <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                        <div className="w-full xl:w-1/2">
+                          <div className="mb-4">
+                            <label className="block text-gray-600">Nationality<span className="text-meta-1">*</span></label>
+                            <Field
+                              type="text"
+                              name="nationality"
+                              className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                              placeholder="Nationality"
+                            />
+                            <ErrMessage name="nationality" />
+                          </div>
+                        </div>
+
+                        <div className="w-full xl:w-1/2">
+                          <div className="mb-4">
+                          <label className="block text-gray-600">Id Number<span className="text-meta-1">*</span></label>
+                            <Field
+                              type="text"
+                              name="idNumber"
+                              className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                              placeholder="Id Number"
+                            />
+                            <ErrMessage name="idNumber" />
+                          </div>
+                        </div>
+
+                        <div className="w-full xl:w-1/2">
+                          <div className="mb-4">
+                          <label className="block text-gray-600">Id Type<span className="text-meta-1">*</span></label>
+                            <Field
+                              type="text"
+                              name="idType"
+                              className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                              placeholder="Id type"
+                            />
+                            <ErrMessage name="idType" />
                           </div>
                         </div>
 

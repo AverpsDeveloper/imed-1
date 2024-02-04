@@ -135,7 +135,7 @@ const PatientsDetailsPage = () => {
         <>
             <div class="border-b border-gray-200 dark:border-gray-700">
                 <ul class="flex flex-wrap -mb-px text-2xl text-sm font-medium text-center text-gray-500 dark:text-gray-400">
-                    <li class="me-2">
+                    <li class="me-2 cursor-pointer">
                         <buttom
                             onClick={() => setActiveTab("Profile")}
                             class={activeTab == "Profile"
@@ -148,7 +148,7 @@ const PatientsDetailsPage = () => {
                             Profile
                         </buttom>
                     </li>
-                    <li class="me-2">
+                    <li class="me-2 cursor-pointer">
                         <buttom
                             onClick={() => setActiveTab("Order History")}
                             class={activeTab == "Order History"
@@ -160,11 +160,11 @@ const PatientsDetailsPage = () => {
                             </svg>Order History
                         </buttom>
                     </li>
-                    <li class="me-2">
+                    <li class="me-2 cursor-pointer">
                         <buttom
                             onClick={() => setActiveTab("Medical History")}
                             class={activeTab == "Medical History"
-                                ? "inline-flex items-center justify-center p-4 border-b-2 rounded-t-lg text-blue-600  border-blue-600 active dark:text-blue-500 dark:border-blue-500 group"
+                                ? " inline-flex items-center justify-center p-4 border-b-2 rounded-t-lg text-blue-600  border-blue-600 active dark:text-blue-500 dark:border-blue-500 group"
                                 : "inline-flex items-center justify-center p-4 border-b-2 rounded-t-lg border-transparent  hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group"}>
 
                             <svg class="w-4 h-4 me-2 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
@@ -172,7 +172,7 @@ const PatientsDetailsPage = () => {
                             </svg>Medical History
                         </buttom>
                     </li>
-                    <li class="me-2">
+                    <li class="me-2 cursor-pointer">
                         <buttom
                             onClick={() => setActiveTab("Nots")}
                             class={activeTab == "Nots"
@@ -1031,19 +1031,22 @@ const MedicalHistory = () => {
                                 <thead>
                                     <tr className="bg-gray-2 text-left dark:bg-meta-4">
 
-                                        <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
+                                        <th className="min-w-[120px] py-4 font-medium text-black dark:text-black">
                                             Medition
                                         </th>
-                                        <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
+                                        <th className="min-w-[120px] py-4 font-medium text-black dark:text-black">
                                             Refill
                                         </th>
-                                        <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
+                                        <th className="min-w-[120px] py-4 font-medium text-black dark:text-black">
                                             Limit
                                         </th>
-                                        <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
+                                        <th className="min-w-[120px] py-4 font-medium text-black dark:text-black">
                                             Limit Date
                                         </th>
-                                        <th className="min-w-[140px] py-4 px-4 font-medium text-black dark:text-black">
+                                        <th className="min-w-[100px] py-4 font-medium text-black dark:text-black">
+                                            Description
+                                        </th>
+                                        <th className="min-w-[100px] py-4 font-medium text-black dark:text-black">
                                             More Details
                                         </th>
                                     </tr>
@@ -1052,19 +1055,22 @@ const MedicalHistory = () => {
                                     {
                                         hasPres?.items?.map((p) => (
                                             <tr key={p._id} className="text-left text-black dark:text-white">
-                                                <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                                                <td className="min-w-[120px] py-4 font-medium text-black dark:text-white ">
                                                     {p.item.name}
                                                 </td>
-                                                <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                                                <td className="min-w-[120px] py-4 font-medium text-black dark:text-white ">
                                                     {p.qty - (p.used ?? 0)} {p.item.form}
                                                 </td>
-                                                <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                                                <td className="min-w-[120px] py-4 font-medium text-black dark:text-white ">
                                                     {p.qty} {p.item.form}
                                                 </td>
-                                                <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
-                                                    {moment(p.duration).format("DD/MM/YYYY")}
+                                                <td className="min-w-[120px] py-4 font-medium text-black dark:text-white">
+                                                    {moment(p.endDate).format("DD/MM/YYYY")}
                                                 </td>
-                                                <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11 flex">
+                                                <td className="min-w-[100px] py-4 font-medium text-black dark:text-white">
+                                                    {p.desc}
+                                                </td>
+                                                <td className="min-w-[100px] py-4 font-medium text-black dark:text-white flex">
                                                     {
                                                         ((p.qty - (p.used ?? 0)) >= 0)
                                                             ? <button onClick={() => refillHandle({ items: [{ item: p._id, qty: p.qty - p.used }] })} className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
@@ -1136,11 +1142,11 @@ const MedicalHistory = () => {
                                             </ul>
                                         </td>
                                         <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11 flex">
-                                            <Link href={`/dashboard/appointment/${item._id}`}>
+                                            {/* <Link href={`/dashboard/appointment/${item._id}`}>
                                                 <p className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
                                                     Appointment Detail
                                                 </p>
-                                            </Link>
+                                            </Link> */}
                                             <button onClick={() => setHasPress(item)} className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
                                                 Treatment
                                             </button>
