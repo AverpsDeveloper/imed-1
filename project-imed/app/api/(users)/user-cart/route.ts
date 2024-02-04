@@ -31,6 +31,8 @@ export const POST = tcWrap(async (req, res) => {
         },
     }, { status: 201 });
 });
+
+
 export const PUT = tcWrap(async (req, res) => {
     const body = await req.json()
     if (!body.user) throw new Error("User required");
@@ -38,7 +40,15 @@ export const PUT = tcWrap(async (req, res) => {
     const isExist = await userCartModel.findOne({ user: req.body.user });
     const data = await userCartModel.findByIdAndUpdate(
         isExist?._id,
-        body, { new: true, upsert: true, runValidators: true });
+        {
+            user: req.body.user,
+            $push: {
+                items: {
+                    $each: body.items,
+                    $position: 0
+                }
+            }
+        }, { new: true, upsert: true, runValidators: true });
     if (!data) throw new Error("something went wrong");
     return res.json({
         result: {

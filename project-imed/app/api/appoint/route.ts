@@ -30,7 +30,6 @@ export const GET = tcWrap(async (req, res) => {
         let [gt, lt] = date.split("|");
         gt = gt && new Date(gt);
         lt = lt && new Date(lt);
-        console.log({ gt, lt })
         filter.push({
             date: {
                 ...(gt && { $gte: gt }), ...(lt && { $lte: lt })

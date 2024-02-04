@@ -1,6 +1,7 @@
 import "./globals.css";
 import "./data-tables-css.css";
 import "./satoshi.css";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 import ToasterProvider from "@/app/providers/ToasterProvider";
 import NextAutProviders from "@/app/providers/nextAuthProvider";
 
