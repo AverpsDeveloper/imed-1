@@ -15,6 +15,7 @@ moment.locale("en-GB");
 const localizer = momentLocalizer(moment);
 
 const CalendarAppointment = () => {
+  const [view, setView] = useState(true);
   const { page, limit, search, searchHandler, setSearchParmas, date, order, meetingType } = usePaginate();
   const [meta, setMeta] = useState({ page: 1, limit: 10, total: 10 });
   const [doctor, setDoctor] = useState([]);
@@ -46,9 +47,12 @@ const CalendarAppointment = () => {
   return (
     <>
       <div className="p-4">
+          <button className={`inline-flex items-center justify-center gap-0.5 rounded-full bg-primary  py-2 px-3 text-center font-medium text-white  hover:bg-opacity-90 lg:px-8 xl:px-10`} onClick={()=>setView(prevCheck => !prevCheck)}>{!view ? "List View" : "Calender View"}</button>
+    <br />
         <div className="flex justify-between mb-4 ">
+          {}
           <h1 className="text-2xl font-bold"></h1>
-          <div className="flex items-center space-x-2">
+          {view ?           <div className="flex items-center space-x-2">
             <select defaultValue={meetingType} onChange={e => setSearchParmas('meetingType', e.target.value)}>
               <option selected value={''}>--select--</option>
               <option value={"online"} >Online</option>
@@ -99,72 +103,74 @@ const CalendarAppointment = () => {
             </div>
 
           </div>
+          : ''}
+
         </div>
-        {
-          // <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-          //   <div className="py-6 px-4 md:px-6 xl:px-7.5">
-          //     <h4 className="text-xl font-semibold text-black dark:text-white">
-          //       Appointments list
-          //     </h4>
-          //   </div>
-          //   <div className="overflow-x-auto">
+        {view ? 
+        
+          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+            <div className="py-6 px-4 md:px-6 xl:px-7.5">
+              <h4 className="text-xl font-semibold text-black dark:text-white">
+                Appointments list
+              </h4>
+            </div>
+            <div className="overflow-x-auto">
 
-          //     <table className="w-full table-auto">
-          //       <thead>
-          //         <tr className="bg-gray-2 text-left dark:bg-meta-4">
-          //           <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
-          //             Doctor
-          //           </th>
-          //           <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
-          //             Date
-          //           </th>
-          //           <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
-          //             Appointment Status
-          //           </th>
-          //           <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
-          //             Patients
-          //           </th>
-          //           <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
-          //             Actions
-          //           </th>
-          //         </tr>
-          //       </thead>
-          //       <tbody>
-          //         {
-          //           doctor?.map((detail, ind) => (
-          //             <tr className="text-left text-black dark:text-white">
-          //               <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-          //                 <h1 className="font-bold text-2xl">{detail.doctor.username}</h1>
-          //                 <p>{detail.doctor.email}</p>
-          //               </td>
-          //               <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-          //                 {moment(detail.date).format("lll")}
-          //               </td>
-          //               <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-          //                 {detail.appoimentStatus}
-          //               </td>
-          //               <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-          //                 <h1 className="font-bold text-2xl">{detail.user.username}</h1>
-          //                 <p>{detail.user.email}</p>
-          //               </td>
-          //               <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-          //                 <button className='bg-primary text-white px-2 mx-1 rounded ' onClick={() => cancelAppointment(detail._id)}> Cancel </button>
-          //                 <Link href={`/dashboard/appointment/${detail._id}`} className="bg-primary text-white px-2 mx-1 rounded ">View Detail</Link>
-          //               </td>
-          //             </tr>
-          //           ))
-          //         }
-          //       </tbody>
-          //     </table>
+              <table className="w-full table-auto">
+                <thead>
+                  <tr className="bg-gray-2 text-left dark:bg-meta-4">
+                    <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
+                      Doctor
+                    </th>
+                    <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
+                      Date
+                    </th>
+                    <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
+                      Appointment Status
+                    </th>
+                    <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
+                      Patients
+                    </th>
+                    <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xl:pl-11">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {
+                    doctor?.map((detail, ind) => (
+                      <tr className="text-left text-black dark:text-white">
+                        <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                          <h1 className="font-bold text-2xl">{detail.doctor.username}</h1>
+                          <p>{detail.doctor.email}</p>
+                        </td>
+                        <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                          {moment(detail.date).format("lll")}
+                        </td>
+                        <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                          {detail.appoimentStatus}
+                        </td>
+                        <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                          <h1 className="font-bold text-2xl">{detail.user.username}</h1>
+                          <p>{detail.user.email}</p>
+                        </td>
+                        <td className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                          <button className='bg-primary text-white px-2 mx-1 rounded ' onClick={() => cancelAppointment(detail._id)}> Cancel </button>
+                          <Link href={`/dashboard/appointment/${detail._id}`} className="bg-primary text-white px-2 mx-1 rounded ">View Detail</Link>
+                        </td>
+                      </tr>
+                    ))
+                  }
+                </tbody>
+              </table>
 
-          //   </div>
+            </div>
 
-          //   <Pagination meta={meta} />
-          // </div>
-        }
-
-      </div>
-      <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+            <Pagination meta={meta} />
+          </div>
+      
+        : 
+          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="py-6 px-4 md:px-6 xl:px-7.5 height600">
           <Calendar
             views={["day", "agenda", "work_week", "month"]}
@@ -192,7 +198,14 @@ const CalendarAppointment = () => {
             }
           />
         </div>
+      </div> 
+        
+        }
+        {
+        }
+
       </div>
+     
     </>
   );
 };
