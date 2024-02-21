@@ -21,6 +21,7 @@ const userCartSchema = new Schema(
                     item: { type: Schema.Types.ObjectId, ref: "Item" },
                     qty: Number,
                     desc: String,
+                    endDate: Date,
                 }
             ],
             _id: false

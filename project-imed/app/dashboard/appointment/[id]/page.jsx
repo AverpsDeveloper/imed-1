@@ -18,10 +18,11 @@ const page = () => {
     const [appointDetail, setAppointDetail] = useState(null)
     const [isPresOpen, setIsPresOpen] = useState(false)
     const [isAppointmentOpen, setIsAppointmentOpen] = useState(false)
+    const [prescriptionType, setPrescriptionType] = useState(false)
     const [initialPresInfo, setInitialPresInfo] = useState({
         items: [
             {
-                item: "", qty: "", desc: ""
+                item: "", qty: "", desc: "", endDate: prescriptionType == "onetime" ? moment().add("h", 24).format("YYYY-MM-DD") : ""
             }
         ]
     });
@@ -95,18 +96,29 @@ const page = () => {
                             }
                             onSubmit={async (values, { resetForm }) => {
                                 values.id = initialPresInfo._id;
-                                await api.post("/prescription", {
-                                    doctor: appointDetail?.doctor?._id,
-                                    user: appointDetail?.user?._id,
-                                    ...values
-                                });
+                                console.log("valuesSSSSSS", values)
+                                if (prescriptionType == "subscription") {
+                                    await api.post("/prescription", {
+                                        doctor: appointDetail?.doctor?._id,
+                                        user: appointDetail?.user?._id,
+                                        ...values
+                                    });
+                                }
+                                if (prescriptionType == "onetime") {
+                                    await api.put(`/user-cart`, {
+                                        user: appointDetail?.user?._id,
+                                        items: values.items
+                                    })
+                                }
+
                                 console.log("submint");
                                 resetForm()
                                 setIsPresOpen(false);
+                                setPrescriptionType("");
                             }}
                             enableReinitialize
                         >
-                            {({ errors, touched, values }) => {
+                            {({ errors, touched, values, setFieldValue }) => {
                                 console.log("erorrs", errors);
                                 console.log("values", values);
                                 return (
@@ -189,6 +201,7 @@ const page = () => {
                                                                     <Field
                                                                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                                                                         type="date"
+                                                                        disabled={prescriptionType == "onetime"}
                                                                         name={`items[${index}].endDate`}
                                                                         placeholder="Medicine Quentity"
                                                                         defaultValue=""
@@ -237,7 +250,7 @@ const page = () => {
                                                         <button
                                                             type="button"
                                                             className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-95"
-                                                            onClick={() => arrayHelpers.push({ item: '', qty: '', desc: '' })}
+                                                            onClick={() => arrayHelpers.push({ item: '', qty: '', desc: '', endDate: prescriptionType == "onetime" ? moment().add("h", 24).format("YYYY-MM-DD") : "" })}
                                                         >
                                                             + Add More Medicines
                                                         </button>
@@ -277,12 +290,45 @@ const page = () => {
                                             /> : null
                                         }
 
-                                        <div className="mt-2">
-                                            <button
-                                                // type="button"
-                                                className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-95"
+                                        <div className="mt-2 flex">
+                                            <Field
+                                                onChange={(e) => {
+                                                    values.items.forEach((element, i) => {
+                                                        if (prescriptionType == "onetime") {
+                                                            setFieldValue(`items[${i}].endDate`, moment().add("h", 24).format("YYYY-MM-DD"))
+                                                        }
+                                                    });
+                                                    setPrescriptionType(e.target.value)
+                                                }
+                                                }
+
+                                                as="select"
+                                                className="w-1/3 rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                                                type="date"
+                                                name={`prescriptionType`}
+                                                placeholder="Medicine Quentity"
+                                                defaultValue=""
                                             >
-                                                Submit
+                                                <option>
+                                                    Select Prescription Type
+                                                </option>
+                                                <option value="subscription">
+                                                    Subscription
+                                                </option>
+                                                <option value="onetime">
+                                                    One time
+                                                </option>
+                                            </Field>
+                                            <button
+                                                disabled={!prescriptionType}
+                                                // type="button"
+                                                className="ml-2 flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-95 disabled:opacity-40"
+                                            >
+                                                {
+                                                    prescriptionType == "subscription"
+                                                        ? "Add Subscription" : prescriptionType == "onetime"
+                                                            ? "Add To Cart" : "Submit"
+                                                }
                                             </button>
                                         </div>
                                     </Form>
