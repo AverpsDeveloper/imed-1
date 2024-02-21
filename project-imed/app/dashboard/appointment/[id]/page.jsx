@@ -180,7 +180,7 @@ const page = () => {
                                                                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                                                                         type="text"
                                                                         name={`items[${index}].qty`}
-                                                                        placeholder="Medicine Quentity"
+                                                                        placeholder="Medicine Quantity "
                                                                         defaultValue=""
                                                                     />
 
@@ -203,7 +203,7 @@ const page = () => {
                                                                         type="date"
                                                                         disabled={prescriptionType == "onetime"}
                                                                         name={`items[${index}].endDate`}
-                                                                        placeholder="Medicine Quentity"
+                                                                        placeholder="Medicine Quantity"
                                                                         defaultValue=""
                                                                     />
 
@@ -226,7 +226,7 @@ const page = () => {
                                                                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                                                                         type="text"
                                                                         name={`items[${index}].desc`}
-                                                                        placeholder="Medicien Description "
+                                                                        placeholder="Medicine Description "
 
                                                                     />
 
@@ -338,6 +338,7 @@ const page = () => {
                     </div>
                 </div>
             </Modal>
+            
             <BookAppointModal isVisibale={isAppointmentOpen} onClose={() => setIsAppointmentOpen(false)} selectedPatiantId={appointDetail?.user?._id} />
             <div className="p-4 shadow-md drounded-m rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
                 <div className="flex justify-between items-center mb-4 ">
