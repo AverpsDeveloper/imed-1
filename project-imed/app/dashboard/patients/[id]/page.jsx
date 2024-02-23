@@ -68,7 +68,7 @@ const PatientsDetailsPage = () => {
         idNumber: "DS545SA",
         postCode: 1,
         unitCode: 12345,
-        isAllergy: true,
+        isAllergy: false,
         isG6PD: false,
         address: "Temp Address",
     })
@@ -504,6 +504,7 @@ const PatientsDetailsPage = () => {
                                                             <Field as="select" name="isAllergy" disabled={!isEditInfo}
                                                                 className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark dark:text-white dark:focus:border-primary"
                                                             >
+                                                                <option value="">Select</option>
                                                                 <option value="true">Yes</option>
                                                                 <option value="false">No</option>
                                                             </Field>
@@ -521,6 +522,7 @@ const PatientsDetailsPage = () => {
                                                             <Field as="select" name="isG6PD" disabled={!isEditInfo}
                                                                 className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark dark:text-white dark:focus:border-primary"
                                                             >
+                                                                <option value="">Select</option>
                                                                 <option value="true">Yes</option>
                                                                 <option value="false">No</option>
                                                             </Field>
@@ -724,7 +726,7 @@ const PatientsDetailsPage = () => {
                                                                 >
                                                                     <option >Select Status</option>
                                                                     <option value="true">Online</option>
-                                                                    <option value="false">Ofline</option>
+                                                                    <option value="false">Offline</option>
                                                                 </Field>
                                                                 <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2">
                                                                     <svg
@@ -963,7 +965,7 @@ const PatientsDetailsPage = () => {
                 <div className="bg-white mt-4">
                     <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
                         <h3 className="font-medium text-black dark:text-white">
-                            Nots
+                            Notes
                         </h3>
                     </div>
                     <div className='p-6'>

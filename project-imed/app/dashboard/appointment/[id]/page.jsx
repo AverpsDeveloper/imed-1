@@ -346,7 +346,7 @@ const page = () => {
                     <Link href={`/dashboard/patients/${appointDetail?.user?._id ?? 1}`}
                         className="cursor-pointer inline-flex items-center justify-center gap-2.5 rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
                     >
-                        Pation Detail
+                        Patient Details
                     </Link>
                     <h3 className="inline-flex items-center justify-center gap-2.5 rounded-full bg-green-600 py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
                         Booking Date time : {moment(appointDetail?.date).calendar()}
@@ -436,17 +436,17 @@ const page = () => {
                 </table>
                 <div className='flex items-center mb-1'>
                     <div className='flex-1'>
-                        <Link href={appointDetail?.meetDetial?.join_url ?? "https://zoom.us/j/92646564199?pwd=NTlldW80RmdIWlhocHVLYlRkV2llUT09"}
-                            className="cursor-pointer inline-flex items-center justify-center gap-2.5 rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
-                        >
-                            Join Meeting
-                        </Link>
-                    </div>
-                    <div className='flex-1'>
-                        <Link href={appointDetail?.meetDetial?.start_url ?? "https://zoom.us/j/92646564199?pwd=NTlldW80RmdIWlhocHVLYlRkV2llUT09"}
+                    <Link target='_blank' href={appointDetail?.meetDetial?.start_url ?? "https://zoom.us/j/92646564199?pwd=NTlldW80RmdIWlhocHVLYlRkV2llUT09"}
                             className="cursor-pointer inline-flex items-center justify-center gap-2.5 rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
                         >
                             Start Meeting
+                        </Link>
+                    </div>
+                    <div className='flex-1'>
+                    <Link target='_blank' href={appointDetail?.meetDetial?.join_url ?? "https://zoom.us/j/92646564199?pwd=NTlldW80RmdIWlhocHVLYlRkV2llUT09"}
+                            className="cursor-pointer inline-flex items-center justify-center gap-2.5 rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+                        >
+                            Join Meeting
                         </Link>
                     </div>
                 </div>
@@ -472,7 +472,7 @@ const page = () => {
                 </div>
                 <div className="m-8">
                     <h3 className="font-medium text-xl text-black dark:text-white">
-                        Updata Appointment States
+                        Update appointment status
                     </h3>
                     <select
                         value={appoinStatus}
