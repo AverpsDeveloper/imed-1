@@ -20,6 +20,7 @@ const prescriptionSchema = new Schema(
             ref: "user",
             required: true,
         },
+        type: String,
         items: {
             type: [
                 {

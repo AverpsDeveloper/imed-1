@@ -18,11 +18,10 @@ const page = () => {
     const [appointDetail, setAppointDetail] = useState(null)
     const [isPresOpen, setIsPresOpen] = useState(false)
     const [isAppointmentOpen, setIsAppointmentOpen] = useState(false)
-    const [prescriptionType, setPrescriptionType] = useState(false)
     const [initialPresInfo, setInitialPresInfo] = useState({
         items: [
             {
-                item: "", qty: "", desc: "", endDate: prescriptionType == "onetime" ? moment().add("h", 24).format("YYYY-MM-DD") : ""
+                item: "", qty: "", desc: "", endDate: ""
             }
         ]
     });
@@ -82,29 +81,39 @@ const page = () => {
                                         Yup.object().shape({
                                             item: Yup.string().required().label("Name"),
                                             qty: Yup.string().required().label("Quantity"),
-                                            endDate: Yup.string().required().label("End Date"),
-                                            desc: Yup
-                                                .string()
-                                                .required()
-                                                .label("Description") // these constraints take precedence
+                                            endDate: Yup.date().min(new Date())
+                                                .required().label("End Date"),
+                                            //  Yup.date().when("type", {
+                                            //     is: "onetime",
+                                            //     then: () => Yup.date()
+                                            //         .min(moment().add("h", 23))
+                                            //         // .min(new Date(Date.now() + (1000 * 60 * 60 * 24)))
+                                            //         .max(moment().add("h", 25))
+                                            //         // .max(new Date(Date.now() + (1000 * 60 * 60 * 24)))
+                                            //         .required().label("End Date"),
+                                            //     otherwise: () => Yup.date().min(new Date())
+                                            //         .required().label("End Date"),
+                                            // }),
+                                            // .when().min(new Date(Date.now() + 86400000)).required().label("End Date"),
+                                            desc: Yup.string().required().label("Description") // these constraints take precedence
                                         })
                                     )
                                     .required(),
                                 description: Yup.string().label("Description"),
-                                note: Yup.string().label("Note")
+                                note: Yup.string().label("Note"),
+                                type: Yup.string().required().label("Prescription Type")
                             })
                             }
                             onSubmit={async (values, { resetForm }) => {
                                 values.id = initialPresInfo._id;
-                                console.log("valuesSSSSSS", values)
-                                if (prescriptionType == "subscription") {
-                                    await api.post("/prescription", {
-                                        doctor: appointDetail?.doctor?._id,
-                                        user: appointDetail?.user?._id,
-                                        ...values
-                                    });
-                                }
-                                if (prescriptionType == "onetime") {
+
+                                await api.post("/prescription", {
+                                    doctor: appointDetail?.doctor?._id,
+                                    user: appointDetail?.user?._id,
+                                    ...values
+                                });
+
+                                if (values.type == "onetime") {
                                     await api.put(`/user-cart`, {
                                         user: appointDetail?.user?._id,
                                         items: values.items
@@ -114,7 +123,6 @@ const page = () => {
                                 console.log("submint");
                                 resetForm()
                                 setIsPresOpen(false);
-                                setPrescriptionType("");
                             }}
                             enableReinitialize
                         >
@@ -201,7 +209,7 @@ const page = () => {
                                                                     <Field
                                                                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                                                                         type="date"
-                                                                        disabled={prescriptionType == "onetime"}
+                                                                        disabled={values.type == "onetime"}
                                                                         name={`items[${index}].endDate`}
                                                                         placeholder="Medicine Quantity"
                                                                         defaultValue=""
@@ -250,7 +258,7 @@ const page = () => {
                                                         <button
                                                             type="button"
                                                             className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-95"
-                                                            onClick={() => arrayHelpers.push({ item: '', qty: '', desc: '', endDate: prescriptionType == "onetime" ? moment().add("h", 24).format("YYYY-MM-DD") : "" })}
+                                                            onClick={() => arrayHelpers.push({ item: '', qty: '', desc: '', endDate: values.type == "onetime" ? moment().add("h", 24).format("YYYY-MM-DD") : "" })}
                                                         >
                                                             + Add More Medicines
                                                         </button>
@@ -294,18 +302,19 @@ const page = () => {
                                             <Field
                                                 onChange={(e) => {
                                                     values.items.forEach((element, i) => {
-                                                        if (prescriptionType == "onetime") {
+                                                        if (e.target.value == "onetime") {
+                                                            console.log("e.target.value", e.target.value)
                                                             setFieldValue(`items[${i}].endDate`, moment().add("h", 24).format("YYYY-MM-DD"))
                                                         }
                                                     });
-                                                    setPrescriptionType(e.target.value)
+                                                    setFieldValue("type", e.target.value);
                                                 }
                                                 }
 
                                                 as="select"
                                                 className="w-1/3 rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                                                 type="date"
-                                                name={`prescriptionType`}
+                                                name="type"
                                                 placeholder="Medicine Quentity"
                                                 defaultValue=""
                                             >
@@ -320,13 +329,12 @@ const page = () => {
                                                 </option>
                                             </Field>
                                             <button
-                                                disabled={!prescriptionType}
                                                 // type="button"
                                                 className="ml-2 flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-95 disabled:opacity-40"
                                             >
                                                 {
-                                                    prescriptionType == "subscription"
-                                                        ? "Add Subscription" : prescriptionType == "onetime"
+                                                    values.type == "subscription"
+                                                        ? "Add Subscription" : values.type == "onetime"
                                                             ? "Add To Cart" : "Submit"
                                                 }
                                             </button>
@@ -338,7 +346,7 @@ const page = () => {
                     </div>
                 </div>
             </Modal>
-            
+
             <BookAppointModal isVisibale={isAppointmentOpen} onClose={() => setIsAppointmentOpen(false)} selectedPatiantId={appointDetail?.user?._id} />
             <div className="p-4 shadow-md drounded-m rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
                 <div className="flex justify-between items-center mb-4 ">
@@ -436,14 +444,14 @@ const page = () => {
                 </table>
                 <div className='flex items-center mb-1'>
                     <div className='flex-1'>
-                    <Link target='_blank' href={appointDetail?.meetDetial?.start_url ?? "https://zoom.us/j/92646564199?pwd=NTlldW80RmdIWlhocHVLYlRkV2llUT09"}
+                        <Link target='_blank' href={appointDetail?.meetDetial?.start_url ?? "https://zoom.us/j/92646564199?pwd=NTlldW80RmdIWlhocHVLYlRkV2llUT09"}
                             className="cursor-pointer inline-flex items-center justify-center gap-2.5 rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
                         >
                             Start Meeting
                         </Link>
                     </div>
                     <div className='flex-1'>
-                    <Link target='_blank' href={appointDetail?.meetDetial?.join_url ?? "https://zoom.us/j/92646564199?pwd=NTlldW80RmdIWlhocHVLYlRkV2llUT09"}
+                        <Link target='_blank' href={appointDetail?.meetDetial?.join_url ?? "https://zoom.us/j/92646564199?pwd=NTlldW80RmdIWlhocHVLYlRkV2llUT09"}
                             className="cursor-pointer inline-flex items-center justify-center gap-2.5 rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
                         >
                             Join Meeting
