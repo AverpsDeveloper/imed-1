@@ -10,6 +10,7 @@ import Modal from '@/components/inventory/Modal'
 import { useParams } from 'next/navigation';
 import moment from "moment";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 const validationSchemaInfo = Yup.object().shape({
     username: Yup.string().matches(/^\S*$/, "This field cannot contain white space.").required('Username is required.'),
@@ -46,6 +47,7 @@ function ErrMessage({ name }) {
 
 const PatientsDetailsPage = () => {
 
+    const { data: session, status } = useSession();
     const [initialValuesActivities, setInitialValuesActivities] = useState({
         isActive: true,
     })
@@ -54,6 +56,7 @@ const PatientsDetailsPage = () => {
     const [activeTab, setActiveTab] = useState("Profile");
     const [orders, setOrders] = useState([]);
     const [prescriptions, setPrescriptions] = useState([]);
+    const [notesValue, setNotesValue] = useState([]);
 
     const [initialValuesInfo, setInitialValuesInfo] = useState({
         username: "patient",
@@ -68,7 +71,7 @@ const PatientsDetailsPage = () => {
         idNumber: "DS545SA",
         postCode: 1,
         unitCode: 12345,
-        isAllergy: true,
+        isAllergy: false,
         isG6PD: false,
         address: "Temp Address",
     })
@@ -102,12 +105,16 @@ const PatientsDetailsPage = () => {
         }
     }, [activeTab]);
 
-    useEffect(() => {
+    const getUser = async () => {
         api.get(`/users/${username}`)
             .then((response) => {
                 console.log(":1:response::", response);
                 setInitialValuesInfo(response.data.result.data);
+                setNotesValue(response.data.result.data.note);
             })
+    }
+    useEffect(() => {
+        getUser()
         // api.get(`/users/${username}`)
         //     .then((response) => {
         //         setInitialValuesActivities(response.data.result.data);
@@ -131,6 +138,12 @@ const PatientsDetailsPage = () => {
     //     console.log("values", values);
     //     api.put(`/user-cart`, values)
     // }
+
+    const updateUserHandler = async (val) => {
+        console.log("valsdfjlsdf", notesValue);
+        await api.put(`/users/${username}`, { note: notesValue });
+        getUser()
+    }
     return (
         <>
             <div class="border-b border-gray-200 dark:border-gray-700">
@@ -504,6 +517,7 @@ const PatientsDetailsPage = () => {
                                                             <Field as="select" name="isAllergy" disabled={!isEditInfo}
                                                                 className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark dark:text-white dark:focus:border-primary"
                                                             >
+                                                                <option value="">Select</option>
                                                                 <option value="true">Yes</option>
                                                                 <option value="false">No</option>
                                                             </Field>
@@ -521,6 +535,7 @@ const PatientsDetailsPage = () => {
                                                             <Field as="select" name="isG6PD" disabled={!isEditInfo}
                                                                 className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark dark:text-white dark:focus:border-primary"
                                                             >
+                                                                <option value="">Select</option>
                                                                 <option value="true">Yes</option>
                                                                 <option value="false">No</option>
                                                             </Field>
@@ -724,7 +739,7 @@ const PatientsDetailsPage = () => {
                                                                 >
                                                                     <option >Select Status</option>
                                                                     <option value="true">Online</option>
-                                                                    <option value="false">Ofline</option>
+                                                                    <option value="false">Offline</option>
                                                                 </Field>
                                                                 <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2">
                                                                     <svg
@@ -963,20 +978,39 @@ const PatientsDetailsPage = () => {
                 <div className="bg-white mt-4">
                     <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
                         <h3 className="font-medium text-black dark:text-white">
-                            Nots
+                            Notes
                         </h3>
                     </div>
                     <div className='p-6'>
                         {
-                            initialValuesInfo?.note.map((val) => (
-                                <textarea
-                                    value={val}
-                                    rows={3}
-                                    className=" w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark -4 dark:text-white dark:focus:border-primary"
-                                ></textarea>
+                            notesValue.map((val, i) => (
+                                <div key={i}>
+                                    <textarea
+                                        value={val}
+                                        disabled={session?.user?.role != "ADMIN"}
+                                        onChange={(e) => setNotesValue(pre => {
+                                            const n = [...pre]
+                                            n[i] = e.target.value;
+
+                                            return n;
+                                        }
+                                        )}
+                                        rows={3}
+                                        className=" w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-boxdark -4 dark:text-white dark:focus:border-primary"
+                                    ></textarea>
+                                </div>
                             ))
                         }
+                        {
+                            session?.user?.role == "ADMIN" && <button
+                                type="button"
+                                className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-95"
+                                onClick={() => updateUserHandler()}>
+                                Update
+                            </button>
+                        }
                     </div>
+
                 </div>
             }
         </>
@@ -991,18 +1025,20 @@ const MedicalHistory = () => {
     const { id: username } = useParams();
     const [hasPres, setHasPress] = useState(null);
     const [prescriptions, setPrescriptions] = useState([]);
+    const [presType, setPresType] = useState('');
 
     useEffect(() => {
         api.get('/prescription', {
             params: {
-                user: username
+                user: username,
+                type: presType
             }
         }).then((response) => {
             console.log("response.data::", response.data);
             setPrescriptions(response?.data?.result?.data);
             // setMeta(response?.data?.result?.meta);
         })
-    }, []);
+    }, [presType]);
     console.log("prescriptions", prescriptions)
 
     const refillHandle = (values) => {
@@ -1024,7 +1060,9 @@ const MedicalHistory = () => {
                         <h3 className="font-medium text-black dark:text-white">
                             Treatment
                         </h3>
+
                     </div>
+
                     <div className="p-7">
                         <div className="overflow-x-auto">
                             <table className="w-full table-auto">
@@ -1071,15 +1109,15 @@ const MedicalHistory = () => {
                                                     {p.desc}
                                                 </td>
                                                 <td className="min-w-[100px] py-4 font-medium text-black dark:text-white flex">
-                                                    {
+                                                    {/*
                                                         ((p.qty - (p.used ?? 0)) >= 0)
                                                             ? <button onClick={() => refillHandle({ items: [{ item: p._id, qty: p.qty - p.used }] })} className="inline-flex items-center justify-center gap-0.5 rounded-full bg-primary py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
                                                                 Add to Cart
                                                             </button>
-                                                            : <button onClick={() => { }}  disabled className="bg-graydark inline-flex items-center justify-center gap-0.5 rounded-full py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
+                                                            : <button onClick={() => { }} disabled className="bg-graydark inline-flex items-center justify-center gap-0.5 rounded-full py-2 px-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10">
                                                                 Consult with Doctor
                                                             </button>
-                                                    }
+                                                    */ }
                                                 </td>
                                             </tr>
                                         ))}
@@ -1091,10 +1129,23 @@ const MedicalHistory = () => {
             </Modal>
 
             <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark mt-4">
-                <div className="py-6 px-4 md:px-6 xl:px-7.5">
+                <div className="py-6 px-4 md:px-6 xl:px-7.5 flex justify-between">
                     <h4 className="text-xl font-semibold text-black dark:text-white">
                         Medical History
                     </h4>
+                    <select
+                        className="w-1/3 rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                        onChange={e => setPresType(e.target.value)} >
+                        <option value=''>
+                            Select  Prescription Type
+                        </option>
+                        <option value='onetime'>
+                            One Time
+                        </option>
+                        <option value='subscription'>
+                            Subscription
+                        </option>
+                    </select>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full table-auto">

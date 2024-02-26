@@ -3,7 +3,7 @@ import { Types } from "mongoose";
 import prescriptionModal from "@/libs/models/prescriptionModal";
 import userModel from "@/libs/models/userModel";
 export const GET = tcWrap(async (req, res) => {
-    const { page, limit, date, product, doctor, user } = req.query;
+    const { page, limit, date, product, doctor, user, type } = req.query;
 
     let filter: any = [{ deletedAt: { $exists: false } }];
 
@@ -20,6 +20,11 @@ export const GET = tcWrap(async (req, res) => {
     if (user) {
         filter.push({
             user,
+        });
+    }
+    if (type) {
+        filter.push({
+            type,
         });
     }
 
@@ -71,7 +76,7 @@ export const POST = tcWrap(async (req, res) => {
     }
     const item = await prescriptionModal.create(body);
     if (body.note) {
-        const user = await userModel.findByIdAndUpdate(body.user, { $push: { note: body.note }});
+        const user = await userModel.findByIdAndUpdate(body.user, { $push: { note: body.note } });
         console.log("user", user);
     }
     console.log(item, "reqbody", body);
