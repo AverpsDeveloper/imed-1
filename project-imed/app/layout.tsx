@@ -1,30 +1,25 @@
-"use client";
 import "./globals.css";
 import "./data-tables-css.css";
 import "./satoshi.css";
-import { useState, useEffect } from "react";
-import Loader from "@/components/common/Loader";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 import ToasterProvider from "@/app/providers/ToasterProvider";
+import NextAutProviders from "@/app/providers/nextAuthProvider";
+
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  const [loading, setLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    setTimeout(() => setLoading(false), 300);
-  }, []);
-
+ 
   return (
     <html lang="en">
       <body suppressHydrationWarning={true}>
-        <div className="dark:bg-boxdark-2 dark:text-bodydark">
+        <div className="dark:bg-boxdark-2 dark:text-bodydark ">
           <ToasterProvider />
-          {children}
+          <NextAutProviders>
+            {children}
+          </NextAutProviders>
         </div>
       </body>
     </html>

@@ -1,12 +1,10 @@
-import axios from "axios";
+import api from "@/http";
 const usePublishedPages = async () => {
   try {
-    let {data} = await axios.get("api/pages");
-    console.log(data);
-    
+    let {data} = await api.get("/pages");    
     return data;
   } catch (error) {
-   return false;
+   return error;
   }
 };
 

@@ -21,10 +21,9 @@ const categorySchema = new Schema(
       type: Boolean,
       default: false
     },
-    deletedAt: {
-      type: Date,
-      default: undefined,
-    },
+    parent: {
+      type: Schema.Types.ObjectId, ref: "category"
+    }
   },
   {
     timestamps: true,

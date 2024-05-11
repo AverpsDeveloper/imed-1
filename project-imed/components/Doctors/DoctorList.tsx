@@ -1,5 +1,6 @@
 "use client"
 
+import usePaginate from '@/hooks/usePaginate';
 import React, { useState } from 'react';
 import { FaHistory, FaEnvelope, FaPhone } from 'react-icons/fa';
 
@@ -7,6 +8,7 @@ const DoctorsList = ({ doctors }:any) => {
   const [genderFilter, setGenderFilter] = useState('all');
   const [sortByMonth, setSortByMonth] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const { page, limit, search, searchHandler } = usePaginate();
 
   const filteredPatients = doctors.filter((doctors:any) => {
     if (genderFilter === 'all') return true;

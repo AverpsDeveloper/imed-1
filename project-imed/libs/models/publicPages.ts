@@ -6,7 +6,7 @@ export interface PublicPages extends Document {
     title: String,
     metaTitle: String,
     metaDescription: String,
-    Description: String,
+    description: String,
     published: Boolean,
 }
 

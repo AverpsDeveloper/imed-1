@@ -8,6 +8,7 @@ export interface IModel extends Document {
 const appConfigSchema = new Schema(
   {
     appVersion: String,
+    appName: String,
     typeConfig: {
       itemTypes: [{ type: String }],
       unitsTypes: [{ type: String }],

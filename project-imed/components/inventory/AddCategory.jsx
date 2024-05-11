@@ -3,13 +3,12 @@ import React, { useState, useEffect } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import Link from 'next/link';
-import axios from 'axios';
-import toast from 'react-hot-toast';
 import { useRouter, useSearchParams } from 'next/navigation';
+import api from '@/http';
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string().required('Category Name is required'),
-  status: Yup.string().required('Category Status is required'),
+  name: Yup.string().required('Category name is required'),
+  status: Yup.string().required('Category status is required'),
 });
 
 function ErrMassage({ name }) {
@@ -36,33 +35,24 @@ function AddCategoryForm() {
     // Handle the form submission here
     if (paramsId) {
       values.id = paramsId;
-      axios.put('/api/categories', values)
+      api.put('/categories', values)
         .then(({ data }) => {
-          toast.success(data.result.message);
           rotuer.push("/dashboard/inventory/categorys")
-        }).catch(({ error }) => {
-          toast.error(error.message);
         })
     } else {
-      axios.post('/api/categories', values)
+      api.post('/categories', values)
         .then(({ data }) => {
-          toast.success('New Category added successfully');
           resetForm(); // Reset the form after successful submission
           // rotuer.push("/dashboard/inventory/categorys")
         })
-        .catch(({ response }) => {
-          console.log("error::",);
-          toast.error(response.data?.error?.error);
-        });
     }
-
   };
 
   return (
     <div className="min-h-screen bg-gray-200 flex flex-col">
-      <div className="bg-white w-full h-full p-6">
+      <div className="bg-whitew-full h-full p-6 rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold">Add Category</h1>
+          <h1 className="text-2xl font-bold">Add new category</h1>
           <Link href="/dashboard/inventory/categorys"
             className="inline-flex items-center justify-center gap-2.5 rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
           >
@@ -82,13 +72,13 @@ function AddCategoryForm() {
                 type="text"
                 name="name"
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                placeholder="Enter category name"
+                placeholder="Category name"
               />
               <ErrMassage name="name" />
             </div>
 
             <div className="mb-4">
-              <label className="mb-3 block text-black dark:text-white">Status</label>
+              <label className="mb-3 block text-black dark:text-white">category status</label>
               <Field
                 as="select"
                 name="status"

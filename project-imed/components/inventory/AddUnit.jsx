@@ -1,14 +1,15 @@
 "use client"
-import React from 'react';
+import React, { useState } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import Link from 'next/link';
-import axios from 'axios';
-import toast from 'react-hot-toast';
+import api from '@/http';
+
+
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string().required('Unit Name is required'),
-  type: Yup.string().required('Select type is required'),
+  name: Yup.string().required('Unit name is required'),
+  type: Yup.string().required('Please select type'),
 });
 
 function ErrMessage({ name }) {
@@ -27,33 +28,23 @@ function AddUnitForm() {
     name: '',
     type: '',
   };
-
   const onSubmit = (values, { resetForm }) => {
     // Handle the form submission here
-    axios.post(`/api/types/${values.type}`, values)
+    api.post(`/types/${values.type}`, values)
       .then(({ data }) => {
-        if (!data.error) {
-          toast.success('New Unit added successfully');
-          resetForm(); // Reset the form after successful submission
-        } else {
-          toast.error(data.error.message);
-        }
+        resetForm(); // Reset the form after successful submission
       })
-      .catch((error) => {
-        console.error(error);
-        toast.error('There was an error. Please try again');
-      });
   };
 
   return (
     <div className="min-h-screen bg-gray-200 flex flex-col">
-      <div className="bg-white w-full h-full p-6">
+      <div className="w-full h-full p-6 rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold">Add Unit</h1>
+          <h1 className="text-2xl font-bold">Add Types</h1>
           <Link href="/dashboard/inventory/units"
             className="inline-flex items-center justify-center gap-2.5 rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
           >
-            Unit List
+            Type List
           </Link>
         </div>
 
@@ -66,7 +57,7 @@ function AddUnitForm() {
 
             <div className="mb-4">
               <label className="mb-3 block text-black dark:text-white">
-                Status
+                Select Type
               </label>
               <Field
                 as="select"
@@ -86,13 +77,13 @@ function AddUnitForm() {
 
             <div className="mb-4">
               <label className="mb-3 block text-black dark:text-white">
-                Unit Name
+                Type Name
               </label>
               <Field
                 type="text"
                 name="name"
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                placeholder="Enter Units name"
+                placeholder="Type name"
               />
               <ErrMessage name="name" />
             </div>
